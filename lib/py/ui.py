@@ -2,7 +2,9 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QMessageBox
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt, pyqtSignal
 
-from lib.py.common import *
+from lib.py.csv import *
+
+column_order = ['Season', 'Ranking', 'Title', 'Map', 'MapName', 'IWAD', 'Files', 'Merge', 'Port', 'CompLevel', 'DoomWiki', 'Notes']
 
 class GridViewWindow(QMainWindow):
     index_selected = pyqtSignal(int)
