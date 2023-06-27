@@ -4,15 +4,16 @@ from datetime import datetime
 DEFAULT_SKILL = 4
 
 class GameConfig:
-    def __init__(self, config):
+    def __init__(self, config, mod):
         self._script_config = config
         self._timestr = None
+        self._mod = mod
         self._pwads = []
         self._dehs = []
         self._mwads = []
+        self._iwad = ""
         self._map_id = ""
         self._warp = []
-        self._iwad = ""
         self._file = ""
         self._record_demo = True
         self._config = ""
@@ -21,7 +22,6 @@ class GameConfig:
         self._no_music = True
         self._comp_level = 0
         self._window = True
-        self._demo_prefix = ""
 
     def build_chocolate_doom_args(self):
         
@@ -56,7 +56,7 @@ class GameConfig:
             doom_args.append("-file")
             doom_args.extend(self._pwads)
 
-        doom_args.extend(['-iwad', f"{self._script_config['iwad_dir']}/{self._iwad}.wad"])
+        doom_args.extend(['-iwad', f"{self._script_config['iwad_dir']}/{self.mod.get_iwad()}.wad"])
         doom_args.extend(['-warp'])
         doom_args.extend(self._warp)
 
@@ -71,22 +71,18 @@ class GameConfig:
 
         return doom_args
 
-    # demo_prefix
-    def set_demo_prefix(self, demo_prefix):
-        self._demo_prefix = demo_prefix
-
     def get_demo_prefix(self):
-        return self._demo_prefix
+        if len(self._pwads) > 0:
+            return os.path.splitext(os.path.basename(self._pwads[0]))[0]
+        else:
+            return self._iwad
     
     # demo_name
     def get_demo_name(self):
         if self._timestr == None:
             self._timestr = datetime.now().strftime("%Y-%m-%dT%H%M%S")
 
-        if len(self._pwads) > 0:
-            demo_prefix = os.path.splitext(os.path.basename(self._pwads[0]))[0]
-        else:
-            demo_prefix = self._iwad
+        demo_prefix = self.get_demo_prefix()
 
         return f"{demo_prefix}-{self._map_id}-{self._timestr}"
 
@@ -118,12 +114,12 @@ class GameConfig:
     def get_warp(self):
         return self._warp
 
-    # iwad
-    def set_iwad(self, iwad):
-        self._iwad = iwad
+    # mod
+    def set_mod(self, mod):
+        self._mod = mod
 
-    def get_iwad(self):
-        return self._iwad
+    def get_mod(self):
+        return self._mod
 
     # file
     def set_file(self, file):
