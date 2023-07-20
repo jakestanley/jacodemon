@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import subprocess
-import json
 
 import lib.py.arguments as args
 from lib.py.mod import *
