@@ -19,6 +19,8 @@ class LaunchConfig:
         self._window = True
         self._demo_prefix = ""
         self._port_override = None
+        self._demo_playback = False
+        self._demo_file = None
 
     def get_comp_level(self):
         # initialise final comp level only
@@ -88,7 +90,10 @@ class LaunchConfig:
         doom_args.extend(['-warp'])
         doom_args.extend(self._map.get_warp())
 
-        if self._script_config:
+        if self._demo_playback:
+            doom_args.append("-playdemo")
+            doom_args.append(self._demo_file)
+        elif self._script_config:
             doom_args.append("-record")
             doom_args.append(os.path.join(self._script_config.demo_dir, self.get_demo_name() + ".lmp"))
 
@@ -107,6 +112,12 @@ class LaunchConfig:
     
     # demo_name
     def get_demo_name(self):
+
+        if self._demo_playback:
+            # TODO may need to faff about with the path a bit, removing extension if any
+            d = os.path.basename(self._demo_file)
+            return f"{os.path.splitext(d)[0]}_rerec"
+
         if self._timestr == None:
             self._timestr = datetime.now().strftime("%Y-%m-%dT%H%M%S")
 
@@ -144,6 +155,11 @@ class LaunchConfig:
     # no_music
     def set_no_music(self, no_music):
         self._no_music = no_music
+
+    # demo file
+    def set_demo_playback(self, demo_file):
+        self._demo_playback = True
+        self._demo_file = demo_file
 
     def get_no_music(self):
         return self._no_music

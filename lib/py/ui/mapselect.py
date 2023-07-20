@@ -5,7 +5,8 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from lib.py.common import *
 from lib.py.mod import *
 
-column_order = ['Season', 'Ranking', 'Title', 'Map', 'MapName', 'IWAD', 'Port', 'CompLevel', 'DoomWiki', 'Notes']
+map_column_order = ['Season', 'Ranking', 'Title', 'Map', 'MapName', 'IWAD', 'Port', 'CompLevel', 'DoomWiki', 'Notes']
+demo_column_order = ['Path', 'Date', 'Time', 'Kills', 'Secrets', 'Items']
 
 class GridViewWindow(QMainWindow):
     index_selected = pyqtSignal(int)
@@ -22,7 +23,7 @@ class GridViewWindow(QMainWindow):
         self.model.setHorizontalHeaderLabels(column_order)
 
         for row_dict in data:
-            row_items = [QStandardItem(str(row_dict[key])) for key in column_order]
+            row_items = [QStandardItem(str(row_dict.get(key, ''))) for key in column_order]
             for item in row_items:
                 item.setEditable(False)  # Set the item as uneditable
             self.model.appendRow(row_items)
@@ -54,13 +55,30 @@ def FlattenMaps(maps):
 
     return flats
 
+def OpenDemoSelection(demos):
+
+    app = QApplication([])
+    window = GridViewWindow(demos, demo_column_order)
+    selected = None
+
+    def handle_index_selected(index):
+        nonlocal selected
+        selected = demos[index]
+
+    window.index_selected.connect(handle_index_selected)
+
+    window.show()
+    app.exec_()
+
+    return selected
+
 def OpenMapSelection(maps):
 
     # TODO consider making this a member of Mod
     flat = FlattenMaps(maps)
 
     app = QApplication([])
-    window = GridViewWindow(flat, column_order)
+    window = GridViewWindow(flat, map_column_order)
     selected = None
 
     def handle_index_selected(index):

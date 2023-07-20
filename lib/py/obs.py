@@ -25,6 +25,7 @@ class ObsController:
         return self.obs_client.get_record_status().output_active
 
     def StartRecording(self):
+        # TODO consider a 2 second delay for polling/hooking
         if self.enabled:
             if self.IsRecording():
                 self.StopRecording()

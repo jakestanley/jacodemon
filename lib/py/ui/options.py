@@ -36,8 +36,14 @@ class OptionsDialog(QDialog):
         layout.addWidget(checkbox_auto_record_label)
 
         # options: re-record (currently not implemented)
-        # checkbox_re_record = QCheckBox("re_record")
-        # layout.addWidget(checkbox_re_record)
+        checkbox_re_record = QCheckBox("Re-record a completed demo")
+        checkbox_re_record.setChecked(self.options.re_record)
+        checkbox_auto_record.stateChanged.connect(lambda state: self.set_re_record(state == Qt.Checked))
+
+        layout.addWidget(checkbox_re_record)
+
+        checkbox_re_record_label = QLabel("If checked, I'll prompt for a demo to re-record")
+        layout.addWidget(checkbox_re_record)
 
         # options: play scene
         groupbox_playscene = QGroupBox("Play scene")

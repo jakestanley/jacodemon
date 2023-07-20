@@ -9,7 +9,7 @@ from lib.py.load_mods import *
 from lib.py.config import *
 from lib.py.launch import LaunchConfig
 from lib.py.obs import *
-from lib.py.ui.mapselect import OpenMapSelection
+from lib.py.ui.mapselect import OpenMapSelection, OpenDemoSelection
 from lib.py.ui.options import OpenOptionsGui
 from lib.py.last import *
 from lib.py.stats import Statistics
@@ -39,6 +39,14 @@ if(not map):
     if(p_args.random):
         import random
         map = random.choice(maps)
+    elif(p_args.re_record):
+        map = OpenMapSelection(maps)
+        demos = FindDemosForMap(map, config.demo_dir)
+        demo = OpenDemoSelection(demos)
+        if(not demo):
+            print("Error: a demo was not found or selected")
+            exit(1)
+        launch.set_demo_playback(demo['Path'])
     else:
         map = OpenMapSelection(maps)
         SaveSelectedMap(map)
@@ -55,7 +63,7 @@ command = launch.get_command()
 
 obsController.SetScene('Playing')
 obsController.UpdateMapTitle(f"{map.mod.title}: {map.get_title()}")
-if p_args.auto_record:
+if p_args.auto_record or p_args.re_record:
     obsController.StartRecording()
 
 statistics = Statistics(launch, config.demo_dir)
@@ -63,10 +71,11 @@ print(f"Running command\n\t{command}")
 running = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 # update stats and save
-statistics.set_level_stats()
-statistics.write_stats()
+if(not p_args.re_record):
+    statistics.set_level_stats()
+    statistics.write_stats()
 
-if p_args.auto_record:
+if p_args.auto_record or p_args.re_record:
     obsController.StopRecording(demo_name)
 
 # TODO setting for waiting scene

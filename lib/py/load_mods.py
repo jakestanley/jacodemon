@@ -1,5 +1,38 @@
 import csv
+import glob
+import re
+import json
 from lib.py.patches import *
+
+def FindDemosForMap(map, demo_dir):
+
+    demos = []
+    demo_pattern = r".*?-\d{4}-\d{2}-\d{2}T\d{2}\d{2}\d{2}"
+
+    prefix = map.get_map_prefix()
+    demo_files = glob.glob(demo_dir + f"/{prefix}*.lmp")
+    for demo_file in demo_files:
+        demo_select = {}
+        demo_select['Path'] = demo_file
+        match = re.search(demo_pattern, demo_file)
+        if match:
+            stats_file = f"{match.group()}-STATS.json"
+            demo_select['Date'] = 'balls'
+            if os.path.exists(stats_file):  # Check if the file exists
+                with open(stats_file, 'r') as file:
+                    try:
+                        data = json.load(file)  # Load the JSON data
+                        if data['levelStats']:
+                            new_dict = {key: value for key, value in data['levelStats'].items()}
+                            demo_select.update(new_dict)
+                    except json.JSONDecodeError as e:
+                        print(f"Error decoding JSON: {e}")
+                        exit(1)
+            demos.append(demo_select)
+        
+        # TODO get stats to display
+        
+    return demos
 
 def GetMapsFromMods(mods):
     maps = []

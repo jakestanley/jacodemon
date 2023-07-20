@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Re-record test",
+            "type": "python",
+            "request": "launch",
+            "program": "start2.py",
+            "args": [
+                "--config", "./examples/config.json",
+                "--mod-list", "./examples/ModList_Season1.csv",
+                "--re-record",
+                "--play-scene", "Playing"
+            ]
+        }
+        {
             "name": "Start (Mac, Python): MAPINFO test",
             "type": "python",
             "request": "launch",
