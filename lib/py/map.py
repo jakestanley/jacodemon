@@ -48,9 +48,24 @@ class FlatMap:
     Populate DEHs, patches and merges based on the patch directory
     Jury's still out on whether or not this should be done in the constructor
     """
-    def ProcessFiles(self, PwadDir: str):
-        print("Warning: ProcessFiles is not yet implemented!")
-        pass
+    def ProcessFiles(self, pwad_dir: str):
+
+        # build lists of map specific files we need to pass in
+        patches = [patch for patch in self._Files.split('|') if patch]
+        for patch in patches:
+            ext = os.path.splitext(patch)[1]
+            path = os.path.join(pwad_dir, patch)
+            if ext.lower() == ".deh":
+                self._dehs.append(path)
+            elif ext.lower() == ".wad":
+                self._patches.append(path)
+            else:
+                print(f"Ignoring unsupported file "'{patch}'"with extension '{ext}'")
+
+        # for chocolate doom/vanilla wad merge emulation
+        merges = [merge for merge in self._Merge.split('|') if merge]
+        for merge in merges:
+            self._merges.append(os.path.join(pwad_dir, merge))
 
     """
     Get map prefix (used for naming demos and recordings) based on Files or 
@@ -76,3 +91,18 @@ class FlatMap:
 
     def GetFiles(self):
         return self._Files
+    
+    def Dictify(self):
+        dic = {}
+
+        dic['ModName'] = self._ModName
+        dic['MapId'] = self._MapId
+        dic['MapName'] = self._MapName
+        dic['Author'] = self._Author
+        dic['CompLevel'] = self._CompLevel
+        dic['Files'] = self._Files
+        dic['Merge'] = self._Merge
+        dic['Port'] = self._Port
+        dic['Notes'] = self._Notes
+
+        return dic

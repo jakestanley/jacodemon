@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from lib.py.common import *
 from lib.py.mod import *
 
-column_order = ['Season', 'Ranking', 'Title', 'Map', 'MapName', 'IWAD', 'Port', 'CompLevel', 'DoomWiki', 'Notes']
+column_order = ['ModName', 'MapId', 'MapName', 'Author', 'CompLevel', 'Files', 'Merge', 'Port', 'Notes']
 
 class GridViewWindow(QMainWindow):
     index_selected = pyqtSignal(int)
@@ -34,33 +34,14 @@ class GridViewWindow(QMainWindow):
         self.index_selected.emit(index.row())
         self.close()  # Close the window
 
-def FlattenMaps(maps):
-    flats = []
-    for m in maps:
-        map: Map = m
-        
-        flat = {}
-        flat['Season'] = map.mod.season
-        flat['Ranking'] = map.mod.ranking
-        flat['Title'] = map.mod.title
-        flat['Map'] = map.id
-        flat['MapName'] = map.get_title()
-        flat['IWAD'] = map.mod.iwad
-        flat['Port'] = map.mod.port
-        flat['CompLevel'] = map.mod.complevel
-        flat['DoomWiki'] = ""
-        flat['Notes'] = ""
-        flats.append(flat)
-
-    return flats
-
 def OpenMapSelection(maps):
 
-    # TODO consider making this a member of Mod
-    flat = FlattenMaps(maps)
+    rows = []
+    for map in maps:
+        rows.append(map.Dictify())
 
     app = QApplication([])
-    window = GridViewWindow(flat, column_order)
+    window = GridViewWindow(rows, column_order)
     selected = None
 
     def handle_index_selected(index):

@@ -13,7 +13,7 @@ from lib.py.ui.mapselect import OpenMapSelection
 from lib.py.ui.options import OpenOptionsGui
 from lib.py.last import *
 from lib.py.stats import Statistics
-from lib.py.csv import csv_is_valid
+from lib.py.csv import csv_is_valid, load_raw_maps
 
 p_args = args.get_args()
 
@@ -44,8 +44,18 @@ if(not map):
         print("CSV header is invalid. See output")
         exit(1)
 
-    mods = LoadMods(config.pwad_dir, p_args.mod_list)
-    maps = GetMapsFromMods(mods)
+    # TODO enrich maps
+    raw_maps = load_raw_maps(p_args.mod_list)
+    maps = []
+    for map in raw_maps:
+        map.ProcessFiles(config.pwad_dir)
+        # if there isn't a MapId, we need to look up the maps
+        if not map.GetMapId():
+            # TODO process map files (need to have the files)
+            pass
+        else:
+            maps.append(map)
+
     if(p_args.random):
         import random
         map = random.choice(maps)
