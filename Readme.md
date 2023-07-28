@@ -57,7 +57,9 @@ The following values _MUST_ currently be present in the map CSV for the script t
 
 ### Scenes and inputs
 
-The `start.ps1` script is expecting the following scenes and inputs:
+*TODO: make this configurable and update*
+
+The `start2.py` script is expecting the following scenes and inputs:
 - Input "Text" for the map title, displayed at the top of the screen
 - Scenes "Waiting" and "Playing" for switching between the map selection and game in progress states
 
@@ -67,18 +69,15 @@ These are subject to change.
 
 ### Install dependencies
 
+*TODO: forgot to commit this file, I need to find it*
+
 ```
 pip install -r requirements.txt
 ```
 
 ## Testing
 
-Run any scripts in `lib/py` or `lib/ps` with the `test_` prefix
-I intend to add more tests later excepting UI tests.
-
-```
-lib/py/test_*.py
-```
+*TODO: set up comprehensive unit tests*
 
 ## Scripting OBS
 
@@ -98,4 +97,10 @@ For when my patience was wearing thin with PowerShell, and because I'm lazy.
 Thanks to https://c.eev.ee/doom-text-generator for the rendered stream overlay text
 
 ## Doom Wiki
-Wanted to include their logo as I am using their resource. I'm not affiliated with the Doom Wiki but they are a great bunch. You can visit them here: https://doomwiki.org/
+I've nicked so much data used in my streams from here. You can visit them at: https://doomwiki.org/
+
+## id Software
+For Doom of course
+
+## Doomworld
+For their contributions and support for this now 30 year old community
