@@ -1,4 +1,4 @@
-# Setup
+# Jake's Doom Launcher & Stream Manager
 
 ## Configuration
 
@@ -8,42 +8,43 @@
 
 ### Playlist format (CSV)
 
-At the time of writing, the script is hard coded to read a playlist from `.\Season1.csv`
+I worked with ChatGPT to come up with a format that works for mods where a list of maps is provided and when one is not.
+
+```
+ModName,MapId,MapName,Author,CompLevel,Files,Merge,Port,Notes
+Fava Beans,E1M1,Gaspra Armory,Sean Birkel,2,FAVA.WAD,,,
+Fava Beans,E1M2,Hangar 18,Sean Birkel,2,FAVA.WAD,,,
+Fava Beans,E1M3,Impalement Station,Sean Birkel,2,FAVA.WAD,,,Exit to secret level
+The Final Gathering,,,Stormin,2,GATHER.WAD,,,From original release. Maps unnamed. Mod test
+The Final Gathering (Bonus),MAP04,,Stormin,9,GATHER2.WAD|NEW.WAD,,,Bonus level added in 2005. Using Boom to be safe
+The Final Gathering (Bonus),MAP05,,Stormin,9,GATHER2.WAD|NEW.WAD,,,Bonus level added in 2005. Using Boom to be safe
+```
 
 The following values _MUST_ currently be present in the map CSV for the script to work:
 
-- `CompLevel` determines the compatibility level
-	- If empty, `default_complevel` from `config.json` is used
-- `Map` determines the map identifier. 
+- `ModName`
+- `MapId` (optional*)
 	- Expected formats are 'E1M1' (Doom) or 'MAP01' (Doom 2)
+- `MapName` (optional)
+    - MAY be displayed on the stream
+- `Author` (optional)
+    - MAY be displayed on the stream
+    - If no MapIds provided for this ModName, this will be used for all maps in the mod
+- `CompLevel` (optional)
+	- If empty, `default_complevel` from `config.json` is used
 - `Files` determines the files that need to be loaded. 
 	- Currently DEH and WAD are supported. 
 	- Multiple files MUST be separated by a pipe character. 
 	- This can be empty.
-- `Merge` is for use with chocolate doom to specify which files require the `-merge` parameter
+- `Merge` (optional)
+    - For use with chocolate doom to specify which files require the `-merge` parameter
 	- See [WAD merging capability](https://www.chocolate-doom.org/wiki/index.php/WAD_merging_capability)
-- `Title` determines the map title that MAY be displayed on the stream
-- `Author` determines the map author that MAY be displayed on the stream
-- `Port` determines the port to use, i.e `chocolate` for chocolate doom.
+- `Port` (optional)
+    - Use this port to use, i.e `chocolate` for chocolate doom.
 	- Defaults to dsda-doom
+    - Overridden with `--source-port` flag
 
-The following values are not yet required but _MAY_ be utilised later:
-
-- `Season` (or `Year`) (undecided)
-	- Corresponds to an [Cacowards](https://doomwiki.org/wiki/Cacowards) or [Top 100 WADs of All Time](https://doomwiki.org/wiki/Top_100_WADs_of_All_Time) year
-	- MAY be displayed on the stream
-- `Ranking`
-	- Where the WAD placed in that years list. If not present MAY be empty. 
-	- Considering removing this as it appears to have only been used from 1994 to 2003
-- `Play Order`
-	- Not required but serves to inform the user on the map select view
-- `Notes`
-	- Not required but serves to inform the user on the map select view
-- `Doom wiki`
-	- Not required. Link to the mod
-- `IWAD`
- 	- Not required. Currently inferred from the map identifier format whether to use DOOM.WAD or DOOM2.WAD
- 	- The IWADs must be present for the relevant game in `iwad_dir` for this to work.
+*If ModName is provided without MapId, then a tool will be used to infer the maps from files. Note: if further maps are provided with the same name, they will be appended to the list for that mod. Handling this behaviour is not planned yet.
 
 ## Configure OBS
 
