@@ -78,7 +78,8 @@ pip install -r requirements.txt
 
 ## Testing
 
-*TODO: set up comprehensive unit tests*
+- Uses `unittest` package
+- Run `run_tests.py`
 
 ## Scripting OBS
 

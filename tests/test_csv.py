@@ -2,6 +2,7 @@ import unittest
 
 from lib.py.csv import *
 
+
 class TestCsv(unittest.TestCase):
 
     def test_valid_csv(self):

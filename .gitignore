@@ -6,4 +6,5 @@
 *.png
 last.json
 tmp/
+.idea/
 __pycache__
