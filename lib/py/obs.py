@@ -60,9 +60,8 @@ class ObsController:
 
     def UpdateMapTitle(self, title):
         if self.enabled:
-            settings = {}
+            settings = {'text': title}
             # TODO configurable scene/input names
-            settings['text'] = title
             success = self.obs_client.set_input_settings(name="Text Map Name", settings=settings, overlay=True)
             print(f"Set map title to {title}")
         else:

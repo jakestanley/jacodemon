@@ -19,7 +19,7 @@ p_args = args.get_args()
 
 config = LoadConfig(p_args.config)
 
-if(not p_args.no_gui):
+if not p_args.no_gui:
     p_args = OpenOptionsGui(p_args)
 
 launch = LaunchConfig(config)
@@ -31,10 +31,10 @@ obsController.Setup()
 obsController.SetScene("Waiting")
 
 map = None
-if(p_args.last):
+if p_args.last:
     map = GetLastMap()
 
-if(not map):
+if not map:
 
     if not os.path.exists(p_args.mod_list):
         print(f"Could not find playlist file: {p_args.mod_list}")
@@ -61,7 +61,7 @@ if(not map):
         else:
             maps.append(map)
 
-    if(p_args.random):
+    if p_args.random:
         import random
         map = random.choice(maps)
     else:
@@ -69,9 +69,9 @@ if(not map):
         SaveSelectedMap(map)
 
         # TODO consider implementing this??? consider implementing saving all command line args as config
-        #SaveSelectedModList(p_args.mod_list)
+        # SaveSelectedModList(p_args.mod_list)
 
-if(not map):
+if not map:
     print("A map was not selected. Exiting normally")
     exit(0)
 

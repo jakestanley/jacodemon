@@ -106,7 +106,7 @@ class LaunchConfig:
     
     # demo_name
     def get_demo_name(self):
-        if self._timestr == None:
+        if self._timestr is None:
             self._timestr = datetime.now().strftime("%Y-%m-%dT%H%M%S")
 
         map_prefix = self._map.GetMapPrefix()
@@ -161,7 +161,7 @@ class LaunchConfig:
 
         # TODO if crispy override set.
         # port_override > crispy override > chocolate
-        if final_port == "chocolate" and self._port_override == None:
+        if final_port == "chocolate" and self._port_override is None:
             if self._script_config.crispy:
                 final_port = "crispy"
             else:

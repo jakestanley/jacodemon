@@ -5,8 +5,8 @@ import re
 from typing import List
 
 regex_mapentries = '(E\dM\d|MAP\d\d|MAPINFO)'
-DOOM_regex=r'^E(\d)M(\d)$'
-DOOM2_regex=r'^MAP(\d+)$'
+DOOM_regex = r'^E(\d)M(\d)$'
+DOOM2_regex = r'^MAP(\d+)$'
 
 def IsDoom1(mapId):
     return re.match(DOOM_regex, mapId)
@@ -16,7 +16,7 @@ def IsDoom2(mapId):
 
 def GetDoom1Warp(mapId):
     episodeno = (re.match(DOOM_regex, mapId).group(1))
-    mapno =     (re.match(DOOM_regex, mapId).group(2))
+    mapno = (re.match(DOOM_regex, mapId).group(2))
     return [episodeno, mapno]
 
 def GetDoom2Warp(mapId):
