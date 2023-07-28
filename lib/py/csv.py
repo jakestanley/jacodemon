@@ -1,8 +1,24 @@
 import csv
 import os
 
-REQUIRED_FIELDS = ["ModName", "Files"]
-OPTIONAL_FIELDS = ["MapId", "MapName", "Author", "CompLevel", "Merge", "Port", "Notes"]
+from typing import List
+from lib.py.map import FlatMap
+
+# private constants
+_KEY_MOD_NAME = "ModName"
+_KEY_FILES = "Files"
+_KEY_MAP_ID = "MapId"
+_KEY_MAP_NAME = "MapName"
+_KEY_AUTHOR = "Author"
+_KEY_COMP_LEVEL = "CompLevel"
+_KEY_MERGE = "Merge"
+_KEY_PORT = "Port"
+_KEY_NOTES = "Notes"
+
+REQUIRED_FIELDS = [_KEY_MOD_NAME, _KEY_FILES]
+
+OPTIONAL_FIELDS = [_KEY_MAP_ID, _KEY_MAP_NAME, _KEY_AUTHOR, _KEY_COMP_LEVEL, 
+                   _KEY_MERGE, _KEY_PORT, _KEY_NOTES]
 
 def has_valid_extension(file_path):
     valid_extensions = [".pk3", ".wad", ".deh"]
@@ -64,3 +80,35 @@ def csv_is_valid(csv_path):
 
 
     return True
+
+"""
+Load raw map data from a dict. It is possible that a map has no map ID and 
+has to be enriched with this data
+"""
+def load_raw_map(dic) -> FlatMap:
+
+    map = FlatMap(dic[_KEY_MOD_NAME], dic[_KEY_FILES], 
+                  dic.get(_KEY_MAP_ID), dic.get(_KEY_MAP_NAME), 
+                  dic.get(_KEY_AUTHOR), dic.get(_KEY_COMP_LEVEL),
+                  dic.get(_KEY_MERGE), dic.get(_KEY_PORT), 
+                  dic.get(_KEY_NOTES))
+
+    return map
+
+"""
+Load raw map data from a CSV. It is possible that a map has no map ID and 
+has to be enriched with this data
+"""
+def load_raw_maps(csv_path) -> List[FlatMap]:
+
+    raw_maps = []
+
+    with open(csv_path, "r") as csvfile:
+        reader = csv.DictReader(csvfile)
+        rows = list(reader)
+
+    for row in rows:
+        map = load_raw_map(row)
+        raw_maps.append(map)
+    
+    return raw_maps
