@@ -1,6 +1,8 @@
 import os
 from lib.py.config import Config
 from datetime import datetime
+from lib.py.map import FlatMap
+from lib.py.map_utils import *
 
 ULTRA_VIOLENCE = 4
 DEFAULT_SKILL = ULTRA_VIOLENCE
@@ -9,7 +11,7 @@ class LaunchConfig:
     def __init__(self, config):
         self._script_config: Config = config
         self._timestr = None
-        self._map = None
+        self._map: FlatMap = None
         self._file = ""
         self._config = ""
         self._extra_config = ""
@@ -28,8 +30,8 @@ class LaunchConfig:
         if self._comp_level:
             final_comp_level = self._comp_level
         # or if map has a comp level
-        elif self._map.mod.complevel:
-            final_comp_level = self._map.get_mod().get_comp_level()
+        elif self._map.CompLevel:
+            final_comp_level = self._map.CompLevel
         # or use default comp level
         else:
             final_comp_level = int(self._script_config.default_complevel)
@@ -40,9 +42,9 @@ class LaunchConfig:
         
         choccy_args = self.build_args()
 
-        if len(self._map.mod.mwads) > 0:
+        if len(self._map.merges) > 0:
             choccy_args.append("-merge")
-            choccy_args.extend(self._map.mod.mwads)
+            choccy_args.extend(self._map.merges)
 
         choccy_args.extend(["-config", self._script_config['chocolatedoom_cfg_default']])
         choccy_args.extend(["-extraconfig", self._script_config['chocolatedoom_cfg_extra']])
@@ -71,22 +73,19 @@ class LaunchConfig:
         # TODO: add qol mods
         doom_args = []
 
-        if len(self._map.mod.dehs) > 0:
+        if len(self._map.dehs) > 0:
             doom_args.append("-deh")
-            doom_args.extend(self._map.mod.dehs)
+            doom_args.extend(self._map.dehs)
 
-        if len(self._map.mod.pwads) > 0:
+        if len(self._map.patches) > 0:
             doom_args.append("-file")
-            doom_args.extend(self._map.mod.pwads)
+            doom_args.extend(self._map.patches)
 
         # TODO consider class for handling getting different types of wads instead of passing this around
-        if self._map.mod.iwad:
-            doom_args.extend(['-iwad', os.path.join(self._script_config.iwad_dir, self._map.mod.iwad)])
-        else:
-            doom_args.extend(['-iwad', os.path.join(self._script_config.iwad_dir, self._map.get_inferred_iwad())])
+        doom_args.extend(['-iwad', os.path.join(self._script_config.iwad_dir, get_inferred_iwad(self._map.MapId))])
         
         doom_args.extend(['-warp'])
-        doom_args.extend(self._map.get_warp())
+        doom_args.extend(get_warp(self._map.MapId))
 
         if self._script_config:
             doom_args.append("-record")
@@ -110,7 +109,7 @@ class LaunchConfig:
         if self._timestr == None:
             self._timestr = datetime.now().strftime("%Y-%m-%dT%H%M%S")
 
-        map_prefix = self._map.get_map_prefix()
+        map_prefix = self._map.GetMapPrefix()
         return f"{map_prefix}-{self._timestr}"
 
     # file
@@ -157,8 +156,8 @@ class LaunchConfig:
         final_port = "dsdadoom"
         if (self._port_override):
             final_port = self._port_override
-        elif (self._map.mod.port):
-            final_port = self._map.mod.port
+        elif (self._map.Port):
+            final_port = self._map.Port
 
         # TODO if crispy override set.
         # port_override > crispy override > chocolate
