@@ -1,0 +1,5 @@
+ModName,MapId,MapName,Author,CompLevel,Files,Merge,Port,Notes
+Test,E1M1,Test,Jake Stanley,9,test.wad,,,
+Fava Beans,E1M1,Gaspra Armory,Sean Birkel,2,FAVA.wad,,,
+Fava Beans,E1M2,Hangar 18,Sean Birkel,2,,,,
+Fava Beans,E1M3,Impalement Station,Sean Birkel,2,,,,Exit to secret level

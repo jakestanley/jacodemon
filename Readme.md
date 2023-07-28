@@ -43,6 +43,7 @@ The following values _MUST_ currently be present in the map CSV for the script t
     - Use this port to use, i.e `chocolate` for chocolate doom.
 	- Defaults to dsda-doom
     - Overridden with `--source-port` flag
+- `Notes` (optional)
 
 *If ModName is provided without MapId, then a tool will be used to infer the maps from files. Note: if further maps are provided with the same name, they will be appended to the list for that mod. Handling this behaviour is not planned yet.
 
