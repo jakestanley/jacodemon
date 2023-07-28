@@ -14,6 +14,8 @@ from lib.py.ui.options import OpenOptionsGui
 from lib.py.last import *
 from lib.py.stats import Statistics
 from lib.py.csv import csv_is_valid, load_raw_maps
+from lib.py.wad import GetMapEntriesFromFiles
+import copy
 
 p_args = args.get_args()
 
@@ -49,10 +51,15 @@ if(not map):
     maps = []
     for map in raw_maps:
         map.ProcessFiles(config.pwad_dir)
+
         # if there isn't a MapId, we need to look up the maps
         if not map.GetMapId():
-            # TODO process map files (need to have the files)
-            pass
+            mapentries = GetMapEntriesFromFiles(map.GetFiles(), config.pwad_dir)
+            for mapentry in mapentries:
+                enriched_map = copy.deepcopy(map)
+                enriched_map.SetMapId(mapentry["MapId"])
+                enriched_map.SetMapName(mapentry["MapName"])
+                maps.append(enriched_map)
         else:
             maps.append(map)
 

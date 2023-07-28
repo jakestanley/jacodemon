@@ -1,29 +1,30 @@
 import os
+from typing import List
 
 class FlatMap:
     def __init__(self, ModName, Files, MapId=None, MapName=None, Author=None, 
-                 CompLevel=None, Merge=[], Port=None, 
+                 CompLevel=None, Merges=[], Port=None, 
                  Notes=None):
 
         # public
-        self.MapId = MapId
+        self._MapId = MapId
 
         # private, required
         self._ModName = ModName
-        self._Files = Files
+        self._Files = Files.split('|')
 
         # private, optional
         self._MapName = MapName
         self._Author = Author
         self._CompLevel = CompLevel
-        self._Merge = Merge
+        self._Merges = Merges.split('|')
         self._Port = Port
         self._Notes = Notes
 
         # set files
-        self._dehs = None
-        self._patches = None
-        self._merges = None
+        self._dehs = []
+        self._patches = []
+        self._merges = []
 
     def SetMapId(self, MapId: str):
         if self._MapId:
@@ -51,7 +52,7 @@ class FlatMap:
     def ProcessFiles(self, pwad_dir: str):
 
         # build lists of map specific files we need to pass in
-        patches = [patch for patch in self._Files.split('|') if patch]
+        patches = [patch for patch in self._Files if patch]
         for patch in patches:
             ext = os.path.splitext(patch)[1]
             path = os.path.join(pwad_dir, patch)
@@ -63,7 +64,7 @@ class FlatMap:
                 print(f"Ignoring unsupported file "'{patch}'"with extension '{ext}'")
 
         # for chocolate doom/vanilla wad merge emulation
-        merges = [merge for merge in self._Merge.split('|') if merge]
+        merges = [merge for merge in self._Merges if merge]
         for merge in merges:
             self._merges.append(os.path.join(pwad_dir, merge))
 
@@ -89,7 +90,7 @@ class FlatMap:
             print("Error: Could not get a prefix as there was no MapId set")
             exit(1)
 
-    def GetFiles(self):
+    def GetFiles(self) -> List[str]:
         return self._Files
     
     def Dictify(self):
@@ -100,8 +101,8 @@ class FlatMap:
         dic['MapName'] = self._MapName
         dic['Author'] = self._Author
         dic['CompLevel'] = self._CompLevel
-        dic['Files'] = self._Files
-        dic['Merge'] = self._Merge
+        dic['Files'] = ", ".join(self._Files)
+        dic['Merge'] = ",".join(self._Merges)
         dic['Port'] = self._Port
         dic['Notes'] = self._Notes
 

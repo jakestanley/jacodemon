@@ -3,6 +3,7 @@ import os
 import re
 from lib.py.patches import *
 from lib.py.mod import *
+from typing import List
 
 regex_mapentries = '(E\dM\d|MAP\d\d|MAPINFO)'
 DOOM_regex=r'^E(\d)M(\d)$'
@@ -26,9 +27,11 @@ def GetDoom2Warp(mapId):
 def GetModsFromModsList(verified, pwad_dir):
     return None
 
-def GetMapsForMod(mod: Mod, pwad_dir):
+def GetMapEntriesFromFiles(files: List[str], pwad_dir):
+
+    # TODO UMAPINFO support
     maps = []
-    files = [patch for patch in mod['Files'].split('|') if patch]
+
     for file in files:
         ext = os.path.splitext(file)[1]
         if ext.lower() == ".wad":
@@ -40,25 +43,16 @@ def GetMapsForMod(mod: Mod, pwad_dir):
                 output = subprocess.check_output(wadread, shell=True, universal_newlines=True)
                 mapentries = re.findall("(E\dM\d|MAP\d\d) \"(.*)\"", output)
                 for mapentry in mapentries:
-                    map = mod.copy()
-                    map['Map'] = mapentry[0]
+                    map = {}
+                    map['MapId'] = mapentry[0]
                     map['MapName'] = mapentry[1]
                     maps.append(map)
             else:
                 mapentries.sort()
                 for mapentry in mapentries:
-                    map = mod.copy()
-                    map['Map'] = mapentry
+                    map = {}
+                    map['MapId'] = mapentry
                     map['MapName'] = ""
                     maps.append(map)
-
-    return maps
-
-
-def GetMapsFromModList(rows, pwad_dir):
-    
-    maps = []
-    for row in rows:
-        maps.extend(GetMapsForMod(row, pwad_dir))
 
     return maps
