@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 import lib.py.arguments as args
-import lib.py.common as common
-from lib.py.load_mods import *
 from lib.py.config import LoadConfig
 
 import os
@@ -12,6 +10,7 @@ p_args = args.get_analyse_args()
 
 config = LoadConfig(p_args.config)
 
+# TODO update analyse for V3
 mods = LoadMods(config.pwad_dir, p_args.mod_list)
 maps = GetMapsFromMods(mods)
 

@@ -2,9 +2,6 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt, pyqtSignal
 
-from lib.py.common import *
-from lib.py.mod import *
-
 column_order = ['ModName', 'MapId', 'MapName', 'Author', 'CompLevel', 'Files', 'Merge', 'Port', 'Notes']
 
 class GridViewWindow(QMainWindow):

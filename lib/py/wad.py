@@ -1,8 +1,7 @@
 import subprocess
 import os
 import re
-from lib.py.patches import *
-from lib.py.mod import *
+
 from typing import List
 
 regex_mapentries = '(E\dM\d|MAP\d\d|MAPINFO)'
