@@ -1,0 +1,3 @@
+appdirs
+jsonpickle
+obsws_python
