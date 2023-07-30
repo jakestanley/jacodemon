@@ -1,3 +1,4 @@
 appdirs
 jsonpickle
 obsws_python
+pyqt5

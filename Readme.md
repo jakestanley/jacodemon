@@ -70,8 +70,6 @@ These are subject to change.
 
 ### Install dependencies
 
-*TODO: forgot to commit this file, I need to find it*
-
 ```
 pip install -r requirements.txt
 ```
