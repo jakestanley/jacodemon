@@ -11,7 +11,7 @@ p_args = args.get_analyse_args()
 config = LoadConfig(p_args.config)
 
 # TODO update analyse for V3
-mods = LoadMods(config.pwad_dir, p_args.mod_list)
+mods = LoadMods(config.maps_dir, p_args.mod_list)
 maps = GetMapsFromMods(mods)
 
 for map in maps:

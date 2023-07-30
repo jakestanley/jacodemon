@@ -3,16 +3,13 @@ import argparse
 parser = argparse.ArgumentParser()
 
 def _get_common_args():
-    parser.add_argument("-c",  "--config",      type=str,               help="Path to script configuration file", default=".\examples\config.json")
-    parser.add_argument("-ml", "--mod-list",    type=str,               help="Mod list")
-    # TODO conflicted about making this a thing
-    # parser.add_argument("-sd", "--save-defaults", action='store_true',    help="Save provided arguments for next run")
+    parser.add_argument("-p", "--playlist",     type=str,               help="Playlist")
     parser.add_argument("-g", "--no-gui",       action='store_true',    help="Command line operation only")
 
 def get_args():
     _get_common_args()
     parser.add_argument("-no", "--no-obs",      action='store_true',    help="Disable OBS control")
-    parser.add_argument("-nq", "--no-qol",      action='store_true',    help="Disable QoL mods (use this if you are experiencing issues)")
+    parser.add_argument("-nq", "--no-mods",      action='store_true',   help="Disable mods (use this if you are experiencing issues)")
     parser.add_argument("-ps", "--play-scene",  type=str,               help="Which scene should OBS switch to when game starts")
     parser.add_argument("-sp", "--source-port", type=str,               help="Override source port (force)")
     parser.add_argument("-rr", "--re-record",   action='store_true',    help="Re-record a completed demo")

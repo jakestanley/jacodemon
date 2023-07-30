@@ -4,7 +4,7 @@ import copy
 import subprocess
 
 import lib.py.arguments as args
-from lib.py.config import *
+from lib.py.config import Config, LoadConfig
 from lib.py.csv import csv_is_valid, load_raw_maps
 from lib.py.last import *
 from lib.py.launch import LaunchConfig
@@ -12,17 +12,21 @@ from lib.py.obs import *
 from lib.py.stats import Statistics
 from lib.py.ui.mapselect import OpenMapSelection
 from lib.py.ui.options import OpenOptionsGui
+from lib.py.ui.config import OpenConfigDialog
 from lib.py.wad import GetMapEntriesFromFiles
 
 p_args = args.get_args()
 
-config = LoadConfig(p_args.config)
+config: Config = LoadConfig()
+OpenConfigDialog(config)
+config.Save()
 
 if not p_args.no_gui:
     p_args = OpenOptionsGui(p_args)
 
 launch = LaunchConfig(config)
-launch.set_record_demo(not p_args.no_demo)
+launch.no_mods = p_args.no_mods
+launch.record_demo = not p_args.no_demo
 
 obsController = ObsController(not p_args.no_obs)
 obsController.Setup()
@@ -35,22 +39,22 @@ if p_args.last:
 
 if not map:
 
-    if not os.path.exists(p_args.mod_list):
-        print(f"Could not find playlist file: {p_args.mod_list}")
+    if not os.path.exists(p_args.playlist):
+        print(f"Could not find playlist file: {p_args.playlist}")
         sys.exit(1)
 
-    if not csv_is_valid(p_args.mod_list):
+    if not csv_is_valid(p_args.playlist):
         print("CSV header is invalid. See output")
         sys.exit(1)
 
-    raw_maps = load_raw_maps(p_args.mod_list)
+    raw_maps = load_raw_maps(p_args.playlist)
     maps = []
     for map in raw_maps:
-        map.ProcessFiles(config.pwad_dir)
+        map.ProcessFiles(config.maps_dir)
 
         # if there isn't a MapId, we need to look up the maps
         if not map.MapId:
-            mapentries = GetMapEntriesFromFiles(map.GetFiles(), config.pwad_dir)
+            mapentries = GetMapEntriesFromFiles(map.GetFiles(), config.maps_dir)
             for mapentry in mapentries:
                 enriched_map = copy.deepcopy(map)
                 enriched_map.SetMapId(mapentry["MapId"])
@@ -66,9 +70,6 @@ if not map:
         map = OpenMapSelection(maps)
         SaveSelectedMap(map)
 
-        # TODO consider implementing this??? consider implementing saving all command line args as config
-        # SaveSelectedModList(p_args.mod_list)
-
 if not map:
     print("A map was not selected. Exiting normally")
     sys.exit(0)
@@ -77,7 +78,7 @@ launch.set_map(map)
 demo_name = launch.get_demo_name()
 command = launch.get_command()
 
-obsController.SetScene('Playing')
+obsController.SetScene(config.play_scene)
 obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
 if p_args.auto_record:
     obsController.StartRecording()
@@ -93,5 +94,4 @@ statistics.write_stats()
 if p_args.auto_record:
     obsController.StopRecording(demo_name)
 
-# TODO setting for waiting scene
-obsController.SetScene('Waiting')
+obsController.SetScene(config.wait_scene)

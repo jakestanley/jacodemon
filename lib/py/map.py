@@ -46,13 +46,13 @@ class FlatMap:
     Populate DEHs, patches and merges based on the patch directory
     Jury's still out on whether or not this should be done in the constructor
     """
-    def ProcessFiles(self, pwad_dir: str):
+    def ProcessFiles(self, maps_dir: str):
 
         # build lists of map specific files we need to pass in
         patches = [patch for patch in self._Files if patch]
         for patch in patches:
             ext = os.path.splitext(patch)[1]
-            path = os.path.join(pwad_dir, patch)
+            path = os.path.join(maps_dir, patch)
             if ext.lower() == ".deh":
                 self.dehs.append(path)
             elif ext.lower() == ".wad":
@@ -63,7 +63,7 @@ class FlatMap:
         # for chocolate doom/vanilla wad merge emulation
         merges = [merge for merge in self._Merges if merge]
         for merge in merges:
-            self.merges.append(os.path.join(pwad_dir, merge))
+            self.merges.append(os.path.join(maps_dir, merge))
 
     """
     Get map prefix (used for naming demos and recordings) based on Files or 

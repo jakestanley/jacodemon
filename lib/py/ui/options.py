@@ -60,7 +60,7 @@ class OptionsDialog(QDialog):
 
         # options: QoL mods
         checkbox_no_qol = QCheckBox("Enable QoL mods")
-        checkbox_no_qol.setChecked(not self.options.no_qol)
+        checkbox_no_qol.setChecked(not self.options.no_mods)
         checkbox_no_qol.stateChanged.connect(lambda state: self.set_qol(state == Qt.Checked))
         layout.addWidget(checkbox_no_qol)
 

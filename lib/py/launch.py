@@ -10,14 +10,13 @@ DEFAULT_SKILL = ULTRA_VIOLENCE
 
 class LaunchConfig:
     def __init__(self, config):
-        self._script_config: Config = config
+        self._config: Config = config
         self._timestr = None
         self._map: FlatMap = None
-        self._file = ""
-        self._config = ""
-        self._extra_config = ""
         self._skill = DEFAULT_SKILL
-        self._no_music = True
+        self.no_music = True
+        self.no_mods = False
+        self.record_demo = True
         self._comp_level = None
         self._window = True
         self._demo_prefix = ""
@@ -35,7 +34,7 @@ class LaunchConfig:
             final_comp_level = self._map.CompLevel
         # or use default comp level
         else:
-            final_comp_level = int(self._script_config.default_complevel)
+            final_comp_level = int(self._config.default_complevel)
 
         return final_comp_level
 
@@ -47,8 +46,8 @@ class LaunchConfig:
             choccy_args.append("-merge")
             choccy_args.extend(self._map.merges)
 
-        choccy_args.extend(["-config", self._script_config['chocolatedoom_cfg_default']])
-        choccy_args.extend(["-extraconfig", self._script_config['chocolatedoom_cfg_extra']])
+        choccy_args.extend(["-config", self._config['chocolatedoom_cfg_default']])
+        choccy_args.extend(["-extraconfig", self._config['chocolatedoom_cfg_extra']])
 
         return choccy_args
     
@@ -62,37 +61,43 @@ class LaunchConfig:
         # the usual
         dsda_args.extend(['-window', '-levelstat'])
 
-        if self._script_config.dsdadoom_hud_lump:
-            dsda_args.extend(['-hud', self._script_config.dsdadoom_hud_lump])
+        if self._config.dsdadoom_hud_lump:
+            dsda_args.extend(['-hud', self._config.dsdadoom_hud_lump])
 
-        dsda_args.extend(['-config', self._script_config.dsda_cfg])
+        if self._config.dsda_cfg:
+            dsda_args.extend(['-config', self._config.dsda_cfg])
 
         return dsda_args
 
     def build_args(self):
 
-        # TODO: add qol mods
         doom_args = []
 
         if len(self._map.dehs) > 0:
             doom_args.append("-deh")
             doom_args.extend(self._map.dehs)
 
+        files = []
         if len(self._map.patches) > 0:
-            doom_args.append("-file")
-            doom_args.extend(self._map.patches)
+            files.extend(self._map.patches)
 
-        # TODO consider class for handling getting different types of wads instead of passing this around
-        doom_args.extend(['-iwad', os.path.join(self._script_config.iwad_dir, get_inferred_iwad(self._map.MapId))])
+        if len(self._config.mods) > 0:
+            files.extend(self._config.mods)
+
+        if len(files) > 0:
+            doom_args.append("-file")
+            doom_args.extend(files)
+
+        doom_args.extend(['-iwad', os.path.join(self._config.iwad_dir, get_inferred_iwad(self._map.MapId))])
         
         doom_args.extend(['-warp'])
         doom_args.extend(get_warp(self._map.MapId))
 
-        if self._script_config:
+        if self.record_demo:
             doom_args.append("-record")
-            doom_args.append(os.path.join(self._script_config.demo_dir, self.get_demo_name() + ".lmp"))
+            doom_args.append(os.path.join(self._config.demo_dir, self.get_demo_name() + ".lmp"))
 
-        if self._no_music:
+        if self.no_music:
             doom_args.append('-nomusic')
 
         doom_args.extend(['-skill', f"{self._skill}"])
@@ -113,44 +118,6 @@ class LaunchConfig:
         map_prefix = self._map.GetMapPrefix()
         return f"{map_prefix}-{self._timestr}"
 
-    # file
-    def set_file(self, file):
-        self._file = file
-
-    def get_file(self):
-        return self._file
-
-    # record_demo
-    def set_record_demo(self, record_demo):
-        self._record_demo = record_demo
-
-    def get_record_demo(self):
-        return self._record_demo
-
-    # extra_config
-    def set_extra_config(self, extra_config):
-        self._extra_config = extra_config
-
-    def get_extra_config(self):
-        return self._extra_config
-
-    # skill
-    def set_skill(self, skill):
-        self._skill = skill
-
-    def get_skill(self):
-        return self._skill
-
-    # no_music
-    def set_no_music(self, no_music):
-        self._no_music = no_music
-
-    def get_no_music(self):
-        return self._no_music
-
-    def set_port_override(self, port):
-        self._port_override = port
-
     def get_port(self):
 
         # default port
@@ -163,7 +130,7 @@ class LaunchConfig:
         # TODO if crispy override set.
         # port_override > crispy override > chocolate
         if final_port == "chocolate" and self._port_override is None:
-            if self._script_config.crispy:
+            if self._config.crispy:
                 final_port = "crispy"
             else:
                 final_port = "chocolate"
@@ -177,12 +144,12 @@ class LaunchConfig:
         command = []
         if port in ["chocolate", "crispy"]:
             if port == ["chocolate"]:
-                command.append(self._script_config.chocolatedoom_path)
+                command.append(self._config.chocolatedoom_path)
             else:
-                command.append(self._script_config.crispydoom_path)
+                command.append(self._config.crispydoom_path)
             command.extend(self.build_chocolate_doom_args())
         elif port == "dsdadoom":
-            command.append(self._script_config.dsda_path)
+            command.append(self._config.dsda_path)
             command.extend(self.build_dsda_doom_args())
 
         return command

@@ -22,10 +22,10 @@ def GetDoom2Warp(mapId):
     map = re.match(DOOM2_regex, mapId).group(1)
     return [f"{int(map)}"]
 
-def GetModsFromModsList(verified, pwad_dir):
+def GetModsFromModsList(verified, maps_dir):
     return None
 
-def GetMapEntriesFromFiles(files: List[str], pwad_dir):
+def GetMapEntriesFromFiles(files: List[str], maps_dir):
 
     # TODO UMAPINFO support
     maps = []
@@ -33,11 +33,11 @@ def GetMapEntriesFromFiles(files: List[str], pwad_dir):
     for file in files:
         ext = os.path.splitext(file)[1]
         if ext.lower() == ".wad":
-            wadls = f"wad-ls {os.path.join(pwad_dir, file)}"
+            wadls = f"wad-ls {os.path.join(maps_dir, file)}"
             output = subprocess.check_output(wadls, shell=True, universal_newlines=True)
             mapentries = list(set(re.findall(regex_mapentries, output)))
             if "MAPINFO" in mapentries:
-                wadread = f"wad-read {os.path.join(pwad_dir, file)} MAPINFO"
+                wadread = f"wad-read {os.path.join(maps_dir, file)} MAPINFO"
                 output = subprocess.check_output(wadread, shell=True, universal_newlines=True)
                 mapentries = re.findall("(E\dM\d|MAP\d\d) \"(.*)\"", output)
                 for mapentry in mapentries:
