@@ -94,7 +94,7 @@ def LoadConfig() -> Config:
             return Config(json.load(config_file))
     except (FileNotFoundError):
         print("Warning: no configuration found. Creating a new one")
-        return Config()
+        return Config({})
     except (json.JSONDecodeError):
         print("Error: Got a JSONDecodeError when loading configuration. Check or remove the file")
         sys.exit(1)

@@ -43,21 +43,6 @@ class OptionsDialog(QDialog):
         # checkbox_re_record = QCheckBox("re_record")
         # layout.addWidget(checkbox_re_record)
 
-        # options: play scene
-        groupbox_playscene = QGroupBox("Play scene")
-        layout.addWidget(groupbox_playscene)
-
-        playscene_layout = QVBoxLayout()
-        groupbox_playscene.setLayout(playscene_layout)
-
-        textfield_playscene = QLineEdit()
-        textfield_playscene.setText(self.options.play_scene)
-        textfield_playscene.textChanged.connect(lambda text: self.set_playscene(text))
-        playscene_layout.addWidget(textfield_playscene)
-
-        textfield_playscene_label = QLabel("Which scene should OBS switch to on game launch?")
-        playscene_layout.addWidget(textfield_playscene_label)
-
         # options: QoL mods
         checkbox_no_qol = QCheckBox("Enable QoL mods")
         checkbox_no_qol.setChecked(not self.options.no_mods)
@@ -107,7 +92,6 @@ class OptionsDialog(QDialog):
         checkbox_obs.stateChanged.connect(lambda state: self.set_obs(state == Qt.Checked, [checkbox_auto_record, groupbox_playscene]))
         if (self.options.no_obs):
             checkbox_auto_record.setEnabled(False)
-            groupbox_playscene.setEnabled(False)
 
         # confirm or close
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
@@ -119,13 +103,10 @@ class OptionsDialog(QDialog):
     def set_last(self, value):
         self.options.last = value
 
-    def set_obs(self, value, disables):
+    def set_obs(self, value, disabled):
         self.options.no_obs = not value
-        for disable in disables:
+        for disable in disabled:
             disable.setEnabled(value)
-        
-    def set_playscene(self, value):
-        self.options.play_scene = value
 
     def set_crispy(self, value):
         self.options.crispy = value

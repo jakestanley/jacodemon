@@ -211,7 +211,7 @@ class ConfigDialog(QDialog):
 
     def OpenManyFilesDialog(self):
         options = QFileDialog.Option()
-        files, _ = QFileDialog.getOpenFileNames(self, "Add Files", "All Files (*);;", options=options)
+        files, _ = QFileDialog.getOpenFileNames(self, "Add Files", "", options=options)
 
         return files
 
