@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import subprocess
-import json
+import sys
 
 import lib.py.arguments as args
 from lib.py.config import *
@@ -38,13 +38,12 @@ if not map:
 
     if not os.path.exists(p_args.mod_list):
         print(f"Could not find playlist file: {p_args.mod_list}")
-        exit(1)
+        sys.exit(1)
 
     if not csv_is_valid(p_args.mod_list):
         print("CSV header is invalid. See output")
-        exit(1)
+        sys.exit(1)
 
-    # TODO enrich maps
     raw_maps = load_raw_maps(p_args.mod_list)
     maps = []
     for map in raw_maps:
@@ -73,7 +72,7 @@ if not map:
 
 if not map:
     print("A map was not selected. Exiting normally")
-    exit(0)
+    sys.exit(0)
 
 launch.set_map(map)
 demo_name = launch.get_demo_name()

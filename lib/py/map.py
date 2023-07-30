@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import List
 
 class FlatMap:
@@ -78,13 +79,13 @@ class FlatMap:
             mod_prefix = os.path.splitext(os.path.basename(self.dehs[0]))[0]
         else:
             print("Error: Could not get a prefix as there were no files!")
-            exit(1)
+            sys.exit(1)
 
         if self.MapId:
             return f"{mod_prefix}-{self.MapId}"
         else:
             print("Error: Could not get a prefix as there was no MapId set")
-            exit(1)
+            sys.exit(1)
 
     def GetFiles(self) -> List[str]:
         return self._Files

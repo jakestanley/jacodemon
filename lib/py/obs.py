@@ -1,3 +1,4 @@
+import sys
 import time
 import obsws_python as obs
 import os
@@ -16,7 +17,7 @@ class ObsController:
     Is the Websocket API enabled? 
     Should you have passed the --no-obs argument?
                     """)
-                exit(1)
+                sys.exit(1)
             scenes = self.obs_client.get_scene_list()
             # TODO configurable scene/input names
             self.obs_client.set_current_program_scene('Waiting')

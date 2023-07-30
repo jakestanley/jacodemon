@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QCheckBox, QGroupBox, QRadioButton, QDialogButtonBox, QLabel, QLineEdit
 from PyQt5.QtCore import Qt
 
+import sys
+
 class OptionsDialog(QDialog):
     def __init__(self, parent=None, options=[]):
         super(OptionsDialog, self).__init__(parent)
@@ -150,4 +152,4 @@ def OpenOptionsGui(p_args):
     if dialog.exec_() == QDialog.Accepted:
         return dialog.get_options()
     else:
-        exit(0)
+        sys.exit(0)
