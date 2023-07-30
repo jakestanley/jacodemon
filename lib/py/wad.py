@@ -1,7 +1,6 @@
-import subprocess
 import os
 import re
-
+import subprocess
 from typing import List
 
 regex_mapentries = '(E\dM\d|MAP\d\d|MAPINFO)'

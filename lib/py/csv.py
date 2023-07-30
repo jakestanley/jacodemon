@@ -1,7 +1,7 @@
-import csv
 import os
-
 from typing import List
+
+import csv
 from lib.py.map import FlatMap
 
 # private constants

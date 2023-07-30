@@ -1,6 +1,7 @@
 import os
-from lib.py.config import Config
 from datetime import datetime
+
+from lib.py.config import Config
 from lib.py.map import FlatMap
 from lib.py.map_utils import *
 

@@ -1,7 +1,9 @@
-from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QCheckBox, QGroupBox, QRadioButton, QDialogButtonBox, QLabel, QLineEdit
-from PyQt5.QtCore import Qt
-
 import sys
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QCheckBox, QGroupBox, QDialogButtonBox, QLabel, \
+    QLineEdit
+
 
 class OptionsDialog(QDialog):
     def __init__(self, parent=None, options=[]):

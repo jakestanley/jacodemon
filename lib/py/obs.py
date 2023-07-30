@@ -1,7 +1,9 @@
+import os
 import sys
 import time
+
 import obsws_python as obs
-import os
+
 
 class ObsController:
     def __init__(self, enabled):

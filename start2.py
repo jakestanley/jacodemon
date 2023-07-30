@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 
+import copy
 import subprocess
-import sys
 
 import lib.py.arguments as args
 from lib.py.config import *
+from lib.py.csv import csv_is_valid, load_raw_maps
+from lib.py.last import *
 from lib.py.launch import LaunchConfig
 from lib.py.obs import *
+from lib.py.stats import Statistics
 from lib.py.ui.mapselect import OpenMapSelection
 from lib.py.ui.options import OpenOptionsGui
-from lib.py.last import *
-from lib.py.stats import Statistics
-from lib.py.csv import csv_is_valid, load_raw_maps
 from lib.py.wad import GetMapEntriesFromFiles
-import copy
 
 p_args = args.get_args()
 
