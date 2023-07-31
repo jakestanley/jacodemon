@@ -32,6 +32,7 @@ class ObsController:
             if self.IsRecording():
                 self.StopRecording()
             self.obs_client.start_record()
+            time.sleep(2)
 
     def StopRecording(self, name=None):
         if self.enabled:

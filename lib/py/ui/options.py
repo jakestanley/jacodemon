@@ -36,10 +36,6 @@ class OptionsDialog(QDialog):
         checkbox_auto_record_label = QLabel("If checked, video recording be started, ended automatically \nand the outputted recording will be renamed")
         layout.addWidget(checkbox_auto_record_label)
 
-        # options: re-record (currently not implemented)
-        # checkbox_re_record = QCheckBox("re_record")
-        # layout.addWidget(checkbox_re_record)
-
         # options: mods
         checkbox_mods = QCheckBox("Enable mods")
         checkbox_mods.setChecked(self.options.mods)
@@ -59,6 +55,8 @@ class OptionsDialog(QDialog):
         checkbox_crispy.setChecked(self.options.crispy)
         checkbox_crispy.stateChanged.connect(lambda state: self.set_crispy(state == Qt.Checked))
         layout.addWidget(checkbox_crispy)
+        checkbox_crispy_label = QLabel("If playing a Chocolate Doom mod, force it to launch with Crispy Doom")
+        layout.addWidget(checkbox_crispy_label)
 
         # options: music
         checkbox_music = QCheckBox("Enable music")
@@ -66,8 +64,15 @@ class OptionsDialog(QDialog):
         checkbox_music.stateChanged.connect(lambda state: self.set_music(state == Qt.Checked))
         layout.addWidget(checkbox_music)
 
-        checkbox_crispy_label = QLabel("If playing a Chocolate Doom mod, force it to launch with Crispy Doom")
-        layout.addWidget(checkbox_crispy_label)
+        # options: re-record
+        checkbox_re_record = QCheckBox("Re-record a completed demo")
+        checkbox_re_record.setChecked(self.options.re_record)
+        checkbox_auto_record.stateChanged.connect(lambda state: self.set_re_record(state == Qt.Checked))
+
+        layout.addWidget(checkbox_re_record)
+
+        checkbox_re_record_label = QLabel("If checked, I'll prompt for a demo to re-record")
+        layout.addWidget(checkbox_re_record)
 
         # options: last
         checkbox_last = QCheckBox("Last")
@@ -92,7 +97,7 @@ class OptionsDialog(QDialog):
 
         # special controls
         checkbox_obs.setChecked(self.options.obs)
-        checkbox_obs.stateChanged.connect(lambda state: self.set_obs(state == Qt.Checked, [checkbox_auto_record]))
+        checkbox_obs.stateChanged.connect(lambda state: self.set_obs(state == Qt.Checked, [checkbox_auto_record, checkbox_re_record]))
         if (self.options.obs):
             checkbox_auto_record.setEnabled(True)
 
