@@ -11,6 +11,7 @@ from lib.py.launch import LaunchConfig
 from lib.py.obs import *
 from lib.py.options import Options
 from lib.py.stats import Statistics
+from lib.py.ui.demoselect import OpenDemoSelection
 from lib.py.ui.mapselect import OpenMapSelection
 from lib.py.ui.options import OpenOptionsGui
 from lib.py.ui.config import OpenConfigDialog
@@ -33,7 +34,7 @@ obsController.Setup()
 obsController.SetScene(config.wait_scene)
 
 map = None
-if options.last():
+if options.last:
     map = GetLastMap()
 
 if not map:
@@ -62,13 +63,20 @@ if not map:
         else:
             maps.append(map)
 
-    if options.random():
+    # TODO: this flow kinda sucks. improve it
+    if options.random:
         import random
         map = random.choice(maps)
-    elif options.replay():
+    elif options.replay:
         map = OpenMapSelection(maps)
-        # TODO
-        demo = GetDemosForMap(map)
+        if not map:
+            print("A map was not selected. Exiting normally")
+            sys.exit(0)
+        demos = GetDemosForMap(map, config.demo_dir)
+        demo = OpenDemoSelection(demos)
+        if not demo:
+            print("A demo was not selected. Exiting normally")
+            sys.exit(0)
     else:
         map = OpenMapSelection(maps)
         SaveSelectedMap(map)
@@ -78,7 +86,13 @@ if not map:
     sys.exit(0)
 
 launch.set_map(map)
-demo_name = launch.get_demo_name()
+
+if demo:
+    demo_name = demo.name
+    launch.set_replay(demo.path)
+else:
+    demo_name = launch.get_demo_name()
+
 command = launch.get_command()
 
 obsController.SetScene(config.play_scene)
@@ -86,6 +100,7 @@ obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
 if options.auto_record:
     obsController.StartRecording()
 
+# TODO: add date to stats
 statistics = Statistics(launch, config.demo_dir)
 print(f"Running command\n\t{command}")
 running = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

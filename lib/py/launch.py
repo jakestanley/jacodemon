@@ -18,7 +18,7 @@ class LaunchConfig:
         self._skill = DEFAULT_SKILL
         self._comp_level = None
         self._window = True
-        self._demo_prefix = ""
+        self._demo_path = None
         self._port_override = None
 
     def get_comp_level(self):
@@ -92,7 +92,10 @@ class LaunchConfig:
         doom_args.extend(['-warp'])
         doom_args.extend(get_warp(self._map.MapId))
 
-        if self._options.record_demo:
+        if self._demo_path:
+            doom_args.append("-playdemo")
+            doom_args.append(self._demo_path)
+        elif self._options.record_demo:
             doom_args.append("-record")
             doom_args.append(os.path.join(self._config.demo_dir, self.get_demo_name() + ".lmp"))
 
@@ -106,6 +109,9 @@ class LaunchConfig:
     def set_map(self, map):
         self._map = map
     
+    def set_replay(self, demo_path):
+        self._demo_path = demo_path
+
     # demo_name
     def get_demo_name(self):
         if self._timestr is None:

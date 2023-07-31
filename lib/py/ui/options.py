@@ -21,7 +21,8 @@ class OptionsDialog(QDialog):
 
         # options: demo
         self.checkbox_record_demo = QCheckBox("Record demo lump")
-        self.checkbox_record_demo.setChecked(self.options.record_demo)
+        self.checkbox_record_demo.setChecked(self.options.record_demo and not self.options.mode == MODE_REPLAY)
+        self.checkbox_record_demo.setEnabled(self.options.mode != MODE_REPLAY)
         layout.addWidget(self.checkbox_record_demo)
 
         # options: obs
@@ -34,7 +35,7 @@ class OptionsDialog(QDialog):
 
         # options: auto-record 
         self.checkbox_auto_record = QCheckBox("Enable auto record")
-        self.checkbox_auto_record.setChecked(self.options.auto_record)
+        self.checkbox_auto_record.setChecked(self.options.auto_record and self.options.obs)
         layout.addWidget(self.checkbox_auto_record)
 
         checkbox_auto_record_label = QLabel("If checked, video recording be started, ended automatically \nand the outputted recording will be renamed")
@@ -72,8 +73,7 @@ class OptionsDialog(QDialog):
 
         # special controls
         self.checkbox_obs.stateChanged.connect(self.set_obs)
-        if (self.options.obs):
-            self.checkbox_auto_record.setEnabled(True)
+        self.checkbox_auto_record.setEnabled(self.options.obs)
 
         # confirm or close
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
@@ -100,11 +100,15 @@ class OptionsDialog(QDialog):
         checkbox_replay_label = QLabel("Prompts to select a demo to replay")
         vlayout.addWidget(checkbox_replay_label)
 
-        self.radio_normal.setChecked(options.mode is MODE_NORMAL or (not options.obs and options.mode is MODE_REPLAY))
+        self.radio_normal.setChecked(options.mode is MODE_NORMAL)
         self.radio_random.setChecked(options.mode is MODE_RANDOM)
         self.radio_last.setChecked(options.mode is MODE_LAST)
-        self.radio_replay.setChecked(options.mode is MODE_REPLAY and options.obs)
-        self.radio_replay.setEnabled(options.obs)
+        self.radio_replay.setChecked(options.mode is MODE_REPLAY)
+
+        self.radio_normal.toggled.connect(self.set_mode)
+        self.radio_random.toggled.connect(self.set_mode)
+        self.radio_last.toggled.connect(self.set_mode)
+        self.radio_replay.toggled.connect(self.set_mode)
 
         groupbox_modes.setLayout(vlayout)
         return groupbox_modes
@@ -112,17 +116,18 @@ class OptionsDialog(QDialog):
     # only use state change methods when other fields are dependent on this value
     def set_obs(self, state):
 
-        value = state == Qt.Checked
+        obs_checked = state == Qt.Checked
 
         # enable or disable 
-        self.checkbox_auto_record.setChecked(self.checkbox_auto_record.isChecked() and value)
-        self.checkbox_auto_record.setEnabled(value)
-        
-        if self.radio_replay.isChecked() and not value:
-            self.radio_replay.setChecked(False)
-            self.radio_normal.setChecked(True)
+        self.checkbox_auto_record.setChecked(self.checkbox_auto_record.isChecked() and obs_checked)
+        self.checkbox_auto_record.setEnabled(obs_checked)
 
-        self.radio_replay.setEnabled(value)
+    def set_mode(self):
+
+        if self.radio_replay.isChecked() and self.checkbox_record_demo.isChecked():
+            self.checkbox_record_demo.setChecked(False)
+
+        self.checkbox_record_demo.setEnabled(not self.radio_replay.isChecked())
 
     def get_mode(self):
         if self.radio_last.isChecked():
