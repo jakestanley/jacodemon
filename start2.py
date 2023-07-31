@@ -100,7 +100,6 @@ obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
 if options.auto_record:
     obsController.StartRecording()
 
-# TODO: add date to stats
 statistics = Statistics(launch, config.demo_dir)
 print(f"Running command\n\t{command}")
 running = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

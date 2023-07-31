@@ -13,7 +13,7 @@ class LaunchConfig:
     def __init__(self, options, config):
         self._options: Options = options
         self._config: Config = config
-        self._timestr = None
+        self.timestamp = None
         self._map: FlatMap = None
         self._skill = DEFAULT_SKILL
         self._comp_level = None
@@ -114,11 +114,11 @@ class LaunchConfig:
 
     # demo_name
     def get_demo_name(self):
-        if self._timestr is None:
-            self._timestr = datetime.now().strftime("%Y-%m-%dT%H%M%S")
+        if self.timestamp is None:
+            self.timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
 
         map_prefix = self._map.GetMapPrefix()
-        return f"{map_prefix}-{self._timestr}"
+        return f"{map_prefix}-{self.timestamp}"
 
     def get_port(self):
 

@@ -37,6 +37,7 @@ def ParseLevelStats(rawLevelStats):
 class Statistics:
     def __init__(self, launch: LaunchConfig, demo_dir: str):
         self._stats = {}
+        self._stats['timestamp']    = launch.timestamp
         self._stats['compLevel']    = launch.get_comp_level()
         self._stats['sourcePort']   = launch.get_port()
         self._stats['command']      = launch.get_command()
