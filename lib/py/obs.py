@@ -4,10 +4,12 @@ import time
 
 import obsws_python as obs
 
+from lib.py.config import Config
 
 class ObsController:
-    def __init__(self, enabled):
+    def __init__(self, enabled, config: Config):
         self.enabled = enabled
+        self.config = config
 
     def Setup(self):
         if self.enabled:
@@ -21,8 +23,7 @@ class ObsController:
                     """)
                 sys.exit(1)
             scenes = self.obs_client.get_scene_list()
-            # TODO configurable scene/input names
-            self.obs_client.set_current_program_scene('Waiting')
+            self.obs_client.set_current_program_scene(self.config.wait_scene)
 
     def IsRecording(self):
         return self.obs_client.get_record_status().output_active
@@ -65,8 +66,7 @@ class ObsController:
     def UpdateMapTitle(self, title):
         if self.enabled:
             settings = {'text': title}
-            # TODO configurable scene/input names
-            success = self.obs_client.set_input_settings(name="Text Map Name", settings=settings, overlay=True)
+            success = self.obs_client.set_input_settings(name=self.config.title_source, settings=settings, overlay=True)
             print(f"Set map title to {title}")
         else:
             print(f"OBS is disabled. Title provided: '{title}'")

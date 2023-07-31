@@ -67,16 +67,6 @@ The following values _MUST_ currently be present in the map CSV for the script t
 - Uncheck "Enable Authentication"
 - Keep the default port, should be 4455
 
-### Scenes and inputs
-
-*TODO: make this configurable and update*
-
-The `start2.py` script is expecting the following scenes and inputs:
-- Input "Text" for the map title, displayed at the top of the screen
-- Scenes "Waiting" and "Playing" for switching between the map selection and game in progress states
-
-These are subject to change.
-
 ## Python
 
 ### Install dependencies

@@ -155,19 +155,16 @@ class ConfigDialog(QDialog):
         return group_box
     
     def create_obs_group(self, cfg: Config):
-        # TODO create test buttons
+        # TODO complete test button functionality
         group_box = QGroupBox("OBS", self)
         vlayout = QVBoxLayout()
 
-        # TODO: play scene, wait scene, title field, etc
         hbox = QHBoxLayout()
         hbox.addWidget(QLabel("play_scene"))
         self.play_scene = QLineEdit(self)
         self.play_scene.setText(cfg.play_scene)
         hbox.addWidget(self.play_scene)
         self.btn_test_play_scene = QPushButton("Test", self)
-        # TODO: 
-        # self.btn_test_play_scene.clicked.connect(lambda: self.OpenDirectoryDialog("demos", self.demo_path))
         hbox.addWidget(self.btn_test_play_scene)
 
         vlayout.addLayout(hbox)
@@ -178,8 +175,6 @@ class ConfigDialog(QDialog):
         self.wait_scene.setText(cfg.wait_scene)
         hbox.addWidget(self.wait_scene)
         self.btn_test_wait_scene = QPushButton("Test", self)
-        # TODO: 
-        # self.btn_test_wait_scene.clicked.connect(lambda: self.OpenDirectoryDialog("demos", self.demo_path))
         hbox.addWidget(self.btn_test_wait_scene)
         vlayout.addLayout(hbox)
 
@@ -189,8 +184,6 @@ class ConfigDialog(QDialog):
         self.title_source.setText(cfg.title_source)
         hbox.addWidget(self.title_source)
         self.btn_test_title_source = QPushButton("Test", self)
-        # TODO: 
-        # self.btn_test_play_scene.clicked.connect(lambda: self.OpenDirectoryDialog("demos", self.demo_path))
         hbox.addWidget(self.btn_test_title_source)
         vlayout.addLayout(hbox)
 

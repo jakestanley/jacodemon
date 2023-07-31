@@ -28,7 +28,7 @@ if options.gui:
 
 launch = LaunchConfig(options, config)
 
-obsController = ObsController(options.obs)
+obsController = ObsController(options.obs, config)
 obsController.Setup()
 
 obsController.SetScene(config.wait_scene)
