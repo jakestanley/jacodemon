@@ -1,6 +1,6 @@
 import argparse
 
-from lib.py.options import Options, MODE_NORMAL, MODE_LAST, MODE_RANDOM, MODE_REREC
+from lib.py.options import Options, MODE_NORMAL, MODE_LAST, MODE_RANDOM, MODE_REPLAY
 
 parser = argparse.ArgumentParser()
 
@@ -13,7 +13,7 @@ def ToOptions(args) -> Options:
     options.auto_record = not args.no_auto_record
     options.record_demo = not args.no_demo
     options.music = args.music
-    options.re_record = args.re_record
+    options.replay = args.replay
     options.random = args.random
     options.crispy = args.crispy
     options.last = args.last
@@ -22,8 +22,8 @@ def ToOptions(args) -> Options:
         options.mode = MODE_LAST
     elif args.random:
         options.mode = MODE_RANDOM
-    elif args.re_record:
-        options.mode = MODE_REREC
+    elif args.replay:
+        options.mode = MODE_REPLAY
 
     return options
 
@@ -43,7 +43,7 @@ def get_args():
     parser.add_argument("-cr", "--crispy",      action='store_true',    help="Use Crispy Doom instead of Chocolate Doom")
     
     modes = parser.add_mutually_exclusive_group()
-    modes.add_argument("-rr", "--re-record",   action='store_true',    help="Re-record a completed demo")
+    modes.add_argument("-rp", "--replay",      action='store_true',    help="Replay a demo")
     modes.add_argument("-r",  "--random",      action='store_true',    help="Pick random map from playlist")
     modes.add_argument("-l",  "--last",        action='store_true',    help="If saved, play last map")
 

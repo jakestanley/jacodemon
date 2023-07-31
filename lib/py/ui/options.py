@@ -3,7 +3,7 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel
 
-from lib.py.options import Options, MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REREC
+from lib.py.options import Options, MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
 
 class OptionsDialog(QDialog):
     def __init__(self, parent=None, options: Options = None):
@@ -94,17 +94,17 @@ class OptionsDialog(QDialog):
         self.radio_last = QRadioButton("Last", self)
         vlayout.addWidget(self.radio_last)
 
-        self.radio_rerec = QRadioButton("Re-record", self)
-        vlayout.addWidget(self.radio_rerec)
+        self.radio_replay = QRadioButton("Replay", self)
+        vlayout.addWidget(self.radio_replay)
 
-        checkbox_re_record_label = QLabel("Prompts to select a demo to re-record")
-        vlayout.addWidget(checkbox_re_record_label)
+        checkbox_replay_label = QLabel("Prompts to select a demo to replay")
+        vlayout.addWidget(checkbox_replay_label)
 
-        self.radio_normal.setChecked(options.mode is MODE_NORMAL or (not options.obs and options.mode is MODE_REREC))
+        self.radio_normal.setChecked(options.mode is MODE_NORMAL or (not options.obs and options.mode is MODE_REPLAY))
         self.radio_random.setChecked(options.mode is MODE_RANDOM)
         self.radio_last.setChecked(options.mode is MODE_LAST)
-        self.radio_rerec.setChecked(options.mode is MODE_REREC and options.obs)
-        self.radio_rerec.setEnabled(options.obs)
+        self.radio_replay.setChecked(options.mode is MODE_REPLAY and options.obs)
+        self.radio_replay.setEnabled(options.obs)
 
         groupbox_modes.setLayout(vlayout)
         return groupbox_modes
@@ -118,19 +118,19 @@ class OptionsDialog(QDialog):
         self.checkbox_auto_record.setChecked(self.checkbox_auto_record.isChecked() and value)
         self.checkbox_auto_record.setEnabled(value)
         
-        if self.radio_rerec.isChecked() and not value:
-            self.radio_rerec.setChecked(False)
+        if self.radio_replay.isChecked() and not value:
+            self.radio_replay.setChecked(False)
             self.radio_normal.setChecked(True)
 
-        self.radio_rerec.setEnabled(value)
+        self.radio_replay.setEnabled(value)
 
     def get_mode(self):
         if self.radio_last.isChecked():
             return MODE_LAST
         elif self.radio_random.isChecked():
             return MODE_RANDOM
-        elif self.radio_rerec.isChecked():
-            return MODE_REREC
+        elif self.radio_replay.isChecked():
+            return MODE_REPLAY
         else:
             return MODE_NORMAL
 

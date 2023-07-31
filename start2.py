@@ -9,12 +9,13 @@ from lib.py.csv import csv_is_valid, load_raw_maps
 from lib.py.last import *
 from lib.py.launch import LaunchConfig
 from lib.py.obs import *
-from lib.py.options import Options, MODE_LAST, MODE_RANDOM
+from lib.py.options import Options
 from lib.py.stats import Statistics
 from lib.py.ui.mapselect import OpenMapSelection
 from lib.py.ui.options import OpenOptionsGui
 from lib.py.ui.config import OpenConfigDialog
 from lib.py.wad import GetMapEntriesFromFiles
+from lib.py.demo import GetDemosForMap
 
 options: Options = args.get_args()
 config: Config = LoadConfig()
@@ -64,6 +65,10 @@ if not map:
     if options.random():
         import random
         map = random.choice(maps)
+    elif options.replay():
+        map = OpenMapSelection(maps)
+        # TODO
+        demo = GetDemosForMap(map)
     else:
         map = OpenMapSelection(maps)
         SaveSelectedMap(map)
@@ -78,7 +83,7 @@ command = launch.get_command()
 
 obsController.SetScene(config.play_scene)
 obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
-if options.record():
+if options.auto_record:
     obsController.StartRecording()
 
 statistics = Statistics(launch, config.demo_dir)
@@ -89,7 +94,7 @@ running = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
 statistics.set_level_stats()
 statistics.write_stats()
 
-if options.record():
+if options.auto_record:
     obsController.StopRecording(demo_name)
 
 obsController.SetScene(config.wait_scene)
