@@ -5,24 +5,31 @@ import os
 from itertools import groupby
 
 from lib.py.map import FlatMap
+from lib.py.stats import Statistics, LoadStatistics
 
 class Demo:
     def __init__(self, lump_path, stats_path=None):
         self.path = lump_path
         self.name, _ = os.path.splitext(os.path.basename(lump_path))
-        self.stats = None
+        self.stats: Statistics = None
         if stats_path:
-            with(open(stats_path)) as f:
-                self.stats = json.load(f)
+            self.stats = LoadStatistics(self.name, stats_path)
+                
 
     def Dictify(self):
         dic = {}
 
         dic['Lump'] = self.path
+        dic['Time'] = 'N/A'
+        dic['Kills'] = 'N/A'
+        dic['Items'] = 'N/A'
+        dic['Secrets'] = 'N/A'
+
         if self.stats:
-            dic['Stats'] = self.stats
-        else:
-            dic['Stats'] = 'No stats available'
+            dic['Time'] = self.stats.get_time()
+            dic['Kills'] = self.stats.get_kills()
+            dic['Items'] = self.stats.get_items()
+            dic['Secrets'] = self.stats.get_secrets()
 
         return dic
 

@@ -10,7 +10,7 @@ from lib.py.last import *
 from lib.py.launch import LaunchConfig
 from lib.py.obs import *
 from lib.py.options import Options
-from lib.py.stats import Statistics
+from lib.py.stats import Statistics, NewStatistics
 from lib.py.ui.demoselect import OpenDemoSelection
 from lib.py.ui.mapselect import OpenMapSelection
 from lib.py.ui.options import OpenOptionsGui
@@ -98,13 +98,13 @@ if options.auto_record:
     obsController.StartRecording()
 
 if not options.replay:
-    statistics = Statistics(launch, config.demo_dir)
+    statistics: Statistics = NewStatistics(launch, config.demo_dir)
 
 print(f"Running command\n\t{command}")
 running = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 # update stats and save
-if statistics:
+if not options.replay:
     statistics.set_level_stats()
     statistics.write_stats()
 

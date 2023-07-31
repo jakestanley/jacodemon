@@ -6,6 +6,11 @@ from lib.py.launch import LaunchConfig
 
 # constants
 LEVELSTAT_TXT = "./levelstat.txt"
+_KEY_TIMESTAMP = 'timestamp'
+_KEY_COMP_LEVEL = 'compLevel'
+_KEY_SOURCE_PORT = 'sourcePort'
+_KEY_ARGS = 'args'
+_KEY_LEVEL_STATS = 'levelStats'
 
 def ParseLevelStats(rawLevelStats):
 
@@ -35,15 +40,37 @@ def ParseLevelStats(rawLevelStats):
     return levelStats
 
 class Statistics:
-    def __init__(self, launch: LaunchConfig, demo_dir: str):
+
+    def __init__(self, timestamp, comp_level, sourcePort, 
+                 command, demo_name, demo_dir=None, levelStats=None):
         self._stats = {}
-        self._stats['timestamp']    = launch.timestamp
-        self._stats['compLevel']    = launch.get_comp_level()
-        self._stats['sourcePort']   = launch.get_port()
-        self._stats['command']      = launch.get_command()
-        self._stats['levelStats']   = None
-        self._launch = launch
+        self._stats[_KEY_TIMESTAMP]     = timestamp
+        self._stats[_KEY_COMP_LEVEL]    = comp_level
+        self._stats[_KEY_SOURCE_PORT]   = sourcePort
+        self._stats[_KEY_ARGS]       = command
+        self._stats[_KEY_LEVEL_STATS]   = levelStats
+        self._demo_name = demo_name
         self._demo_dir = demo_dir
+
+    def get_time(self):
+        if self._stats[_KEY_LEVEL_STATS]:
+            return self._stats[_KEY_LEVEL_STATS]['Time']
+        return "N/A"
+    
+    def get_kills(self):
+        if self._stats[_KEY_LEVEL_STATS]:
+            return self._stats[_KEY_LEVEL_STATS]['Kills']
+        return "N/A"
+    
+    def get_items(self):
+        if self._stats[_KEY_LEVEL_STATS]:
+            return self._stats[_KEY_LEVEL_STATS]['Items']
+        return "N/A"
+    
+    def get_secrets(self):
+        if self._stats[_KEY_LEVEL_STATS]:
+            return self._stats[_KEY_LEVEL_STATS]['Secrets']
+        return "N/A"
 
     def set_level_stats(self):
         if os.path.exists(LEVELSTAT_TXT):
@@ -63,3 +90,24 @@ class Statistics:
         stats_json_path = os.path.join(self._demo_dir, self._launch.get_demo_name() + "-STATS.json")
         with(open(stats_json_path, 'w')) as j:
             json.dump(self._stats, j)
+
+def NewStatistics(launch: LaunchConfig, demo_dir: str) -> Statistics:
+    
+    statistics = Statistics(launch.timestamp, launch.get_comp_level(), 
+                            launch.get_port(), launch.get_command(), 
+                            launch.get_demo_name(), demo_dir)
+
+    return statistics
+
+def LoadStatistics(demo_name, stats_path) -> Statistics:
+
+    with open(stats_path, "r") as stats_file:
+        raw_json = json.load(stats_file)
+        statistics = Statistics(raw_json.get(_KEY_TIMESTAMP), 
+                                raw_json.get(_KEY_COMP_LEVEL),
+                                raw_json.get(_KEY_SOURCE_PORT),
+                                raw_json.get(_KEY_ARGS),
+                                demo_name, None, 
+                                raw_json.get(_KEY_LEVEL_STATS))
+        
+    return statistics
