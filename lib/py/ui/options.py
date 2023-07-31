@@ -1,13 +1,18 @@
 import sys
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QCheckBox, QGroupBox, QDialogButtonBox, QLabel
+from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel
 
-from lib.py.options import Options
+from lib.py.options import Options, MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REREC
 
 class OptionsDialog(QDialog):
-    def __init__(self, parent=None, options=None):
+    def __init__(self, parent=None, options: Options = None):
         super(OptionsDialog, self).__init__(parent)
+
+        if not options:
+            print("Error: `options` was not provided")
+            sys.exit(2)
+
         self.options = options
         self.setWindowTitle("Options")
 
@@ -15,32 +20,30 @@ class OptionsDialog(QDialog):
         layout: QVBoxLayout = QVBoxLayout(self)
 
         # options: demo
-        checkbox_record_demo = QCheckBox("Record demo")
-        checkbox_record_demo.setChecked(self.options.record_demo)
-        checkbox_record_demo.stateChanged.connect(lambda state: self.set_demo(state == Qt.Checked))
-        layout.addWidget(checkbox_record_demo)
+        self.checkbox_record_demo = QCheckBox("Record demo lump")
+        self.checkbox_record_demo.setChecked(self.options.record_demo)
+        layout.addWidget(self.checkbox_record_demo)
 
         # options: obs
-        checkbox_obs = QCheckBox("Control OBS")
-        layout.addWidget(checkbox_obs)
+        self.checkbox_obs = QCheckBox("Control OBS")
+        self.checkbox_obs.setChecked(self.options.obs)
+        layout.addWidget(self.checkbox_obs)
 
         checkbox_obs_label = QLabel("If unchecked, recording and scene control will be unavailable")
         layout.addWidget(checkbox_obs_label)
 
         # options: auto-record 
-        checkbox_auto_record = QCheckBox("Enable auto record")
-        checkbox_auto_record.setChecked(self.options.auto_record)
-        checkbox_auto_record.stateChanged.connect(lambda state: self.set_auto_record(state == Qt.Checked))
-        layout.addWidget(checkbox_auto_record)
+        self.checkbox_auto_record = QCheckBox("Enable auto record")
+        self.checkbox_auto_record.setChecked(self.options.auto_record)
+        layout.addWidget(self.checkbox_auto_record)
 
         checkbox_auto_record_label = QLabel("If checked, video recording be started, ended automatically \nand the outputted recording will be renamed")
         layout.addWidget(checkbox_auto_record_label)
 
         # options: mods
-        checkbox_mods = QCheckBox("Enable mods")
-        checkbox_mods.setChecked(self.options.mods)
-        checkbox_mods.stateChanged.connect(lambda state: self.set_mods(state == Qt.Checked))
-        layout.addWidget(checkbox_mods)
+        self.checkbox_mods = QCheckBox("Enable mods")
+        self.checkbox_mods.setChecked(self.options.mods)
+        layout.addWidget(self.checkbox_mods)
 
         checkbox_mods_label = QLabel("If unchecked, any configured 'Quality of Life' mods \nwill not be included in the launch configuration")
         layout.addWidget(checkbox_mods_label)
@@ -51,55 +54,26 @@ class OptionsDialog(QDialog):
         #layout.addWidget(checkbox_source_port)
 
         # options: crispy doom
-        checkbox_crispy = QCheckBox("Prefer Crispy Doom")
-        checkbox_crispy.setChecked(self.options.crispy)
-        checkbox_crispy.stateChanged.connect(lambda state: self.set_crispy(state == Qt.Checked))
-        layout.addWidget(checkbox_crispy)
+        self.checkbox_crispy = QCheckBox("Prefer Crispy Doom")
+        self.checkbox_crispy.setChecked(self.options.crispy)
+        layout.addWidget(self.checkbox_crispy)
+
         checkbox_crispy_label = QLabel("If playing a Chocolate Doom mod, force it to launch with Crispy Doom")
         layout.addWidget(checkbox_crispy_label)
 
         # options: music
-        checkbox_music = QCheckBox("Enable music")
-        checkbox_music.setChecked(self.options.music)
-        checkbox_music.stateChanged.connect(lambda state: self.set_music(state == Qt.Checked))
-        layout.addWidget(checkbox_music)
+        self.checkbox_music = QCheckBox("Enable music")
+        self.checkbox_music.setChecked(self.options.music)
+        layout.addWidget(self.checkbox_music)
 
-        # options: re-record
-        checkbox_re_record = QCheckBox("Re-record a completed demo")
-        checkbox_re_record.setChecked(self.options.re_record)
-        checkbox_auto_record.stateChanged.connect(lambda state: self.set_re_record(state == Qt.Checked))
-
-        layout.addWidget(checkbox_re_record)
-
-        checkbox_re_record_label = QLabel("If checked, I'll prompt for a demo to re-record")
-        layout.addWidget(checkbox_re_record)
-
-        # options: last
-        checkbox_last = QCheckBox("Last")
-        checkbox_last.setChecked(self.options.last)
-        checkbox_last.stateChanged.connect(lambda state: self.set_last(state == Qt.Checked))
-        layout.addWidget(checkbox_last)
-
-        checkbox_last_label = QLabel("Play the previously selected map")
-        layout.addWidget(checkbox_last_label)
-
-        # options: random
-        checkbox_random = QCheckBox("Random")
-        checkbox_random.setChecked(self.options.random)
-        checkbox_random.stateChanged.connect(lambda state: self.set_random(state == Qt.Checked))
-        layout.addWidget(checkbox_random)
-
-        checkbox_random_label = QLabel("Play a random map from the provided mod list")
-        layout.addWidget(checkbox_random_label)
-
-        checkbox_demo_label = QLabel("If unchecked, no demo lump will be created for this session")
-        layout.addWidget(checkbox_demo_label)
+        # options: operation modes
+        groupbox_modes = self.create_modes_group(options)
+        layout.addWidget(groupbox_modes)
 
         # special controls
-        checkbox_obs.setChecked(self.options.obs)
-        checkbox_obs.stateChanged.connect(lambda state: self.set_obs(state == Qt.Checked, [checkbox_auto_record, checkbox_re_record]))
+        self.checkbox_obs.stateChanged.connect(self.set_obs)
         if (self.options.obs):
-            checkbox_auto_record.setEnabled(True)
+            self.checkbox_auto_record.setEnabled(True)
 
         # confirm or close
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
@@ -107,32 +81,58 @@ class OptionsDialog(QDialog):
         button_box.rejected.connect(self.reject)
         layout.addWidget(button_box)
 
+    def create_modes_group(self, options: Options):
+        groupbox_modes = QGroupBox("Modes")
+        vlayout = QVBoxLayout()
 
-    def set_last(self, value):
-        self.options.last = value
+        self.radio_normal = QRadioButton("Select", self)
+        vlayout.addWidget(self.radio_normal)
 
-    def set_obs(self, value, disables):
-        self.options.obs = value
-        for disable in disables:
-            disable.setEnabled(value)
+        self.radio_random = QRadioButton("Random", self)
+        vlayout.addWidget(self.radio_random)
 
-    def set_crispy(self, value):
-        self.options.crispy = value
+        self.radio_last = QRadioButton("Last", self)
+        vlayout.addWidget(self.radio_last)
 
-    def set_music(self, value):
-        self.options.music = value
+        self.radio_rerec = QRadioButton("Re-record", self)
+        vlayout.addWidget(self.radio_rerec)
 
-    def set_auto_record(self, value):
-        self.options.auto_record = value
+        checkbox_re_record_label = QLabel("Prompts to select a demo to re-record")
+        vlayout.addWidget(checkbox_re_record_label)
 
-    def set_mods(self, value):
-        self.options.mods = value
+        self.radio_normal.setChecked(options.mode is MODE_NORMAL or (not options.obs and options.mode is MODE_REREC))
+        self.radio_random.setChecked(options.mode is MODE_RANDOM)
+        self.radio_last.setChecked(options.mode is MODE_LAST)
+        self.radio_rerec.setChecked(options.mode is MODE_REREC and options.obs)
+        self.radio_rerec.setEnabled(options.obs)
 
-    def set_random(self, value):
-        self.options.random = value
+        groupbox_modes.setLayout(vlayout)
+        return groupbox_modes
 
-    def set_demo(self, value):
-        self.options.record_demo = value
+    # only use state change methods when other fields are dependent on this value
+    def set_obs(self, state):
+
+        value = state == Qt.Checked
+
+        # enable or disable 
+        self.checkbox_auto_record.setChecked(self.checkbox_auto_record.isChecked() and value)
+        self.checkbox_auto_record.setEnabled(value)
+        
+        if self.radio_rerec.isChecked() and not value:
+            self.radio_rerec.setChecked(False)
+            self.radio_normal.setChecked(True)
+
+        self.radio_rerec.setEnabled(value)
+
+    def get_mode(self):
+        if self.radio_last.isChecked():
+            return MODE_LAST
+        elif self.radio_random.isChecked():
+            return MODE_RANDOM
+        elif self.radio_rerec.isChecked():
+            return MODE_REREC
+        else:
+            return MODE_NORMAL
 
 
 def OpenOptionsGui(options: Options):
@@ -141,6 +141,12 @@ def OpenOptionsGui(options: Options):
     dialog = OptionsDialog(options=options)
 
     if dialog.exec_() == QDialog.Accepted:
-        pass
+        options.obs = dialog.checkbox_obs.isChecked()
+        options.mods = dialog.checkbox_mods.isChecked()
+        options.music = dialog.checkbox_music.isChecked()
+        options.auto_record = dialog.checkbox_auto_record.isChecked()
+        options.record_demo = dialog.checkbox_record_demo.isChecked()
+        options.crispy = dialog.checkbox_crispy.isChecked()
+        options.mode = dialog.get_mode()
     else:
         sys.exit(0)
