@@ -63,27 +63,24 @@ if not map:
         else:
             maps.append(map)
 
-    # TODO: this flow kinda sucks. improve it
     if options.random:
         import random
         map = random.choice(maps)
-    elif options.replay:
-        map = OpenMapSelection(maps)
-        if not map:
-            print("A map was not selected. Exiting normally")
-            sys.exit(0)
-        demos = GetDemosForMap(map, config.demo_dir)
-        demo = OpenDemoSelection(demos)
-        if not demo:
-            print("A demo was not selected. Exiting normally")
-            sys.exit(0)
     else:
         map = OpenMapSelection(maps)
-        SaveSelectedMap(map)
 
 if not map:
     print("A map was not selected. Exiting normally")
     sys.exit(0)
+
+if options.replay:
+    demos = GetDemosForMap(map, config.demo_dir)
+    demo = OpenDemoSelection(demos)
+    if not demo:
+        print("A demo was not selected. Exiting normally")
+        sys.exit(0)
+elif not options.random:
+    SaveSelectedMap(map)
 
 launch.set_map(map)
 
