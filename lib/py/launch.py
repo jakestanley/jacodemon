@@ -4,19 +4,18 @@ from datetime import datetime
 from lib.py.config import Config
 from lib.py.map import FlatMap
 from lib.py.map_utils import *
+from lib.py.options import Options
 
 ULTRA_VIOLENCE = 4
 DEFAULT_SKILL = ULTRA_VIOLENCE
 
 class LaunchConfig:
-    def __init__(self, config):
+    def __init__(self, options, config):
+        self._options: Options = options
         self._config: Config = config
         self._timestr = None
         self._map: FlatMap = None
         self._skill = DEFAULT_SKILL
-        self.no_music = True
-        self.no_mods = False
-        self.record_demo = True
         self._comp_level = None
         self._window = True
         self._demo_prefix = ""
@@ -81,7 +80,7 @@ class LaunchConfig:
         if len(self._map.patches) > 0:
             files.extend(self._map.patches)
 
-        if len(self._config.mods) > 0:
+        if self._options.mods and len(self._config.mods) > 0:
             files.extend(self._config.mods)
 
         if len(files) > 0:
@@ -93,11 +92,11 @@ class LaunchConfig:
         doom_args.extend(['-warp'])
         doom_args.extend(get_warp(self._map.MapId))
 
-        if self.record_demo:
+        if self._options.record_demo:
             doom_args.append("-record")
             doom_args.append(os.path.join(self._config.demo_dir, self.get_demo_name() + ".lmp"))
 
-        if self.no_music:
+        if not self._options.music:
             doom_args.append('-nomusic')
 
         doom_args.extend(['-skill', f"{self._skill}"])
@@ -106,9 +105,6 @@ class LaunchConfig:
 
     def set_map(self, map):
         self._map = map
-
-    def get_map(self):
-        return self._map
     
     # demo_name
     def get_demo_name(self):
@@ -138,7 +134,7 @@ class LaunchConfig:
         return final_port
 
     def get_command(self):
-        # still TODO: stats
+
         port = self.get_port()
 
         command = []

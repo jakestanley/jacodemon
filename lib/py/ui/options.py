@@ -1,12 +1,12 @@
 import sys
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QCheckBox, QGroupBox, QDialogButtonBox, QLabel, \
-    QLineEdit
+from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QCheckBox, QGroupBox, QDialogButtonBox, QLabel
 
+from lib.py.options import Options
 
 class OptionsDialog(QDialog):
-    def __init__(self, parent=None, options=[]):
+    def __init__(self, parent=None, options=None):
         super(OptionsDialog, self).__init__(parent)
         self.options = options
         self.setWindowTitle("Options")
@@ -14,14 +14,11 @@ class OptionsDialog(QDialog):
         # build layout
         layout: QVBoxLayout = QVBoxLayout(self)
 
-        # options: last
-        checkbox_last = QCheckBox("Last")
-        checkbox_last.setChecked(self.options.last)
-        checkbox_last.stateChanged.connect(lambda state: self.set_last(state == Qt.Checked))
-        layout.addWidget(checkbox_last)
-
-        checkbox_last_label = QLabel("Play the previously selected map")
-        layout.addWidget(checkbox_last_label)
+        # options: demo
+        checkbox_record_demo = QCheckBox("Record demo")
+        checkbox_record_demo.setChecked(self.options.record_demo)
+        checkbox_record_demo.stateChanged.connect(lambda state: self.set_demo(state == Qt.Checked))
+        layout.addWidget(checkbox_record_demo)
 
         # options: obs
         checkbox_obs = QCheckBox("Control OBS")
@@ -43,14 +40,14 @@ class OptionsDialog(QDialog):
         # checkbox_re_record = QCheckBox("re_record")
         # layout.addWidget(checkbox_re_record)
 
-        # options: QoL mods
-        checkbox_no_qol = QCheckBox("Enable QoL mods")
-        checkbox_no_qol.setChecked(not self.options.no_mods)
-        checkbox_no_qol.stateChanged.connect(lambda state: self.set_qol(state == Qt.Checked))
-        layout.addWidget(checkbox_no_qol)
+        # options: mods
+        checkbox_mods = QCheckBox("Enable mods")
+        checkbox_mods.setChecked(self.options.mods)
+        checkbox_mods.stateChanged.connect(lambda state: self.set_mods(state == Qt.Checked))
+        layout.addWidget(checkbox_mods)
 
-        checkbox_no_qol_label = QLabel("If unchecked, any configured 'Quality of Life' mods \nwill not be included in the launch configuration")
-        layout.addWidget(checkbox_no_qol_label)
+        checkbox_mods_label = QLabel("If unchecked, any configured 'Quality of Life' mods \nwill not be included in the launch configuration")
+        layout.addWidget(checkbox_mods_label)
 
         # options: Source port override TODO implement
         #groupbox_ports = QGroupBox("Source port")
@@ -63,9 +60,24 @@ class OptionsDialog(QDialog):
         checkbox_crispy.stateChanged.connect(lambda state: self.set_crispy(state == Qt.Checked))
         layout.addWidget(checkbox_crispy)
 
+        # options: music
+        checkbox_music = QCheckBox("Enable music")
+        checkbox_music.setChecked(self.options.music)
+        checkbox_music.stateChanged.connect(lambda state: self.set_music(state == Qt.Checked))
+        layout.addWidget(checkbox_music)
+
         checkbox_crispy_label = QLabel("If playing a Chocolate Doom mod, force it to launch with Crispy Doom")
         layout.addWidget(checkbox_crispy_label)
-        
+
+        # options: last
+        checkbox_last = QCheckBox("Last")
+        checkbox_last.setChecked(self.options.last)
+        checkbox_last.stateChanged.connect(lambda state: self.set_last(state == Qt.Checked))
+        layout.addWidget(checkbox_last)
+
+        checkbox_last_label = QLabel("Play the previously selected map")
+        layout.addWidget(checkbox_last_label)
+
         # options: random
         checkbox_random = QCheckBox("Random")
         checkbox_random.setChecked(self.options.random)
@@ -75,23 +87,14 @@ class OptionsDialog(QDialog):
         checkbox_random_label = QLabel("Play a random map from the provided mod list")
         layout.addWidget(checkbox_random_label)
 
-        # options: no demo
-        checkbox_no_demo = QCheckBox("Record demo")
-        checkbox_no_demo.setChecked(not self.options.no_demo)
-        checkbox_no_demo.stateChanged.connect(lambda state: self.set_demo(state == Qt.Checked))
-        layout.addWidget(checkbox_no_demo)
-
-        checkbox_no_demo_label = QLabel("If unchecked, no demo lump will be created for this session")
-        layout.addWidget(checkbox_no_demo_label)
-
-        # options: save defaults TODO implement if you dare
-        # checkbox_save_defaults = QCheckBox("Save defaults")
+        checkbox_demo_label = QLabel("If unchecked, no demo lump will be created for this session")
+        layout.addWidget(checkbox_demo_label)
 
         # special controls
-        checkbox_obs.setChecked(not self.options.no_obs)
-        checkbox_obs.stateChanged.connect(lambda state: self.set_obs(state == Qt.Checked, [checkbox_auto_record, groupbox_playscene]))
-        if (self.options.no_obs):
-            checkbox_auto_record.setEnabled(False)
+        checkbox_obs.setChecked(self.options.obs)
+        checkbox_obs.stateChanged.connect(lambda state: self.set_obs(state == Qt.Checked, [checkbox_auto_record]))
+        if (self.options.obs):
+            checkbox_auto_record.setEnabled(True)
 
         # confirm or close
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
@@ -103,36 +106,36 @@ class OptionsDialog(QDialog):
     def set_last(self, value):
         self.options.last = value
 
-    def set_obs(self, value, disabled):
-        self.options.no_obs = not value
-        for disable in disabled:
+    def set_obs(self, value, disables):
+        self.options.obs = value
+        for disable in disables:
             disable.setEnabled(value)
 
     def set_crispy(self, value):
         self.options.crispy = value
 
+    def set_music(self, value):
+        self.options.music = value
+
     def set_auto_record(self, value):
         self.options.auto_record = value
 
-    def set_qol(self, value):
-        self.options.no_qol = not value
+    def set_mods(self, value):
+        self.options.mods = value
 
     def set_random(self, value):
         self.options.random = value
 
     def set_demo(self, value):
-        self.options.no_demo = not value
-
-    def get_options(self):
-        return self.options
+        self.options.record_demo = value
 
 
-def OpenOptionsGui(p_args):
+def OpenOptionsGui(options: Options):
     app = QApplication([])
 
-    dialog = OptionsDialog(options=p_args)
+    dialog = OptionsDialog(options=options)
 
     if dialog.exec_() == QDialog.Accepted:
-        return dialog.get_options()
+        pass
     else:
         sys.exit(0)

@@ -19,11 +19,7 @@
             "program": "start2.py",
             "args": [
                 "--playlist",
-                "./examples/v3_Season2.csv",
-                "--no-obs",
-                "--no-demo",
-                "--play-scene",
-                "Playing"
+                "./examples/v3_Season2.csv"
             ]
         },
         {

@@ -1,5 +1,16 @@
 # Jake's Doom Launcher & Stream Manager
 
+## Running
+
+Sensible defaults are chosen for recording and streaming
+
+- `music` enables music which is disabled by default for copyright concerns
+- `--no-demo` disables demo recording
+- `--no-obs` disables OBS control
+- `--no-gui` disables the options screen on launch
+- `--no-mods` disables additional mods
+- `--no-auto_record`
+
 ## Configuration
 
 ### Script variables
