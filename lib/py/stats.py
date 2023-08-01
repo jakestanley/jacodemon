@@ -78,7 +78,7 @@ class Statistics:
                 if not os.path.exists("./tmp"):
                     os.mkdir("./tmp")
                 self._stats['levelStats'] = ParseLevelStats(raw_level_stats.read())
-                archived_level_stat_txt = f"./tmp/levelstat_{self._launch.get_demo_name()}.txt"
+                archived_level_stat_txt = f"./tmp/levelstat_{self._demo_name}.txt"
             raw_level_stats.close()
             os.rename(LEVELSTAT_TXT, archived_level_stat_txt)
         else:
@@ -87,7 +87,7 @@ class Statistics:
                 or aren't using dsda-doom""")
 
     def write_stats(self):
-        stats_json_path = os.path.join(self._demo_dir, self._launch.get_demo_name() + "-STATS.json")
+        stats_json_path = os.path.join(self._demo_dir, self._demo_name + "-STATS.json")
         with(open(stats_json_path, 'w')) as j:
             json.dump(self._stats, j)
 

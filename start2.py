@@ -84,7 +84,7 @@ elif not options.random:
 
 launch.set_map(map)
 
-if demo:
+if options.replay:
     demo_name = demo.name
     launch.set_replay(demo.path)
 else:
