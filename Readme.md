@@ -80,6 +80,10 @@ pip install -r requirements.txt
 - Uses `unittest` package
 - Run `run_tests.py`
 
+### Regression
+
+TBC
+
 ## Scripting OBS
 
 I'm referencing my bass stream from the past year when writing OBS commands: https://github.com/jakestanley/midi-obs-ws-thing/blob/main/app.js

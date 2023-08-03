@@ -4,7 +4,6 @@ from lib.py.ui.mapselect import GridViewWindow
 
 column_order = ['Lump', 'Time', 'Kills', 'Items', 'Secrets']
 
-# TODO: refactor statistics class so it can be used display demo stats in the picker
 def OpenDemoSelection(demos):
     
     rows = []
