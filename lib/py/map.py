@@ -24,6 +24,7 @@ class FlatMap:
         self._Merges = Merges.split('|')
         
         self._Notes = Notes
+        self.Badge = 0
 
         # set files
         self.dehs = []
@@ -94,9 +95,17 @@ class FlatMap:
         if self._MapName:
             return self._MapName
         return self.MapId
-    
+
     def Dictify(self):
         dic = {}
+
+        dic['Badge'] = ''
+        if self.Badge == 1:
+            dic['Badge'] = '🥉'
+        elif self.Badge == 2:
+            dic['Badge'] = '🥈'
+        elif self.Badge == 3:
+            dic['Badge'] = '🥇'
 
         dic['ModName'] = self.ModName
         dic['MapId'] = self.MapId

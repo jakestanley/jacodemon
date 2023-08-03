@@ -16,7 +16,7 @@ from lib.py.ui.mapselect import OpenMapSelection
 from lib.py.ui.options import OpenOptionsGui
 from lib.py.ui.config import OpenConfigDialog
 from lib.py.wad import GetMapEntriesFromFiles
-from lib.py.demo import GetDemosForMap
+from lib.py.demo import GetDemosForMap, AddBadgesToMap
 
 options: Options = args.get_args()
 config: Config = LoadConfig()
@@ -62,6 +62,9 @@ if not map:
                 maps.append(enriched_map)
         else:
             maps.append(map)
+
+    for map in maps:
+        AddBadgesToMap(map, config.demo_dir)
 
     if options.random:
         import random

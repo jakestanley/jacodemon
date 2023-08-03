@@ -44,6 +44,7 @@ class Statistics:
     def __init__(self, timestamp, comp_level, sourcePort, 
                  command, demo_name, demo_dir=None, levelStats=None):
         self._stats = {}
+        # TODO stop using a `dict`
         self._stats[_KEY_TIMESTAMP]     = timestamp
         self._stats[_KEY_COMP_LEVEL]    = comp_level
         self._stats[_KEY_SOURCE_PORT]   = sourcePort
@@ -71,6 +72,19 @@ class Statistics:
         if self._stats[_KEY_LEVEL_STATS]:
             return self._stats[_KEY_LEVEL_STATS]['Secrets']
         return "N/A"
+    
+    def get_badge(self) -> int:
+        badge = 0
+        if self._stats[_KEY_LEVEL_STATS]:
+            badge += 1
+            kills = self._stats[_KEY_LEVEL_STATS]['Kills'].split('/')
+            items = self._stats[_KEY_LEVEL_STATS]['Items'].split('/')
+            secrets = self._stats[_KEY_LEVEL_STATS]['Secrets'].split('/')
+            if kills[0] == kills[1]:
+                badge += 1
+            if secrets[0] == secrets[1] and items[0] == items[1]:
+                badge += 1
+        return badge
 
     def set_level_stats(self):
         if os.path.exists(LEVELSTAT_TXT):

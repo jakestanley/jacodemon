@@ -40,6 +40,25 @@ def extract_prefix(filename):
             return filename.rsplit(suffix, 1)[0]
     return filename
 
+"""
+Badges:
+- bronze: finished, 
+- silver: all kills, 
+- gold: above + all secrets and items
+"""
+def AddBadgesToMap(map: FlatMap, demo_dir):
+
+    prefix = map.GetMapPrefix()
+    stats_files = glob.glob(demo_dir + f"/{prefix}*-STATS.json")
+
+    if stats_files:
+        for stats_file in stats_files:
+            if stats_file.find("test") >= 0:
+                continue
+            stats = LoadStatistics(None, stats_file)
+            new_badge = stats.get_badge()
+            if new_badge > map.Badge:
+                map.Badge = new_badge
 
 def GetDemosForMap(map: FlatMap, demo_dir):
 
