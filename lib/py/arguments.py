@@ -13,10 +13,7 @@ def ToOptions(args) -> Options:
     options.auto_record = not args.no_auto_record
     options.record_demo = not args.no_demo
     options.music = args.music
-    options.replay = args.replay
-    options.random = args.random
     options.crispy = args.crispy
-    options.last = args.last
 
     if args.last:
         options.mode = MODE_LAST
@@ -24,6 +21,8 @@ def ToOptions(args) -> Options:
         options.mode = MODE_RANDOM
     elif args.replay:
         options.mode = MODE_REPLAY
+    else:
+        options.mode = MODE_NORMAL
 
     return options
 

@@ -34,7 +34,7 @@ obsController.Setup()
 obsController.SetScene(config.wait_scene)
 
 map = None
-if options.last:
+if options.last():
     map = GetLastMap()
 
 if not map:
@@ -66,7 +66,7 @@ if not map:
     for map in maps:
         AddBadgesToMap(map, config.demo_dir)
 
-    if options.random:
+    if options.random():
         import random
         map = random.choice(maps)
     else:
@@ -76,18 +76,18 @@ if not map:
     print("A map was not selected. Exiting normally")
     sys.exit(0)
 
-if options.replay:
+if options.replay():
     demos = GetDemosForMap(map, config.demo_dir)
     demo = OpenDemoSelection(demos)
     if not demo:
         print("A demo was not selected. Exiting normally")
         sys.exit(0)
-elif not options.random:
+elif not options.random():
     SaveSelectedMap(map)
 
 launch.set_map(map)
 
-if options.replay:
+if options.replay():
     demo_name = demo.name
     launch.set_replay(demo.path)
 else:
@@ -100,14 +100,14 @@ obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
 if options.auto_record:
     obsController.StartRecording()
 
-if not options.replay:
+if not options.replay():
     statistics: Statistics = NewStatistics(launch, config.demo_dir)
 
 print(f"Running command\n\t{command}")
 running = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 # update stats and save
-if not options.replay:
+if not options.replay():
     statistics.set_level_stats()
     statistics.write_stats()
 

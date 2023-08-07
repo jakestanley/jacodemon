@@ -1,7 +1,7 @@
-MODE_NORMAL: int = 0
-MODE_RANDOM: int = 1
-MODE_LAST: int = 2
-MODE_REPLAY: int = 3
+MODE_NORMAL: int = 1
+MODE_RANDOM: int = 2
+MODE_LAST: int = 3
+MODE_REPLAY: int = 4
 
 class Options:
     def __init__(self):
