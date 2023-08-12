@@ -20,10 +20,12 @@ from lib.py.demo import GetDemosForMap, AddBadgesToMap
 
 options: Options = args.get_args()
 config: Config = LoadConfig()
-OpenConfigDialog(config)
-config.Save()
 
-if options.gui:
+# if last selected, skip the gui
+if not options.last():
+    OpenConfigDialog(config)
+    config.Save()
+
     OpenOptionsGui(options)
 
 launch = LaunchConfig(options, config)
