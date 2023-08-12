@@ -1,3 +1,4 @@
+import platform
 import os
 from datetime import datetime
 
@@ -57,8 +58,13 @@ class LaunchConfig:
         final_comp_level = self.get_comp_level()
 
         dsda_args.extend(['-complevel', str(final_comp_level)])
-        # the usual
-        dsda_args.extend(['-window', '-levelstat'])
+        dsda_args.append('-levelstat')
+
+        if platform.system() == "Darwin":
+            dsda_args.extend(['-geom', '1920x1080f'])
+        else:
+            dsda_args.append('-window')
+        
 
         if self._config.dsdadoom_hud_lump:
             dsda_args.extend(['-hud', self._config.dsdadoom_hud_lump])
