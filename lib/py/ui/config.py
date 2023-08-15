@@ -1,9 +1,9 @@
 import sys
 
-from lib.py.config import Config
+from lib.py.config import Config, Mod
 
 from PyQt5.QtWidgets import QApplication, \
-    QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QFileDialog, QDialogButtonBox, QGroupBox, QLabel, QListWidget, QListWidgetItem
+    QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QFileDialog, QDialogButtonBox, QGroupBox, QLabel, QListWidget, QListWidgetItem, QCheckBox
 
 class ConfigDialog(QDialog):
     def __init__(self, cfg: Config, parent=None):
@@ -87,7 +87,7 @@ class ConfigDialog(QDialog):
         self.mods = QListWidget(self)
 
         for mod in cfg.mods:
-            self.mods.addItem(QListWidgetItem(mod))
+            self.AddMod(mod)
 
         layout.addWidget(self.mods)
 
@@ -191,11 +191,17 @@ class ConfigDialog(QDialog):
         group_box.setLayout(vlayout)
         return group_box
 
+    def AddMod(self, mod: Mod):
+        item = QListWidgetItem(self.mods)
+        checkbox = QCheckBox(mod.path)
+        checkbox.setChecked(mod.enabled)
+        self.mods.setItemWidget(item, checkbox)
+
     def AddMods(self):
 
         files = self.OpenManyFilesDialog()
         for file in files:
-            self.mods.addItem(QListWidgetItem(file))
+            self.AddMod(Mod(file))
 
     def RemoveMods(self):
 
@@ -233,7 +239,13 @@ def OpenConfigDialog(cfg: Config):
         cfg.iwad_dir = dialog.iwad_path.text()
         cfg.maps_dir = dialog.maps_path.text()
         cfg.demo_dir = dialog.demo_path.text()
-        cfg.mods = [dialog.mods.item(index).text() for index in range(dialog.mods.count())]
+        cfg.mods = []
+        for index in range(dialog.mods.count()):
+            item = dialog.mods.item(index)
+            checkbox = dialog.mods.itemWidget(item)
+            path = checkbox.text()
+            enabled = checkbox.isChecked()
+            cfg.mods.append(Mod(path, enabled))
         cfg.default_complevel = dialog.default_complevel.text()
         cfg.set_dsda_path(dialog.dsda_path.text())
         cfg.dsda_cfg = dialog.dsda_cfg_path.text()

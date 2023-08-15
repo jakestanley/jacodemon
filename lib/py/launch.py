@@ -80,8 +80,10 @@ class LaunchConfig:
         if len(self._map.patches) > 0:
             files.extend(self._map.patches)
 
-        if self._options.mods and len(self._config.mods) > 0:
-            files.extend(self._config.mods)
+        if self._options.mods:
+            enabled_mods = [mod for mod in self._config.mods if mod.enabled]
+            if len(enabled_mods) > 0:
+                files.extend(mod.path for mod in enabled_mods)
 
         if len(files) > 0:
             doom_args.append("-file")

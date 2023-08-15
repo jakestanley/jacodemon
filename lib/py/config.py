@@ -19,6 +19,17 @@ _KEY_CHOCOLATEDOOM_CFG_DEFAULT = 'chocolatedoom_cfg_default'
 _KEY_CHOCOLATEDOOM_CFG_EXTRA = 'chocolatedoom_cfg_extra'
 _KEY_CRISPYDOOM_PATH = 'crispydoom_path'
 
+class Mod:
+    def __init__(self, path: str, enabled: bool = True):
+        self.path = path
+        self.enabled = enabled
+
+    def Dictify(self):
+        dic = {}
+        dic['path'] = self.path
+        dic['enabled'] = self.enabled
+        return dic
+
 class Config:
     def __init__(self, data):
 
@@ -45,7 +56,13 @@ class Config:
         self.iwad_dir = data.get(_KEY_IWAD_DIR)
         self.maps_dir = data.get(_KEY_MAPS_DIR)
         self.demo_dir = data.get(_KEY_DEMO_DIR)
-        self.mods = data.get(_KEY_MODS, [])
+        loaded_mods = data.get(_KEY_MODS, [])
+        self.mods = []
+        for mod in loaded_mods:
+            if isinstance(mod, str):
+                self.mods.append(Mod(mod))
+            else:
+                self.mods.append(Mod(mod.get('path'), mod.get('enabled', True)))
 
     def Save(self):
         config_path = GetConfigPath()
@@ -54,7 +71,7 @@ class Config:
         settings[_KEY_IWAD_DIR] = self.iwad_dir
         settings[_KEY_MAPS_DIR] = self.maps_dir
         settings[_KEY_DEMO_DIR] = self.demo_dir
-        settings[_KEY_MODS] = self.mods
+        settings[_KEY_MODS] = [mod.Dictify() for mod in self.mods]
         settings[_KEY_DEFAULT_COMPLEVEL] = self.default_complevel
         settings[_KEY_DSDA_PATH] = self.dsda_path
         settings[_KEY_DSDA_CFG] = self.dsda_cfg
