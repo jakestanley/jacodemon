@@ -18,7 +18,11 @@ class ConfigDialog(QDialog):
         directories_group = self.create_directories_group(cfg)
         dsda_group = self.create_dsda_group(cfg)
         obs_group = self.create_obs_group(cfg)
-        macros_group = self.create_macros_group(cfg)
+        macros_group = QGroupBox("Macros", self)
+        macros_layout = QHBoxLayout()
+        macros_layout.addWidget(self.create_keys_group(cfg))
+        macros_layout.addWidget(self.create_bindings_group(cfg))
+        macros_group.setLayout(macros_layout)
         
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         button_box.accepted.connect(self.accept)
@@ -191,55 +195,61 @@ class ConfigDialog(QDialog):
 
         group_box.setLayout(vlayout)
         return group_box
-    
-    def create_macros_group(self, cfg: Config):
 
-        group_box = QGroupBox("Macros", self)
-        group_box.setFixedWidth(240)
+    def FixedQPushButton(self, text: str) -> QPushButton:
+        button = QPushButton(text, self)
+        button.setFixedWidth(64)
+        return button
+
+    def create_keys_group(self, cfg: Config):
+
+        group_box = QGroupBox("Keys", self)
+        group_box.setFixedWidth(300)
         
         row1 = QHBoxLayout()
-        row1.addWidget(QPushButton("Num Lock", self))
-        row1.addWidget(QPushButton("/", self))
-        row1.addWidget(QPushButton("*", self))
-        row1.addWidget(QPushButton("<-", self))
+        row1.addWidget(self.FixedQPushButton("Num"))
+        row1.addWidget(self.FixedQPushButton("/"))
+        row1.addWidget(self.FixedQPushButton("*"))
+        row1.addWidget(self.FixedQPushButton("<-"))
 
         row2 = QHBoxLayout()
-        row2.addWidget(QPushButton("7", self))
-        row2.addWidget(QPushButton("8", self))
-        row2.addWidget(QPushButton("9", self))
-        row2.addWidget(QPushButton("-", self))
+        row2.addWidget(self.FixedQPushButton("7"))
+        row2.addWidget(self.FixedQPushButton("8"))
+        row2.addWidget(self.FixedQPushButton("9"))
+        row2.addWidget(self.FixedQPushButton("-"))
 
         row3 = QHBoxLayout()
-        row3.addWidget(QPushButton("4", self))
-        row3.addWidget(QPushButton("5", self))
-        row3.addWidget(QPushButton("6", self))
-        row3.addWidget(QPushButton("+", self))
-
-        bottom = QHBoxLayout()
-        bottom_left = QVBoxLayout()
+        row3.addWidget(self.FixedQPushButton("4"))
+        row3.addWidget(self.FixedQPushButton("5"))
+        row3.addWidget(self.FixedQPushButton("6"))
+        row3.addWidget(self.FixedQPushButton("+"))
 
         row4 = QHBoxLayout()
-        row4.addWidget(QPushButton("1", self))
-        row4.addWidget(QPushButton("2", self))
-        row4.addWidget(QPushButton("3", self))
+        row4.addWidget(self.FixedQPushButton("1"))
+        row4.addWidget(self.FixedQPushButton("2"))
+        row4.addWidget(self.FixedQPushButton("3"))
+        row4.addWidget(self.FixedQPushButton("Enter"))
 
         row5 = QHBoxLayout()
-        row5.addWidget(QPushButton("0", self))
-        row5.addWidget(QPushButton("Del", self))
-
-        bottom_left.addLayout(row4)
-        bottom_left.addLayout(row5)
-
-        bottom.addLayout(bottom_left)
-        bottom.addWidget(QPushButton("Enter", self))
+        row5.addWidget(self.FixedQPushButton("0"))
+        row5.addWidget(self.FixedQPushButton("Del"))
+        row5.addStretch()
 
         vbox = QVBoxLayout()
         vbox.addLayout(row1)
         vbox.addLayout(row2)
         vbox.addLayout(row3)
-        vbox.addLayout(bottom)
+        vbox.addLayout(row4)
+        vbox.addLayout(row5)
 
         group_box.setLayout(vbox)
+        return group_box
+    
+    def create_bindings_group(self, cfg: Config):
+        group_box = QGroupBox("Bindings", self)
+        vlayout = QVBoxLayout()
+
+        group_box.setLayout(vlayout)
         return group_box
 
     def AddMod(self, mod: Mod):
