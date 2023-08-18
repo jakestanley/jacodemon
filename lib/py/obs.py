@@ -35,6 +35,10 @@ class ObsController:
             self.obs_client.start_record()
             time.sleep(2)
 
+    def SaveReplay(self, name=None):
+        saved = self.obs_client.save_replay_buffer()
+        pass
+
     def StopRecording(self, name=None):
         if self.enabled:
             path = self.obs_client.stop_record().output_path

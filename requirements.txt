@@ -2,3 +2,11 @@ appdirs
 jsonpickle
 obsws_python
 pyqt5
+
+# windows only
+win10toast; sys_platform == 'windows'
+ahk; sys_platform == 'windows'
+ahk[binary]; sys_platform == 'windows'
+
+# mac only
+hammerspoon-bridge; sys_platform == 'darwin'
