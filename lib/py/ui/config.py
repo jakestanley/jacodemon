@@ -18,6 +18,7 @@ class ConfigDialog(QDialog):
         directories_group = self.create_directories_group(cfg)
         dsda_group = self.create_dsda_group(cfg)
         obs_group = self.create_obs_group(cfg)
+        macros_group = self.create_macros_group(cfg)
         
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         button_box.accepted.connect(self.accept)
@@ -27,6 +28,7 @@ class ConfigDialog(QDialog):
         layout.addWidget(directories_group)
         layout.addWidget(dsda_group)
         layout.addWidget(obs_group)
+        layout.addWidget(macros_group)
         layout.addWidget(button_box)
 
     def create_directories_group(self, cfg):
@@ -188,7 +190,56 @@ class ConfigDialog(QDialog):
         vlayout.addLayout(hbox)
 
         group_box.setLayout(vlayout)
-        group_box.setLayout(vlayout)
+        return group_box
+    
+    def create_macros_group(self, cfg: Config):
+
+        group_box = QGroupBox("Macros", self)
+        group_box.setFixedWidth(240)
+        
+        row1 = QHBoxLayout()
+        row1.addWidget(QPushButton("Num Lock", self))
+        row1.addWidget(QPushButton("/", self))
+        row1.addWidget(QPushButton("*", self))
+        row1.addWidget(QPushButton("<-", self))
+
+        row2 = QHBoxLayout()
+        row2.addWidget(QPushButton("7", self))
+        row2.addWidget(QPushButton("8", self))
+        row2.addWidget(QPushButton("9", self))
+        row2.addWidget(QPushButton("-", self))
+
+        row3 = QHBoxLayout()
+        row3.addWidget(QPushButton("4", self))
+        row3.addWidget(QPushButton("5", self))
+        row3.addWidget(QPushButton("6", self))
+        row3.addWidget(QPushButton("+", self))
+
+        bottom = QHBoxLayout()
+        bottom_left = QVBoxLayout()
+
+        row4 = QHBoxLayout()
+        row4.addWidget(QPushButton("1", self))
+        row4.addWidget(QPushButton("2", self))
+        row4.addWidget(QPushButton("3", self))
+
+        row5 = QHBoxLayout()
+        row5.addWidget(QPushButton("0", self))
+        row5.addWidget(QPushButton("Del", self))
+
+        bottom_left.addLayout(row4)
+        bottom_left.addLayout(row5)
+
+        bottom.addLayout(bottom_left)
+        bottom.addWidget(QPushButton("Enter", self))
+
+        vbox = QVBoxLayout()
+        vbox.addLayout(row1)
+        vbox.addLayout(row2)
+        vbox.addLayout(row3)
+        vbox.addLayout(bottom)
+
+        group_box.setLayout(vbox)
         return group_box
 
     def AddMod(self, mod: Mod):
