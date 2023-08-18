@@ -7,6 +7,8 @@
 - WAD locations and PWAD search (uses WAD.TXT if available)
 - WADSeeker integration
 - Download map? list archive?
+- Replay buffer naming (may require subroutine)
+- Add FINISHED to auto-records output file rename
 
 # Bugs
 
