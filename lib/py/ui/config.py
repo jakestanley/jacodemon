@@ -1,6 +1,7 @@
 import sys
 
 from lib.py.config import Config, Mod
+from lib.py.macros import Keys
 
 from PyQt5.QtWidgets import QApplication, \
     QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QFileDialog, QDialogButtonBox, QGroupBox, QLabel, QListWidget, QListWidgetItem, QCheckBox
@@ -34,6 +35,11 @@ class ConfigDialog(QDialog):
         layout.addWidget(obs_group)
         layout.addWidget(macros_group)
         layout.addWidget(button_box)
+
+    def FixedQPushButton(self, text: str) -> QPushButton:
+        button = QPushButton(text, self)
+        button.setFixedWidth(64)
+        return button
 
     def create_directories_group(self, cfg):
         group_box = QGroupBox("Directories", self)
@@ -205,51 +211,29 @@ class ConfigDialog(QDialog):
         group_box.setLayout(vlayout)
         return group_box
 
-    def FixedQPushButton(self, text: str) -> QPushButton:
-        button = QPushButton(text, self)
-        button.setFixedWidth(64)
-        return button
+    def clicked_macro_key(self, key):
+        print(key.name)
 
     def create_keys_group(self, cfg: Config):
 
         group_box = QGroupBox("Keys", self)
         group_box.setFixedWidth(300)
         
-        row1 = QHBoxLayout()
-        row1.addWidget(self.FixedQPushButton("Num"))
-        row1.addWidget(self.FixedQPushButton("/"))
-        row1.addWidget(self.FixedQPushButton("*"))
-        row1.addWidget(self.FixedQPushButton("<-"))
-
-        row2 = QHBoxLayout()
-        row2.addWidget(self.FixedQPushButton("7"))
-        row2.addWidget(self.FixedQPushButton("8"))
-        row2.addWidget(self.FixedQPushButton("9"))
-        row2.addWidget(self.FixedQPushButton("-"))
-
-        row3 = QHBoxLayout()
-        row3.addWidget(self.FixedQPushButton("4"))
-        row3.addWidget(self.FixedQPushButton("5"))
-        row3.addWidget(self.FixedQPushButton("6"))
-        row3.addWidget(self.FixedQPushButton("+"))
-
-        row4 = QHBoxLayout()
-        row4.addWidget(self.FixedQPushButton("1"))
-        row4.addWidget(self.FixedQPushButton("2"))
-        row4.addWidget(self.FixedQPushButton("3"))
-        row4.addWidget(self.FixedQPushButton("Enter"))
-
-        row5 = QHBoxLayout()
-        row5.addWidget(self.FixedQPushButton("0"))
-        row5.addWidget(self.FixedQPushButton("Del"))
-        row5.addStretch()
-
         vbox = QVBoxLayout()
-        vbox.addLayout(row1)
-        vbox.addLayout(row2)
-        vbox.addLayout(row3)
-        vbox.addLayout(row4)
-        vbox.addLayout(row5)
+
+        hbox = None
+        for idx, obj in enumerate(Keys):
+            if idx % 4 == 0:
+                if hbox is not None:
+                    vbox.addLayout(hbox)
+                hbox = QHBoxLayout()
+            button = QPushButton(obj.name)
+            button.setEnabled(obj.enabled)
+            button.clicked.connect(lambda checked, obj=obj: self.clicked_macro_key(obj))
+            hbox.addWidget(button)
+
+        if hbox is not None:
+            vbox.addLayout(hbox)
 
         group_box.setLayout(vbox)
         return group_box
