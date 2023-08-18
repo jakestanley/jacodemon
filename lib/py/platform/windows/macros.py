@@ -34,6 +34,7 @@ ahk.add_hotkey(_KEY_DEL, callback=pressed(_KEY_DEL))
 
 
 ahk.start_hotkeys()
+# not necessary for main script
 ahk.block_forever()
 
 # TODO: return hotkeys and continue execution
