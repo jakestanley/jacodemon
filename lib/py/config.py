@@ -13,6 +13,7 @@ _KEY_DSDA_CFG = 'dsda_cfg'
 _KEY_DSDADOOM_HUD_LUMP = 'dsdadoom_hud_lump'
 _KEY_PLAY_SCENE = 'play_scene'
 _KEY_WAIT_SCENE = 'wait_scene'
+_KEY_BROWSER_SCENE = 'browser_scene'
 _KEY_TITLE_SOURCE = 'title_source'
 _KEY_CHOCOLATEDOOM_PATH = 'chocolatedoom_path'
 _KEY_CHOCOLATEDOOM_CFG_DEFAULT = 'chocolatedoom_cfg_default'
@@ -44,6 +45,7 @@ class Config:
         # OBS
         self.play_scene = data.get(_KEY_PLAY_SCENE)
         self.wait_scene = data.get(_KEY_WAIT_SCENE)
+        self.browser_scene = data.get(_KEY_BROWSER_SCENE)
         self.title_source = data.get(_KEY_TITLE_SOURCE)
 
         # chocolate/crispy doom
@@ -78,6 +80,7 @@ class Config:
         settings[_KEY_DSDADOOM_HUD_LUMP] = self.dsdadoom_hud_lump
         settings[_KEY_PLAY_SCENE] = self.play_scene
         settings[_KEY_WAIT_SCENE] = self.wait_scene
+        settings[_KEY_BROWSER_SCENE] = self.browser_scene
         settings[_KEY_TITLE_SOURCE] = self.title_source
         settings[_KEY_CHOCOLATEDOOM_PATH] = self.chocolatedoom_path
         settings[_KEY_CHOCOLATEDOOM_CFG_DEFAULT] = self.chocolatedoom_cfg_default

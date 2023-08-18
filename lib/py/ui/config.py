@@ -185,6 +185,15 @@ class ConfigDialog(QDialog):
         vlayout.addLayout(hbox)
 
         hbox = QHBoxLayout()
+        hbox.addWidget(QLabel("browser_scene"))
+        self.browser_scene = QLineEdit(self)
+        self.browser_scene.setText(cfg.browser_scene)
+        hbox.addWidget(self.browser_scene)
+        self.btn_test_browser_scene = QPushButton("Test", self)
+        hbox.addWidget(self.btn_test_browser_scene)
+        vlayout.addLayout(hbox)
+
+        hbox = QHBoxLayout()
         hbox.addWidget(QLabel("title_source"))
         self.title_source = QLineEdit(self)
         self.title_source.setText(cfg.title_source)
@@ -312,6 +321,7 @@ def OpenConfigDialog(cfg: Config):
         cfg.dsda_cfg = dialog.dsda_cfg_path.text()
         cfg.play_scene = dialog.play_scene.text()
         cfg.wait_scene = dialog.wait_scene.text()
+        cfg.browser_scene = dialog.browser_scene.text()
         cfg.title_source = dialog.title_source.text()
         # TODO chocolate/crispy inputs
     else:
