@@ -1,7 +1,7 @@
 import sys
 
 from lib.py.config import Config, Mod
-from lib.py.macros import Keys
+from lib.py.macros import KeyNames
 
 from PyQt5.QtWidgets import QApplication, \
     QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QFileDialog, QDialogButtonBox, QGroupBox, QLabel, QListWidget, QListWidgetItem, QCheckBox
@@ -222,7 +222,7 @@ class ConfigDialog(QDialog):
         vbox = QVBoxLayout()
 
         hbox = None
-        for idx, obj in enumerate(Keys):
+        for idx, obj in enumerate(KeyNames):
             if idx % 4 == 0:
                 if hbox is not None:
                     vbox.addLayout(hbox)
