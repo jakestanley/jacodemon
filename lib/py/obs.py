@@ -6,11 +6,13 @@ from datetime import datetime
 import obsws_python as obs
 
 from lib.py.config import Config
+from lib.py.notifications import Notifications
 
 class ObsController:
-    def __init__(self, enabled, config: Config):
+    def __init__(self, enabled, config: Config, notifications: Notifications):
         self.enabled = enabled
         self.config = config
+        self.notifications = notifications
 
     def Setup(self):
         if self.enabled:
@@ -43,8 +45,8 @@ class ObsController:
             saved = self.obs_client.save_replay_buffer()
             return
         else:
-            print(f"""
-                  OBS is disabled. SaveReplay was requested.
+            self.notifications.notify("OBS is disabled", f"""
+            SaveReplay was requested.
                   If enabled, I would have used the name: 
                   '{replay_name}'""")
 

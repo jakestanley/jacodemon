@@ -18,6 +18,7 @@ from lib.py.ui.config import OpenConfigDialog
 from lib.py.wad import GetMapEntriesFromFiles
 from lib.py.demo import GetDemosForMap, AddBadgesToMap
 from lib.py.macros import Macros, GetMacros
+from lib.py.notifications import Notifications, GetNotifications
 
 options: Options = args.get_args()
 config: Config = LoadConfig()
@@ -29,9 +30,10 @@ if not options.last():
 
     OpenOptionsGui(options)
 
+notifications: Notifications = GetNotifications()
 launch = LaunchConfig(options, config)
 
-obsController = ObsController(options.obs, config)
+obsController = ObsController(options.obs, config, notifications)
 obsController.Setup()
 
 obsController.SetScene(config.wait_scene)
