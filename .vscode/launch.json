@@ -57,7 +57,20 @@
                 "--no-demo",
                 "--last"
             ]
-        }
+        },
+        {
+            "name": "Start2 (No Auto, No Demo, Last)",
+            "type": "python",
+            "request": "launch",
+            "program": "start2.py",
+            "args": [
+                "--playlist",
+                "./examples/v3_Season2.csv",
+                "--no-auto-record",
+                "--no-demo",
+                "--last"
+            ]
+        },
         {
             "name": "Start2 (Replay)",
             "type": "python",

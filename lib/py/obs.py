@@ -27,6 +27,8 @@ class ObsController:
                 sys.exit(1)
             scenes = self.obs_client.get_scene_list()
             self.obs_client.set_current_program_scene(self.config.wait_scene)
+            if not self.obs_client.get_replay_buffer_status().output_active:
+                print("Replay buffer disabled")
 
     def IsRecording(self):
         return self.obs_client.get_record_status().output_active
@@ -38,39 +40,42 @@ class ObsController:
             self.obs_client.start_record()
             time.sleep(2)
 
+    def MoveRecording(self, path, new_name):
+
+        # Pausing renaming for 3 seconds to allow OBS to release the handle
+        time.sleep(3)
+
+        parent = os.path.dirname(path)
+        ext = os.path.splitext(path)[1]
+        newpath = os.path.join(parent, f"{new_name}{ext}")
+        os.rename(path, newpath)
+
+        return newpath
+
     def SaveReplay(self):
         timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
         replay_name = f"{self._demo_name}-REPLAY-{timestamp}"
         if self.enabled:
-            saved = self.obs_client.save_replay_buffer()
-            return
+            if self.obs_client.get_replay_buffer_status().output_active:
+                self.obs_client.save_replay_buffer()
+                path = self.obs_client.get_last_replay_buffer_replay().saved_replay_path
+                newpath = self.MoveRecording(path, replay_name)
+                self.notifications.notify("Replay saved", f"Saved to '{newpath}'")
+            else:
+                self.notifications.notify("Replay buffer disabled", f"Not saving replay: '{replay_name}'")
         else:
-            self.notifications.notify("OBS is disabled", f"""
-            SaveReplay was requested.
-                  If enabled, I would have used the name: 
-                  '{replay_name}'""")
+            self.notifications.notify("OBS is disabled", f"Not saving replay: '{replay_name}'")
 
     def StopRecording(self):
-        if self.enabled:
+        if self.enabled and self.IsRecording():
             path = self.obs_client.stop_record().output_path
         else:
             return
-        
-        parent = os.path.dirname(path)
-        ext = os.path.splitext(path)[1]
-        newpath = os.path.join(parent, f"{self._demo_name}{ext}")
 
-        if not self._demo_name == None:
-            print(f"""
-    Recording stopped
-    Renaming '{path}' to 
-    '{newpath}'
-            """)
-
-        # Pausing renaming for 5 seconds to allow OBS to release the handle
-        time.sleep(5)
-        
-        os.rename(path, newpath)
+        # TODO toast notification that allows user to delete if they want
+        if self._demo_name:
+            newpath = self.MoveRecording(path, self._demo_name)
+            self.notifications.notify("Recording stopped", f"Saved to '{newpath}'")
 
     def SetScene(self, title):
         if self.enabled:
