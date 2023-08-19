@@ -1,3 +1,5 @@
+import platform
+
 from lib.py.obs import ObsController
 from lib.py.keys import *
 
@@ -28,3 +30,16 @@ KeyNames = [
     Key(KEY_NUMPAD_0, '0'),
     Key(KEY_DEL, 'Del')
 ]
+
+class Macros:
+    def __init__(self, obs):
+        self._obs = obs
+
+def GetMacros(obs) -> Macros:
+    system = platform.system()
+    if system == "Darwin":
+        from lib.py.platform.macos.macros import MacMacros
+        return MacMacros(obs)
+    else:
+        from lib.py.platform.windows.macros import WinMacros
+        return WinMacros(obs)

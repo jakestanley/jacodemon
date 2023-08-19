@@ -1,4 +1,5 @@
 # Set up bridge
+from lib.py.macros import Macros
 from hammerspoon_bridge import LuaBridge
 
 # from http://www.hammerspoon.org/docs/hs.keycodes.html#map
@@ -13,4 +14,6 @@ def balls():
 # hs.hotkey.bind(mods, key, [message,] pressedfn, releasedfn, repeatfn)
 hs.hotkey.bind([], _KEY_NUMPAD_0, balls)
 
-print("ok")
+class MacMacros(Macros):
+    def __init__(self, obs):
+        super().__init__(obs)

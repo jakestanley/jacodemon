@@ -5,7 +5,6 @@ from ahk import AHK
 
 # from https://www.autohotkey.com/docs/v1/KeyList.htm
 # I use the Jellycomb external numpad
-_KEY_NUMPAD_0='Numpad0'
 KeyAhkMappings={
     KEY_DEL:      'NumpadDel',
     KEY_DIV:      'NumpadDiv',
@@ -54,3 +53,10 @@ def focus_browser():
     # TODO switch scene
 
     pass
+
+class WinMacros(Macros):
+    def __init__(self, obs):
+        super().__init__(obs=obs)
+        self.ahk = AHK()
+        self.ahk.add_hotkey(KeyAhkMappings[KEY_NUMPAD_0], callback=self._obs.SaveReplay)
+        self.ahk.start_hotkeys()

@@ -17,6 +17,7 @@ from lib.py.ui.options import OpenOptionsGui
 from lib.py.ui.config import OpenConfigDialog
 from lib.py.wad import GetMapEntriesFromFiles
 from lib.py.demo import GetDemosForMap, AddBadgesToMap
+from lib.py.macros import Macros, GetMacros
 
 options: Options = args.get_args()
 config: Config = LoadConfig()
@@ -100,6 +101,8 @@ command = launch.get_command()
 obsController.SetScene(config.play_scene)
 obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
 obsController.SetDemoName(demo_name)
+
+macros: Macros = GetMacros(obsController)
 
 if options.auto_record:
     obsController.StartRecording()
