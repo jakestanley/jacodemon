@@ -107,8 +107,10 @@ I'm referencing my bass stream from the past year when writing OBS commands: htt
 
 ## Notifications
 
-### Windows
-Ensure Python notifications are high priority so toast notifications will be visible when you are playing a game
+### Windows 11
+Set these settings in Windows Settings to ensure notifications are visible when you are playing a game:
+- In System -> Notifications, uncheck "When using an app in full-screen mode" under "Turn on do not disturb automatically"
+- In System -> Notifications -> Set priority notifications, add "Python" under "Apps"
 
 # Thanks
 

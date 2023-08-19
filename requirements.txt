@@ -4,7 +4,7 @@ obsws_python
 pyqt5
 
 # windows only
-win10toast; sys_platform == 'win32'
+win11toast; sys_platform == 'win32'
 ahk; sys_platform == 'win32'
 ahk[binary]; sys_platform == 'win32'
 
