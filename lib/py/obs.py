@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from datetime import datetime
 
 import obsws_python as obs
 
@@ -35,11 +36,19 @@ class ObsController:
             self.obs_client.start_record()
             time.sleep(2)
 
-    def SaveReplay(self, name=None):
-        saved = self.obs_client.save_replay_buffer()
-        pass
+    def SaveReplay(self):
+        timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
+        replay_name = f"{self._demo_name}-REPLAY-{timestamp}"
+        if self.enabled:
+            saved = self.obs_client.save_replay_buffer()
+            return
+        else:
+            print(f"""
+                  OBS is disabled. SaveReplay was requested.
+                  If enabled, I would have used the name: 
+                  '{replay_name}'""")
 
-    def StopRecording(self, name=None):
+    def StopRecording(self):
         if self.enabled:
             path = self.obs_client.stop_record().output_path
         else:
@@ -47,9 +56,9 @@ class ObsController:
         
         parent = os.path.dirname(path)
         ext = os.path.splitext(path)[1]
-        newpath = os.path.join(parent, f"{name}{ext}")
+        newpath = os.path.join(parent, f"{self._demo_name}{ext}")
 
-        if not name == None:
+        if not self._demo_name == None:
             print(f"""
     Recording stopped
     Renaming '{path}' to 
@@ -74,3 +83,6 @@ class ObsController:
             print(f"Set map title to {title}")
         else:
             print(f"OBS is disabled. Title provided: '{title}'")
+
+    def SetDemoName(self, name):
+        self._demo_name = name

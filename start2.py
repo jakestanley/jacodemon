@@ -99,6 +99,8 @@ command = launch.get_command()
 
 obsController.SetScene(config.play_scene)
 obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
+obsController.SetDemoName(demo_name)
+
 if options.auto_record:
     obsController.StartRecording()
 
@@ -114,6 +116,6 @@ if not options.replay():
     statistics.write_stats()
 
 if options.auto_record:
-    obsController.StopRecording(demo_name)
+    obsController.StopRecording()
 
 obsController.SetScene(config.wait_scene)
