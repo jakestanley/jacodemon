@@ -1,11 +1,10 @@
+from lib.py.notifications import Notifications
 from win10toast import ToastNotifier
 
-toast = ToastNotifier()
+class WinNotifications(Notifications):
+    def __init__(self):
+        super().__init__()
+        self.toast = ToastNotifier()
 
-toast.show_toast(
-    "Notification",
-    "Notification body",
-    duration = 20,
-    icon_path = "icon.ico",
-    threaded = True,
-)
+    def notify(self, title, body):
+        self.toast.show_toast(title, body, duration = 20, icon_path = "icon.ico", threaded = True)

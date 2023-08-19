@@ -93,7 +93,7 @@ I'm referencing my bass stream from the past year when writing OBS commands: htt
 
 - [maghoff/wad](https://github.com/maghoff/wad) for reading wad data (requires [rust](https://doc.rust-lang.org/cargo/getting-started/installation.html))
 
-## Macros & Notifications
+## Macros
 
 ### Windows
 - ahk
@@ -102,9 +102,13 @@ I'm referencing my bass stream from the past year when writing OBS commands: htt
 ### macOS
 - [hammerspoon](http://www.hammerspoon.org/go/)
 - hammerspoon-bridge [github](https://github.com/AaronC81/hammerspoon_bridge), [pypi](https://pypi.org/project/hammerspoon-bridge/)
-
 - Hammerspoon must be running
 - `~/.hammerspoon/init.lua` must contain the line: `local ipc = require('hs.ipc')`
+
+## Notifications
+
+### Windows
+Ensure Python notifications are high priority so toast notifications will be visible when you are playing a game
 
 # Thanks
 
