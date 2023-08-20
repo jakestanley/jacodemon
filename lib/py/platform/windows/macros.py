@@ -7,6 +7,7 @@ from ahk import AHK
 # I use the Jellycomb external numpad
 KeyAhkMappings={
     KEY_DEL:      'NumpadDel',
+    KEY_DOT:      'NumpadDot',
     KEY_DIV:      'NumpadDiv',
     KEY_ENTER:    'NumpadEnter',
     KEY_MIN:      'NumpadSub',
@@ -59,4 +60,6 @@ class WinMacros(Macros):
         super().__init__(obs=obs)
         self.ahk = AHK()
         self.ahk.add_hotkey(KeyAhkMappings[KEY_NUMPAD_0], callback=self._obs.SaveReplay)
+        self.ahk.add_hotkey(KeyAhkMappings[KEY_DOT], callback=self._obs.CancelRecording)
+        self.ahk.add_hotkey(KeyAhkMappings[KEY_DEL], callback=self._obs.CancelRecording)
         self.ahk.start_hotkeys()

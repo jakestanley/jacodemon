@@ -26,6 +26,17 @@
             ]
         },
         {
+            "name": "Start2 (Last)",
+            "type": "python",
+            "request": "launch",
+            "program": "start2.py",
+            "args": [
+                "--playlist",
+                "./examples/v3_Season2.csv",
+                "--last"
+            ]
+        },
+        {
             "name": "Start2 (No OBS)",
             "type": "python",
             "request": "launch",

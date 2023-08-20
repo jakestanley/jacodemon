@@ -2,6 +2,7 @@ import os
 import sys
 import time
 from datetime import datetime
+from lib.py.io import IO
 
 import obsws_python as obs
 
@@ -9,10 +10,11 @@ from lib.py.config import Config
 from lib.py.notifications import Notifications
 
 class ObsController:
-    def __init__(self, enabled, config: Config, notifications: Notifications):
+    def __init__(self, enabled, config: Config, notifications: Notifications, io: IO):
         self.enabled = enabled
         self.config = config
         self.notifications = notifications
+        self.io = io
 
     def Setup(self):
         if self.enabled:
@@ -40,6 +42,12 @@ class ObsController:
             self.obs_client.start_record()
             time.sleep(2)
 
+    def CancelRecording(self):
+        if self.enabled and self.IsRecording():
+            path = self.obs_client.stop_record().output_path
+            self.io.RemoveFile(path)
+            self.notifications.notify("Cancelled recording", f"Deleted '{path}'")
+
     def MoveRecording(self, path, new_name):
 
         # Pausing renaming for 3 seconds to allow OBS to release the handle
@@ -48,7 +56,7 @@ class ObsController:
         parent = os.path.dirname(path)
         ext = os.path.splitext(path)[1]
         newpath = os.path.join(parent, f"{new_name}{ext}")
-        os.rename(path, newpath)
+        self.io.RenameFile(path, newpath)
 
         return newpath
 
