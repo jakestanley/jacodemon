@@ -95,6 +95,11 @@ I'm referencing my bass stream from the past year when writing OBS commands: htt
 
 ## Macros
 
+Currently hardcoded and for Windows only:
+- Numpad 0: Capture replay buffer
+- Numpad dot/delete: Cancel recording
+- Numpad 3: Switch to browser scene and open doom wiki in a Qt web view (need to make this pop up)
+
 ### Windows
 - ahk
 - ahk (python)
