@@ -15,5 +15,4 @@
 
 # Bugs
 
-- 2023-08-03: If already recording, starting an auto record session will result in a None file name error
-- 2023-08-03: Selecting `Last` option from GUI (not program args) does not work. `Last` might actually be broken tbf
+None that I know of at the moment yay

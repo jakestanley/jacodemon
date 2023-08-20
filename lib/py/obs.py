@@ -38,7 +38,9 @@ class ObsController:
     def StartRecording(self):
         if self.enabled:
             if self.IsRecording():
-                self.StopRecording()
+                print("Stopping unrelated recording and waiting 2 seconds")
+                self.obs_client.stop_record()
+                time.sleep(2)
             self.obs_client.start_record()
             time.sleep(2)
 
