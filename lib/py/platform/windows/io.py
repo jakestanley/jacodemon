@@ -1,6 +1,6 @@
 from lib.py.io import IO
 
-import msvcrt
+import os
 import time
 
 class WinIo(IO):
@@ -8,12 +8,27 @@ class WinIo(IO):
     def __init__(self) -> None:
         super().__init__()
 
-    def _wait_for_file_unlock(self, file):
-        super()._wait_for_file_unlock(file)
-        # TODO: below code does not work so use parent for now
-        # while True:
-        #     try:
-        #         msvcrt.locking(file.fileno(), msvcrt.LK_NBLCK, 1)
-        #         break
-        #     except IOError:
-        #         time.sleep(0.1)  # Wait and try again
+    def RenameFile(self, path, newpath):
+        attempts = 0
+        while attempts < 10:
+            try:
+                os.rename(path, newpath)
+                return
+            except PermissionError:
+                attempts += 1
+                time.sleep(0.2*attempts)
+                
+        print("Failed to rename file")
+
+    def RemoveFile(self, path):
+        attempts = 0
+        while attempts < 10:
+            try:
+                os.remove(path)
+                return
+            except PermissionError:
+                attempts += 1
+                time.sleep(0.2*attempts)
+                
+        print("Failed to remove file")
+

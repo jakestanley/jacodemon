@@ -52,9 +52,6 @@ class ObsController:
 
     def MoveRecording(self, path, new_name):
 
-        # Pausing renaming for 3 seconds to allow OBS to release the handle
-        time.sleep(3)
-
         parent = os.path.dirname(path)
         ext = os.path.splitext(path)[1]
         newpath = os.path.join(parent, f"{new_name}{ext}")

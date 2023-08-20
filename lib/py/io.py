@@ -8,8 +8,7 @@ class IO:
         pass
 
     def _wait_for_file_unlock(self, file):
-        print("Warning: Not implemented on this platform.\nI'll sleep for 3 seconds instead")
-        time.sleep(3)
+        print("Locking checks not implemented on this platform")
 
     def RenameFile(self, path, newpath):
         with open(path, "rb") as file:
