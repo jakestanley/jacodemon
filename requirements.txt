@@ -2,6 +2,7 @@ appdirs
 jsonpickle
 obsws_python
 pyqt5
+PyQtWebEngine
 
 # unix only
 fcntl; sys_platform != 'win32'
