@@ -1,6 +1,7 @@
 # https://pypi.org/project/ahk/
 from lib.py.keys import *
 from lib.py.macros import Macros
+from lib.py.scenes import SceneManager
 from ahk import AHK
 
 # from https://www.autohotkey.com/docs/v1/KeyList.htm
@@ -56,10 +57,11 @@ def focus_browser():
     pass
 
 class WinMacros(Macros):
-    def __init__(self, obs):
-        super().__init__(obs=obs)
+    def __init__(self, obs, sm):
+        super().__init__(obs, sm)
         self.ahk = AHK()
         self.ahk.add_hotkey(KeyAhkMappings[KEY_NUMPAD_0], callback=self._obs.SaveReplay)
         self.ahk.add_hotkey(KeyAhkMappings[KEY_DOT], callback=self._obs.CancelRecording)
         self.ahk.add_hotkey(KeyAhkMappings[KEY_DEL], callback=self._obs.CancelRecording)
+        self.ahk.add_hotkey(KeyAhkMappings[KEY_NUMPAD_3], callback=self._sm.SwitchToBrowserScene)
         self.ahk.start_hotkeys()

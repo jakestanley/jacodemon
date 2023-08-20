@@ -32,14 +32,15 @@ KeyNames = [
 ]
 
 class Macros:
-    def __init__(self, obs):
+    def __init__(self, obs, sm):
         self._obs = obs
+        self._sm = sm
 
-def GetMacros(obs) -> Macros:
+def GetMacros(obs, sm) -> Macros:
     system = platform.system()
     if system == "Darwin":
         from lib.py.platform.macos.macros import MacMacros
-        return MacMacros(obs)
+        return MacMacros(obs, sm)
     else:
         from lib.py.platform.windows.macros import WinMacros
-        return WinMacros(obs)
+        return WinMacros(obs, sm)

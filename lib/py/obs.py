@@ -85,6 +85,11 @@ class ObsController:
             newpath = self.MoveRecording(path, self._demo_name)
             self.notifications.notify("Recording stopped", f"Saved to '{newpath}'")
 
+    def GetScene(self):
+        # TODO consider dummy OBS class/interface so we don't have to keep doing this
+        if self.enabled:
+            return self.obs_client.get_current_program_scene()
+
     def SetScene(self, title):
         if self.enabled:
             self.obs_client.set_current_program_scene(title)
@@ -101,3 +106,7 @@ class ObsController:
 
     def SetDemoName(self, name):
         self._demo_name = name
+
+class EnabledObsController(ObsController):
+    def __init__(self) -> None:
+        pass

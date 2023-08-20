@@ -20,6 +20,7 @@ from lib.py.demo import GetDemosForMap, AddBadgesToMap
 from lib.py.macros import Macros, GetMacros
 from lib.py.notifications import Notifications, GetNotifications
 from lib.py.io import IO, GetIo
+from lib.py.scenes import SceneManager
 
 options: Options = args.get_args()
 config: Config = LoadConfig()
@@ -37,6 +38,7 @@ launch = LaunchConfig(options, config)
 
 obsController = ObsController(options.obs, config, notifications, io)
 obsController.Setup()
+sceneManager = SceneManager(obsController, config)
 
 obsController.SetScene(config.wait_scene)
 
@@ -106,7 +108,7 @@ obsController.SetScene(config.play_scene)
 obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
 obsController.SetDemoName(demo_name)
 
-macros: Macros = GetMacros(obsController)
+macros: Macros = GetMacros(obsController, sceneManager)
 
 if options.auto_record:
     obsController.StartRecording()
