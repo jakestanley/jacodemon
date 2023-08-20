@@ -1,4 +1,4 @@
-from lib.py.macros import Notifications
+from lib.py.notifications import Notifications
 import os, subprocess
 
 _CMD = '''
@@ -13,3 +13,7 @@ class MacNotifications(Notifications):
         
     def notify(self, title, body):
         subprocess.call(['osascript', '-e', _CMD, title, body])
+
+if __name__ == "__main__":
+    notifications = MacNotifications()
+    notifications.notify("Recording saved", "/Users/jake/Movies/balls.mkv")
