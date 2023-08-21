@@ -21,6 +21,7 @@ from lib.py.macros import Macros, GetMacros
 from lib.py.notifications import Notifications, GetNotifications
 from lib.py.io import IO, GetIo
 from lib.py.scenes import SceneManager
+from lib.py.keys import *
 
 options: Options = args.get_args()
 config: Config = LoadConfig()
@@ -108,7 +109,13 @@ obsController.SetScene(config.play_scene)
 obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
 obsController.SetDemoName(demo_name)
 
-macros: Macros = GetMacros(obsController, sceneManager)
+macros: Macros = GetMacros()
+# TODO move this to configuration somehow
+macros.add_hotkey_callback(KEY_NUMPAD_0, callback=obsController.SaveReplay)
+macros.add_hotkey_callback(KEY_DOT, callback=obsController.CancelRecording)
+macros.add_hotkey_callback(KEY_DEL, callback=obsController.CancelRecording)
+macros.add_hotkey_callback(KEY_NUMPAD_3, callback=sceneManager.SwitchToBrowserScene)
+macros.listen()
 
 if options.auto_record:
     obsController.StartRecording()

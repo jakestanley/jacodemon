@@ -57,11 +57,12 @@ def focus_browser():
     pass
 
 class WinMacros(Macros):
-    def __init__(self, obs, sm):
-        super().__init__(obs, sm)
+    def __init__(self):
+        super().__init__()
         self.ahk = AHK()
-        self.ahk.add_hotkey(KeyAhkMappings[KEY_NUMPAD_0], callback=self._obs.SaveReplay)
-        self.ahk.add_hotkey(KeyAhkMappings[KEY_DOT], callback=self._obs.CancelRecording)
-        self.ahk.add_hotkey(KeyAhkMappings[KEY_DEL], callback=self._obs.CancelRecording)
-        self.ahk.add_hotkey(KeyAhkMappings[KEY_NUMPAD_3], callback=self._sm.SwitchToBrowserScene)
+
+    def add_hotkey_callback(self, key: str, callback):
+        self.ahk.add_hotkey(KeyAhkMappings[key], callback=callback)
+
+    def listen(self):
         self.ahk.start_hotkeys()

@@ -32,15 +32,22 @@ KeyNames = [
 ]
 
 class Macros:
-    def __init__(self, obs, sm):
-        self._obs = obs
-        self._sm = sm
+    def __init__(self):
+        return
 
-def GetMacros(obs, sm) -> Macros:
+    def add_hotkey_callback(self, key: str, callback):
+        print("Warning: add_hotkey_callback not implemented")
+
+    def listen(self):
+        pass
+
+
+def GetMacros() -> Macros:
     system = platform.system()
     if system == "Darwin":
         from lib.py.platform.macos.macros import MacMacros
-        return MacMacros(obs, sm)
+        return MacMacros()
     else:
         from lib.py.platform.windows.macros import WinMacros
-        return WinMacros(obs, sm)
+        return WinMacros()
+

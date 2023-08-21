@@ -15,5 +15,5 @@ def balls():
 hs.hotkey.bind([], _KEY_NUMPAD_0, balls)
 
 class MacMacros(Macros):
-    def __init__(self, obs, sm):
-        super().__init__(obs, sm)
+    def __init__(self):
+        super().__init__()
