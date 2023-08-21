@@ -17,8 +17,11 @@ class WinIo(IO):
             except PermissionError:
                 attempts += 1
                 time.sleep(0.2*attempts)
+            except FileNotFoundError:
+                attempts += 1
+                time.sleep(0.2 * attempts)
                 
-        print("Failed to rename file")
+        print(f"Failed to rename file {path} to {newpath}")
 
     def RemoveFile(self, path):
         attempts = 0
@@ -30,5 +33,5 @@ class WinIo(IO):
                 attempts += 1
                 time.sleep(0.2*attempts)
                 
-        print("Failed to remove file")
+        print(f"Failed to remove file {path}")
 
