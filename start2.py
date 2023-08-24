@@ -37,7 +37,11 @@ notifications: Notifications = GetNotifications()
 io: IO = GetIo()
 launch = LaunchConfig(options, config)
 
-obsController = ObsController(options.obs, config, notifications, io)
+if options.obs:
+    obsController = ObsController(config, notifications, io)
+else:
+    obsController = NoObsController(notifications)
+
 obsController.Setup()
 sceneManager = SceneManager(obsController, config)
 
