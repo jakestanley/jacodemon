@@ -27,10 +27,9 @@ class ObsController:
     Should you have passed the --no-obs argument?
                     """)
                 sys.exit(1)
-            scenes = self.obs_client.get_scene_list()
             self.obs_client.set_current_program_scene(self.config.wait_scene)
             if not self.obs_client.get_replay_buffer_status().output_active:
-                print("Replay buffer disabled")
+                self.notifications.notify("Replay buffer disabled", "That's it really.")
 
     def IsRecording(self):
         return self.obs_client.get_record_status().output_active
