@@ -1,5 +1,4 @@
 # In progress
-- Replay buffer naming
 
 # Planned
 
@@ -13,6 +12,10 @@
 - Add FINISHED to auto-records output file rename
 - Option to delete recording instead of saving
 
+# Done
+- Replay buffer naming
+
 # Bugs
+- If you quit during saving the replay buffer, then the replay buffer does not get renamed
 
 None that I know of at the moment yay
