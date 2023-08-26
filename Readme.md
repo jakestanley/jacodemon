@@ -10,6 +10,7 @@ Sensible defaults are chosen for recording and streaming
 - `--no-gui` disables the options screen on launch
 - `--no-mods` disables additional mods
 - `--no-auto_record`
+- `--stdout-log-level <DEBUG,INFO,WARNING>` or `-sll` to set the logging levels that will print to the console
 
 ## Configuration
 

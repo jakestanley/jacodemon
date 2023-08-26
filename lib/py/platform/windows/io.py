@@ -11,11 +11,15 @@ class WinIo(IO):
         self._logger = lman.GetLogger(__name__)
 
     def RenameFile(self, path, newpath):
+        if path == None:
+            self._logger.error("Attempted to rename blank path?")
+            return
         self._logger.debug(f"Attempting to rename {path} to {newpath}")
         attempts = 0
         while attempts < 10:
             try:
                 os.rename(path, newpath)
+                self._logger.debug(f"Renamed file successfull? after {attempts+1} attempts")
                 return
             except PermissionError:
                 attempts += 1

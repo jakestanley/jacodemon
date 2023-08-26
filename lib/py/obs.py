@@ -51,6 +51,9 @@ class ObsController:
 
     def MoveRecording(self, path, new_name):
 
+        if not path:
+            self._logger.error(f"Path argument was empty in call to MoveRecording")
+
         self._logger.debug(f"Moving {path} to {new_name}")
         parent = os.path.dirname(path)
         ext = os.path.splitext(path)[1]
@@ -60,12 +63,25 @@ class ObsController:
 
         return newpath
 
+    def SaveReplayBuffer(self):
+        self.obs_client.save_replay_buffer()
+        attempts = 0
+        while attempts < 10:
+            path = self.obs_client.get_last_replay_buffer_replay().saved_replay_path
+            if path:
+                self._logger.debug(f"Got saved replay path '{path}'")
+                return path
+            attempts += 1
+            self._logger.debug(f"Saved replay path was empty on attempt {attempts}")
+            time.sleep(0.2 * attempts)
+        self._logger.error("Could not obtain saved replay path")
+        return None
+
     def SaveReplay(self):
         replay_name = self._GetReplayName()
         
         if self.obs_client.get_replay_buffer_status().output_active:
-            self.obs_client.save_replay_buffer()
-            path = self.obs_client.get_last_replay_buffer_replay().saved_replay_path
+            path = self.SaveReplayBuffer()
             newpath = self.MoveRecording(path, replay_name)
             self.notifications.notify("Replay saved", f"Saved to '{newpath}'")
         else:
