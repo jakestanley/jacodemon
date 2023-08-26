@@ -47,7 +47,6 @@ def get_args():
     modes.add_argument("-r",  "--random",      action='store_true',    help="Pick random map from playlist")
     modes.add_argument("-l",  "--last",        action='store_true',    help="If saved, play last map")
 
-    # list args
     parser.add_argument("-sll", "--stdout-log-level", type=str,        help="Log level that should also be printed to console", default='INFO')
 
     args = parser.parse_args()

@@ -65,11 +65,11 @@ if options.last():
 if not map:
 
     if not os.path.exists(options.playlist):
-        print(f"Could not find playlist file: {options.playlist}")
+        logger.critical(f"Could not find playlist file: {options.playlist}")
         sys.exit(1)
 
     if not csv_is_valid(options.playlist):
-        print("CSV header is invalid. See output")
+        logger.critical("CSV header is invalid. See output")
         sys.exit(1)
 
     raw_maps = load_raw_maps(options.playlist)
@@ -98,14 +98,14 @@ if not map:
         map = OpenMapSelection(maps)
 
 if not map:
-    print("A map was not selected. Exiting normally")
+    logger.info("A map was not selected. Exiting normally")
     sys.exit(0)
 
 if options.replay():
     demos = GetDemosForMap(map, config.demo_dir)
     demo = OpenDemoSelection(demos)
     if not demo:
-        print("A demo was not selected. Exiting normally")
+        logger.info("A demo was not selected. Exiting normally")
         sys.exit(0)
 elif not options.random():
     SaveSelectedMap(map)
