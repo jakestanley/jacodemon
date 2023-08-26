@@ -45,7 +45,7 @@ if not options.last():
 logger = lman.GetLogger(__name__)
 
 notifications: Notifications = GetNotifications(lman)
-io: IO = GetIo()
+io: IO = GetIo(lman)
 launch = LaunchConfig(options, config)
 
 if options.obs:
