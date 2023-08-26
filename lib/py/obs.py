@@ -1,8 +1,10 @@
+import logging
 import os
 import sys
 import time
 from datetime import datetime
 from lib.py.io import IO
+from lib.py.logs import LogManager
 
 import obsws_python as obs
 
@@ -10,10 +12,11 @@ from lib.py.config import Config
 from lib.py.notifications import Notifications
 
 class ObsController:
-    def __init__(self, config: Config, notifications: Notifications, io: IO):
+    def __init__(self, config: Config, notifications: Notifications, io: IO, lman: LogManager):
         self.config = config
         self.notifications = notifications
         self.io = io
+        self._logger = lman.GetLogger(__name__)
 
     def _GetReplayName(self):
         timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
@@ -23,11 +26,7 @@ class ObsController:
         try:
             self.obs_client = obs.ReqClient(host='localhost', port=4455, password='')
         except ConnectionRefusedError:
-            print("""
-Unable to connect to OBS. Is it running? 
-Is the Websocket API enabled? 
-Should you have passed the --no-obs argument?
-                """)
+            self._logger.fatal("Unable to connect to OBS. Is it running? Is the Websocket API enabled? Should you have passed the --no-obs argument?")
             sys.exit(1)
         self.obs_client.set_current_program_scene(self.config.wait_scene)
         if not self.obs_client.get_replay_buffer_status().output_active:
@@ -38,7 +37,7 @@ Should you have passed the --no-obs argument?
 
     def StartRecording(self):
         if self.IsRecording():
-            print("Stopping unrelated recording and waiting 2 seconds")
+            self._logger.info("Stopping unrelated recording and waiting 2 seconds")
             self.obs_client.stop_record()
             time.sleep(2)
         self.obs_client.start_record()
@@ -52,10 +51,12 @@ Should you have passed the --no-obs argument?
 
     def MoveRecording(self, path, new_name):
 
+        self._logger.debug(f"Moving {path} to {new_name}")
         parent = os.path.dirname(path)
         ext = os.path.splitext(path)[1]
         newpath = os.path.join(parent, f"{new_name}{ext}")
         self.io.RenameFile(path, newpath)
+        self._logger.debug(f"Moved {path} to {newpath}\n")
 
         return newpath
 
@@ -90,14 +91,14 @@ Should you have passed the --no-obs argument?
     def UpdateMapTitle(self, title):
         settings = {'text': title}
         success = self.obs_client.set_input_settings(name=self.config.title_source, settings=settings, overlay=True)
-        print(f"Set map title to {title}")
+        self._logger.debug(f"Set map title to {title}")
 
     def SetDemoName(self, name):
         self._demo_name = name
 
 class NoObsController(ObsController):
-    def __init__(self, notifications: Notifications):
-        super().__init__(config=None, notifications=notifications, io=None)
+    def __init__(self, notifications: Notifications, lman: LogManager):
+        super().__init__(config=None, notifications=notifications, io=None, lman=lman)
 
     def Setup(self):
         return
@@ -106,13 +107,13 @@ class NoObsController(ObsController):
         return False
 
     def StartRecording(self):
-        print(f"OBS is disabled. Cannot start recording")
+        self._logger.warning(f"OBS is disabled. Cannot start recording")
 
     def CancelRecording(self):
-        print(f"OBS is disabled. This CancelRecording call is redundant")
+        self._logger.warning(f"OBS is disabled. This CancelRecording call is redundant")
 
     def MoveRecording(self, path, new_name):
-        print(f"OBS is disabled. This MoveRecording call is redundant")
+        self._logger.warning(f"OBS is disabled. This MoveRecording call is redundant")
 
     def SaveReplay(self):
         replay_name = self._GetReplayName()
@@ -126,7 +127,7 @@ class NoObsController(ObsController):
         return ""
 
     def SetScene(self, title):
-        print(f"OBS is disabled. Scene requested: '{title}'")
+        self._logger.warning(f"OBS is disabled. Scene requested: '{title}'")
 
     def UpdateMapTitle(self, title):
-        print(f"OBS is disabled. Title provided: '{title}'")
+        self._logger.warning(f"OBS is disabled. Title provided: '{title}'")

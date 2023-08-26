@@ -1,24 +1,27 @@
+import logging
+from lib.py.logs import LogManager
 import platform
 
 class Notifications:
-    def __init(self):
+    def __init(self, lman: LogManager):
         self._warn = False
-        pass
+        self._logger = lman.GetLogger(__name__)
+
+    def logNotification(self, title, body):
+        self._logger.debug(f"Notification: {title} - {body}")
 
     def notify(self, title, body):
         if not self._warn:
-            print("Notifications are not supported on this platform. Printing to console...")
+            self._logger.warning("Notifications are not supported on this platform. Printing to console...")
             self._warn = True
-        print(f"""
-              Title: {title}\n
-              Body: {body}
-              """)
+        self.logNotification(title, body)
+
         
-def GetNotifications() -> Notifications:
+def GetNotifications(lman: LogManager) -> Notifications:
     system = platform.system()
     if system == "Darwin":
         from lib.py.platform.macos.notifications import MacNotifications
-        return MacNotifications()
+        return MacNotifications(lman)
     else:
         from lib.py.platform.windows.notifications import WinNotifications
-        return WinNotifications()
+        return WinNotifications(lman)

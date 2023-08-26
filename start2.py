@@ -44,14 +44,14 @@ if not options.last():
 
 logger = lman.GetLogger(__name__)
 
-notifications: Notifications = GetNotifications()
+notifications: Notifications = GetNotifications(lman)
 io: IO = GetIo()
 launch = LaunchConfig(options, config)
 
 if options.obs:
-    obsController = ObsController(config, notifications, io)
+    obsController = ObsController(config, notifications, io, lman)
 else:
-    obsController = NoObsController(notifications)
+    obsController = NoObsController(notifications, lman)
 
 obsController.Setup()
 sceneManager = SceneManager(obsController, config)
