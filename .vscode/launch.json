@@ -60,6 +60,19 @@
             ]
         },
         {
+            "name": "Start2 (No OBS, No Demo, Quiet)",
+            "type": "python",
+            "request": "launch",
+            "program": "start2.py",
+            "args": [
+                "--playlist",
+                "./examples/v3_Season2.csv",
+                "--no-obs",
+                "--no-demo",
+                "--stdout-log-level", "error"
+            ]
+        },
+        {
             "name": "Start2 (No OBS, No Demo, Last)",
             "type": "python",
             "request": "launch",

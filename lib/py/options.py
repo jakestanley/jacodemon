@@ -14,6 +14,7 @@ class Options:
         self.record_demo = None
         self.crispy = None
         self.mode = MODE_NORMAL
+        self.stdout_log_level = None
 
     def last(self):
         return self.mode == MODE_LAST

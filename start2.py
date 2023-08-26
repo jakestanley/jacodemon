@@ -4,6 +4,7 @@ import copy
 import subprocess
 
 import lib.py.arguments as args
+import lib.py.logs as logs
 from lib.py.config import Config, LoadConfig
 from lib.py.csv import csv_is_valid, load_raw_maps
 from lib.py.last import *
@@ -24,6 +25,14 @@ from lib.py.scenes import SceneManager
 from lib.py.keys import *
 
 options: Options = args.get_args()
+
+# set up logging now that we have arguments
+logs.configure()
+lman = logs.LogManager(options)
+
+logger = lman.GetLogger(__name__)
+logger.info("Starting application...")
+
 config: Config = LoadConfig()
 
 # if last selected, skip the gui
@@ -32,6 +41,8 @@ if not options.last():
     config.Save()
 
     OpenOptionsGui(options)
+
+logger = lman.GetLogger(__name__)
 
 notifications: Notifications = GetNotifications()
 io: IO = GetIo()
@@ -127,7 +138,7 @@ if options.auto_record:
 if not options.replay():
     statistics: Statistics = NewStatistics(launch, config.demo_dir)
 
-print(f"Running command\n\t{command}")
+logger.debug(f"Running command: {' '.join(command)}")
 running = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 # update stats and save

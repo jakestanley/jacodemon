@@ -14,6 +14,7 @@ def ToOptions(args) -> Options:
     options.record_demo = not args.no_demo
     options.music = args.music
     options.crispy = args.crispy
+    options.stdout_log_level = args.stdout_log_level.upper()
 
     if args.last:
         options.mode = MODE_LAST
@@ -45,6 +46,9 @@ def get_args():
     modes.add_argument("-rp", "--replay",      action='store_true',    help="Replay a demo")
     modes.add_argument("-r",  "--random",      action='store_true',    help="Pick random map from playlist")
     modes.add_argument("-l",  "--last",        action='store_true',    help="If saved, play last map")
+
+    # list args
+    parser.add_argument("-sll", "--stdout-log-level", type=str,        help="Log level that should also be printed to console", default='INFO')
 
     args = parser.parse_args()
 
