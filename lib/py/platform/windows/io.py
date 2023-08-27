@@ -4,6 +4,8 @@ from lib.py.logs import LogManager, GetLogManager
 import os
 import time
 
+_MAX_ATTEMPTS = 20
+
 class WinIo(IO):
 
     def __init__(self) -> None:
@@ -16,7 +18,7 @@ class WinIo(IO):
             return
         self._logger.debug(f"Attempting to rename {path} to {newpath}")
         attempts = 0
-        while attempts < 10:
+        while attempts < _MAX_ATTEMPTS:
             try:
                 os.rename(path, newpath)
                 self._logger.debug(f"Renamed file successfull? after {attempts+1} attempts")
@@ -31,11 +33,12 @@ class WinIo(IO):
                 time.sleep(0.2 * attempts)
                 
         self._logger.error(f"Failed to rename file {path} to {newpath}")
+        raise Exception()
 
     def RemoveFile(self, path):
         self._logger.debug(f"Attempting to remove {path}")
         attempts = 0
-        while attempts < 10:
+        while attempts < _MAX_ATTEMPTS:
             try:
                 os.remove(path)
                 return
@@ -45,4 +48,5 @@ class WinIo(IO):
                 time.sleep(0.2*attempts)
                 
         self._logger.error(f"Failed to remove file {path}")
+        raise Exception()
 

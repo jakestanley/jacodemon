@@ -98,9 +98,7 @@ class Statistics:
             raw_level_stats.close()
             os.rename(LEVELSTAT_TXT, archived_level_stat_txt)
         else:
-            print("""
-                No levelstat.txt found. I assume you didn't finish the level 
-                or aren't using dsda-doom""")
+            self._logger.info("No levelstat.txt found. I assume you didn't finish the level or aren't using dsda-doom")
 
     def write_stats(self):
         stats_json_path = os.path.join(self._demo_dir, self._demo_name + "-STATS.json")

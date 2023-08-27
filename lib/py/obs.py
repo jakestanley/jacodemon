@@ -58,8 +58,11 @@ class ObsController:
         parent = os.path.dirname(path)
         ext = os.path.splitext(path)[1]
         newpath = os.path.join(parent, f"{new_name}{ext}")
-        self.io.RenameFile(path, newpath)
-        self._logger.debug(f"Moved {path} to {newpath}\n")
+        try:
+            self.io.RenameFile(path, newpath)
+            self._logger.debug(f"Moved {path} to {newpath}\n")
+        except Exception:
+            self._logger.error("Failed to move recording")
 
         return newpath
 
@@ -82,8 +85,11 @@ class ObsController:
         
         if self.obs_client.get_replay_buffer_status().output_active:
             path = self.SaveReplayBuffer()
-            newpath = self.MoveRecording(path, replay_name)
-            self.notifications.notify("Replay saved", f"Saved to '{newpath}'")
+            try:
+                newpath = self.MoveRecording(path, replay_name)
+                self.notifications.notify("Replay saved", f"Saved to '{newpath}'")
+            except Exception:
+                self._logger.error("Could not save replay")
         else:
             self.notifications.notify("Replay buffer disabled", f"Not saving replay: '{replay_name}'")     
 
