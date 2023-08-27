@@ -3,6 +3,7 @@ import os
 import re
 
 from lib.py.launch import LaunchConfig
+from lib.py.logs import GetLogManager
 
 # constants
 LEVELSTAT_TXT = "./levelstat.txt"
@@ -52,6 +53,7 @@ class Statistics:
         self._stats[_KEY_LEVEL_STATS]   = levelStats
         self._demo_name = demo_name
         self._demo_dir = demo_dir
+        self._logger = GetLogManager().GetLogger(__name__)
 
     def get_time(self):
         if self._stats[_KEY_LEVEL_STATS]:

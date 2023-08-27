@@ -1,4 +1,5 @@
 import logging
+import sys
 from lib.py.options import Options
 
 def configure():
@@ -11,6 +12,7 @@ def configure():
     )
 
 class LogManager:
+
     def __init__(self, options: Options) -> None:
         self.options = options
 
@@ -35,3 +37,12 @@ class LogManager:
 
         return logger
 
+def InitLogManager(options: Options):
+    global lman
+    lman = LogManager(options)
+
+def GetLogManager() -> LogManager:
+    if not lman:
+        logging.fatal("LogManager not initialised")
+        sys.exit(1)
+    return lman

@@ -2,7 +2,7 @@ from lib.py.notifications import Notifications
 import os
 import subprocess
 import logging
-from lib.py.logs import LogManager
+from lib.py.logs import GetLogManager
 
 _CMD = '''
 on run argv
@@ -11,9 +11,9 @@ end run
 '''
 
 class MacNotifications(Notifications):
-    def __init__(self, lman: LogManager):
-        super().__init__(lman)
-        self._logger = lman.GetLogger(__name__)
+    def __init__(self):
+        super().__init__()
+        self._logger = GetLogManager().GetLogger(__name__)
         
     def notify(self, title, body):
         subprocess.call(['osascript', '-e', _CMD, title, body])

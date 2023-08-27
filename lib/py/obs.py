@@ -4,7 +4,7 @@ import sys
 import time
 from datetime import datetime
 from lib.py.io import IO
-from lib.py.logs import LogManager
+from lib.py.logs import GetLogManager
 
 import obsws_python as obs
 
@@ -12,11 +12,11 @@ from lib.py.config import Config
 from lib.py.notifications import Notifications
 
 class ObsController:
-    def __init__(self, config: Config, notifications: Notifications, io: IO, lman: LogManager):
+    def __init__(self, config: Config, notifications: Notifications, io: IO):
         self.config = config
         self.notifications = notifications
         self.io = io
-        self._logger = lman.GetLogger(__name__)
+        self._logger = GetLogManager().GetLogger(__name__)
 
     def _GetReplayName(self):
         timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
@@ -113,8 +113,8 @@ class ObsController:
         self._demo_name = name
 
 class NoObsController(ObsController):
-    def __init__(self, notifications: Notifications, lman: LogManager):
-        super().__init__(config=None, notifications=notifications, io=None, lman=lman)
+    def __init__(self, notifications: Notifications):
+        super().__init__(config=None, notifications=notifications, io=None)
 
     def Setup(self):
         return

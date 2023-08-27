@@ -1,14 +1,14 @@
 from lib.py.io import IO
-from lib.py.logs import LogManager
+from lib.py.logs import LogManager, GetLogManager
 
 import os
 import time
 
 class WinIo(IO):
 
-    def __init__(self, lman: LogManager) -> None:
-        super().__init__(lman)
-        self._logger = lman.GetLogger(__name__)
+    def __init__(self) -> None:
+        super().__init__()
+        self._logger = GetLogManager().GetLogger(__name__)
 
     def RenameFile(self, path, newpath):
         if path == None:

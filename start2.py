@@ -28,9 +28,8 @@ options: Options = args.get_args()
 
 # set up logging now that we have arguments
 logs.configure()
-lman = logs.LogManager(options)
-
-logger = lman.GetLogger(__name__)
+logs.InitLogManager(options)
+logger = logs.GetLogManager().GetLogger(__name__)
 logger.info("Starting application...")
 
 config: Config = LoadConfig()
@@ -42,16 +41,17 @@ if not options.last():
 
     OpenOptionsGui(options)
 
-logger = lman.GetLogger(__name__)
+# reset logging configuration after options
+logger = logs.GetLogManager().GetLogger(__name__)
 
-notifications: Notifications = GetNotifications(lman)
-io: IO = GetIo(lman)
+notifications: Notifications = GetNotifications()
+io: IO = GetIo()
 launch = LaunchConfig(options, config)
 
 if options.obs:
-    obsController = ObsController(config, notifications, io, lman)
+    obsController = ObsController(config, notifications, io)
 else:
-    obsController = NoObsController(notifications, lman)
+    obsController = NoObsController(notifications)
 
 obsController.Setup()
 sceneManager = SceneManager(obsController, config)

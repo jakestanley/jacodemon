@@ -1,12 +1,13 @@
 import fcntl
 
 from lib.py.io import IO
+from lib.py.logs import GetLogManager, LogManager
 
 class MacIo(IO):
 
-    def __init__(self, lman) -> None:
-        super().__init__(lman)
-        self._logger = lman.GetLogger(__name__)
+    def __init__(self) -> None:
+        super().__init__()
+        self._logger = GetLogManager().GetLogger(__name__)
 
     def _wait_for_file_unlock(self, file):
         try:

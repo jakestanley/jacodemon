@@ -1,11 +1,11 @@
 import logging
-from lib.py.logs import LogManager
+from lib.py.logs import GetLogManager
 import platform
 
 class Notifications:
-    def __init(self, lman: LogManager):
+    def __init(self):
         self._warn = False
-        self._logger = lman.GetLogger(__name__)
+        self._logger = GetLogManager().GetLogger(__name__)
 
     def logNotification(self, title, body):
         self._logger.debug(f"Notification: {title} - {body}")
@@ -17,11 +17,11 @@ class Notifications:
         self.logNotification(title, body)
 
         
-def GetNotifications(lman: LogManager) -> Notifications:
+def GetNotifications() -> Notifications:
     system = platform.system()
     if system == "Darwin":
         from lib.py.platform.macos.notifications import MacNotifications
-        return MacNotifications(lman)
+        return MacNotifications()
     else:
         from lib.py.platform.windows.notifications import WinNotifications
-        return WinNotifications(lman)
+        return WinNotifications()
