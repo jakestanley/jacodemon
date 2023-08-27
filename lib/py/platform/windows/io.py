@@ -19,7 +19,7 @@ class WinIo(IO):
         while attempts < 10:
             try:
                 os.rename(path, newpath)
-                self._logger.debug(f"Renamed file successfull? after {attempts+1} attempts")
+                self._logger.debug(f"Renamed file successfully after {attempts+1} attempts")
                 return
             except PermissionError:
                 attempts += 1
@@ -27,8 +27,13 @@ class WinIo(IO):
                 time.sleep(0.2*attempts)
             except FileNotFoundError:
                 attempts += 1
-                self._logger.debug(f"Got FileNotFoundError when attempting to rename file on attempt {attempts}")
-                time.sleep(0.2 * attempts)
+                self._logger.debug(f"Got FileNotFoundError when attempting to rename {path} on attempt {attempts}")
+                if os.path.isfile(newpath):
+                    self._logger.debug(f"Looks like the file has already moved to {newpath}")
+                    return
+                else:
+                    # just in case OBS is still doing something with the file
+                    time.sleep(0.2 * attempts)
                 
         self._logger.error(f"Failed to rename file {path} to {newpath}")
 
