@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-
+import threading
+import queue
+import time
 import copy
 import subprocess
 
 import lib.py.arguments as args
 import lib.py.logs as logs
+from lib.py.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from lib.py.config import Config, LoadConfig
 from lib.py.csv import csv_is_valid, load_raw_maps
 from lib.py.last import *
@@ -24,6 +27,8 @@ from lib.py.io import IO, GetIo
 from lib.py.scenes import SceneManager
 from lib.py.keys import *
 
+ui_queue = queue.Queue()
+signaling = Signaling(ui_queue)
 options: Options = args.get_args()
 
 # set up logging now that we have arguments
@@ -129,7 +134,7 @@ macros: Macros = GetMacros()
 macros.add_hotkey_callback(KEY_NUMPAD_0, callback=obsController.SaveReplay)
 macros.add_hotkey_callback(KEY_DOT, callback=obsController.CancelRecording)
 macros.add_hotkey_callback(KEY_DEL, callback=obsController.CancelRecording)
-macros.add_hotkey_callback(KEY_NUMPAD_3, callback=sceneManager.SwitchToBrowserScene)
+macros.add_hotkey_callback(KEY_NUMPAD_3, callback=signaling.SwitchToBrowserScene)
 macros.listen()
 
 if options.auto_record:
@@ -139,7 +144,18 @@ if not options.replay():
     statistics: Statistics = NewStatistics(launch, config.demo_dir)
 
 logger.debug(f"Running command: {' '.join(command)}")
-running = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+subprocess_thread = threading.Thread(target=lambda: subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE))
+subprocess_thread.start()
+
+# process events that require main thread, i.e UI stuff
+# TODO could this be in the signaling class?
+while subprocess_thread.is_alive():
+    if ui_queue.empty():
+        time.sleep(1)
+    else:
+        signal = ui_queue.get()
+        if signal == SWITCH_TO_BROWSER_SCENE:
+            sceneManager.SwitchToBrowserScene() # blocking
 
 # update stats and save
 if not options.replay():
