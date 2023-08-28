@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Python: Current File",
             "type": "python",
@@ -34,6 +35,18 @@
                 "--playlist",
                 "./examples/v3_Season2.csv",
                 "--last"
+            ]
+        },
+        {
+            "name": "Start2 (Debug, Last)",
+            "type": "python",
+            "request": "launch",
+            "program": "start2.py",
+            "args": [
+                "--playlist",
+                "./examples/v3_Season2.csv",
+                "--last",
+                "-sll", "DEBUG"
             ]
         },
         {

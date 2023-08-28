@@ -20,8 +20,12 @@ class WinIo(IO):
         attempts = 0
         while attempts < _MAX_ATTEMPTS:
             try:
-                os.rename(path, newpath)
-                self._logger.debug(f"Renamed file successfully after {attempts+1} attempts")
+                if os.path.isfile(path):
+                    os.rename(path, newpath)
+                    self._logger.debug(f"Renamed file successfully after {attempts+1} attempts")
+                else:
+                    self._logger.debug(f"Replay file '{path}' does not exist?")
+                    attempts += 1
                 return
             except PermissionError:
                 attempts += 1
