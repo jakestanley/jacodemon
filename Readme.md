@@ -1,22 +1,28 @@
-# Jake's Doom Launcher & Stream Manager
+# JACODEMON
+
+- A Doom launcher with support for managing OBS. This was created to aid streaming and recording my journey through [Doomworld's "Top 100 WADs of All Time"](https://doomwiki.org/wiki/Top_100_WADs_of_All_Time)
+- I stream almost all of my gameplay on [Twitch](https://www.twitch.tv/madstanners)
+- I occasionally edit and upload videos to [YouTube](https://www.youtube.com/channel/UCRJqHDn3N8mGfEtlida1S0w)
 
 ## Running
 
 Sensible defaults are chosen for recording and streaming
 
-- `music` enables music which is disabled by default for copyright concerns
+- `--music` enables music which is disabled by default for copyright concerns
+- `--last` plays the last chosen map and skips the GUI
 - `--no-demo` disables demo recording
 - `--no-obs` disables OBS control
 - `--no-gui` disables the options screen on launch
 - `--no-mods` disables additional mods
-- `--no-auto_record`
+- `--no-auto-record`
 - `--stdout-log-level <DEBUG,INFO,WARNING>` or `-sll` to set the logging levels that will print to the console
 
 ## Configuration
 
 ### Script variables
 
-- Update `config.json` accordingly. Currently the script is not resilient to missing values.
+- This can now be configured in app
+- Deprecated: Update `config.json` accordingly. Currently the script is not resilient to missing values.
 
 ### Playlist format (CSV)
 
