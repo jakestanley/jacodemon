@@ -30,6 +30,7 @@ def ToOptions(args) -> Options:
 def _get_common_args():
     parser.add_argument("-p", "--playlist",     type=str,               help="Playlist")
     parser.add_argument("-g", "--no-gui",       action='store_true',    help="Command line operation only")
+    parser.add_argument("-sll", "--stdout-log-level", type=str,        help="Log level that should also be printed to console", default='INFO')
 
 def get_args():
     _get_common_args()
@@ -46,8 +47,6 @@ def get_args():
     modes.add_argument("-rp", "--replay",      action='store_true',    help="Replay a demo")
     modes.add_argument("-r",  "--random",      action='store_true',    help="Pick random map from playlist")
     modes.add_argument("-l",  "--last",        action='store_true',    help="If saved, play last map")
-
-    parser.add_argument("-sll", "--stdout-log-level", type=str,        help="Log level that should also be printed to console", default='INFO')
 
     args = parser.parse_args()
 
