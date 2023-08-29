@@ -1,8 +1,10 @@
 import os
 from typing import List
 
+import sys
 import csv
 from lib.py.map import FlatMap
+from lib.py.logs import LogManager, GetLogManager
 
 # private constants
 _KEY_MOD_NAME = "ModName"
@@ -100,6 +102,16 @@ Load raw map data from a CSV. It is possible that a map has no map ID and
 has to be enriched with this data
 """
 def load_raw_maps(csv_path) -> List[FlatMap]:
+
+    logger = GetLogManager().GetLogger(__name__)
+
+    if not os.path.exists(csv_path):
+        logger.critical(f"Could not find playlist file: {csv_path}")
+        sys.exit(1)
+
+    if not csv_is_valid(csv_path):
+        logger.critical("CSV header is invalid. See output")
+        sys.exit(1)
 
     raw_maps = []
 

@@ -9,7 +9,7 @@ import lib.py.arguments as args
 import lib.py.logs as logs
 from lib.py.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from lib.py.config import Config, LoadConfig
-from lib.py.csv import csv_is_valid, load_raw_maps
+from lib.py.csv import load_raw_maps
 from lib.py.last import *
 from lib.py.launch import LaunchConfig
 from lib.py.obs import *
@@ -68,14 +68,6 @@ if options.last():
     map = GetLastMap()
 
 if not map:
-
-    if not os.path.exists(options.playlist):
-        logger.critical(f"Could not find playlist file: {options.playlist}")
-        sys.exit(1)
-
-    if not csv_is_valid(options.playlist):
-        logger.critical("CSV header is invalid. See output")
-        sys.exit(1)
 
     raw_maps = load_raw_maps(options.playlist)
     maps = []
