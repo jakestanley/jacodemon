@@ -2,16 +2,81 @@
 import json
 import glob
 
+from typing import List
 import lib.py.arguments as args
 import lib.py.logs as logs
 from lib.py.options import Options
 from lib.py.config import Config, LoadConfig
 from lib.py.map import FlatMap, EnrichMaps
 from lib.py.csv import load_raw_maps
-from lib.py.demo import AddBadgesToMap
+from lib.py.demo import Demo, GetDemosForMap, AddBadgesToMap
+
+class Badge:
+    def __init__(self, rank, attempt, timestamp) -> None:
+        self.rank: int = rank
+        self.attempt: int = attempt
+        self.timestamp: str = timestamp
+
+    # if self is better than badge
+    def isBetterThan(self, badge):
+        if not badge:
+            return True
+        if self.rank > badge.rank:
+            return True
+        if self.rank == badge.rank:
+            # TODO convert to int. remember we want to know if it was _faster_
+            if self.timestamp != 'N/A':
+                return True
+            if self.timestamp < badge.timestamp:
+                return True
+        return False
+    
+    def serialize(self):
+        dic = {}
+        dic['rank'] = self.rank
+        dic['attempt'] = self.attempt
+        dic['timestamp'] = self.timestamp
+        return dic
+
+class MapReport:
+    def __init__(self, map: FlatMap) -> None:
+        self.map = map
+        self.best_badge = None
+        self.badges: List[Badge] = []
+
+    def add_badge(self, rank, attempt, timestamp):
+        badge = Badge(rank, attempt, timestamp)
+        if self.best_badge:
+            if self.best_badge.isBetterThan(badge):
+                pass
+            else:
+                self.best_badge = badge
+                self.badges.append(badge)
+                # TODO consider best time?
+        else:
+            self.best_badge = badge
+            self.badges.append(badge)
+
+    def serialize(self):
+
+        dic = {}
+        dic['MapId'] = self.map.MapId
+        dic['Author'] = self.map._Author
+        dic['MapName'] = self.map._MapName
+        dic['ModName'] = self.map.ModName
+
+        badges = []
+        for badge in self.badges:
+            badges.append(badge.serialize())
+
+        dic['badges'] = badges
+        return dic
+            
+
+map_reports = []
 
 options: Options = args.get_analyse_args()
-config: Config = LoadConfig(options.config)
+config: Config = LoadConfig()
 
 # set up logging now that we have arguments
 logs.configure()
@@ -19,29 +84,23 @@ logs.InitLogManager(options)
 logger = logs.GetLogManager().GetLogger(__name__)
 logger.info("Starting application...")
 
-# TODO update analyse for V3
 raw_maps = load_raw_maps(options.playlist)
 maps = EnrichMaps(config, raw_maps)
 
 for map in maps:
-    AddBadgesToMap(map, config.demo_dir)
+    demos = GetDemosForMap(map, config.demo_dir)
+    map_report = MapReport(map)
+    for attempts, item in enumerate([demo for demo in demos if demo.stats and demo.stats.has_level_stats()]):
+        demo: Demo = item
+        if demo.stats:
+            map_report.add_badge(demo.stats.get_badge(), attempts+1, demo.stats.get_time())
 
-for map in maps:
-    map: FlatMap = map
-    pfx = map.GetMapPrefix()
-    files = glob.glob(config.demo_dir + f"/{pfx}*")
-    stats = []
-    lumps = []
-    for file in files:
-        if file.endswith('STATS.json'):
-            stats.append(file)
-        elif file.endswith('.lmp'):
-            lumps.append(file)
+    map_reports.append(map_report)
 
-    for stat in stats:
-        statfile = json.load(open(stat))
-        if statfile['levelStats']:
-            levelStats = statfile['levelStats']
-            print("has levelStats")
+with open("report.json", 'w', encoding="utf-8") as f:
+    serialized = []
+    for map_report in map_reports:
+        serialized.append(map_report.serialize())
+    json.dump(serialized, f, ensure_ascii=False, indent=4)
 
-    print("go")
+logger.info("Analysis complete")

@@ -55,6 +55,12 @@ class Statistics:
         self._demo_dir = demo_dir
         self._logger = GetLogManager().GetLogger(__name__)
 
+    def has_level_stats(self):
+        if self._stats.get(_KEY_LEVEL_STATS):
+            return True
+        else:
+            return False
+
     def get_time(self):
         if self._stats[_KEY_LEVEL_STATS]:
             return self._stats[_KEY_LEVEL_STATS]['Time']

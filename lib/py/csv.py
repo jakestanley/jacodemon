@@ -28,7 +28,7 @@ def has_valid_extension(file_path):
     return file_extension.lower() in valid_extensions
 
 def csv_is_valid(csv_path):
-    with open(csv_path, "r") as csvfile:
+    with open(csv_path, "r", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         headers = reader.fieldnames
         rows = list(reader)
@@ -115,7 +115,7 @@ def load_raw_maps(csv_path) -> List[FlatMap]:
 
     raw_maps = []
 
-    with open(csv_path, "r") as csvfile:
+    with open(csv_path, "r", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         rows = list(reader)
 
