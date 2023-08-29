@@ -1,21 +1,34 @@
 #!/usr/bin/env python3
-import lib.py.arguments as args
-from lib.py.config import LoadConfig
-
-import os
 import json
 import glob
 
-p_args = args.get_analyse_args()
+import lib.py.arguments as args
+import lib.py.logs as logs
+from lib.py.options import Options
+from lib.py.config import Config, LoadConfig
+from lib.py.map import FlatMap, EnrichMaps
+from lib.py.csv import load_raw_maps
+from lib.py.demo import AddBadgesToMap
 
-config = LoadConfig(p_args.config)
+options: Options = args.get_analyse_args()
+config: Config = LoadConfig(options.config)
+
+# set up logging now that we have arguments
+logs.configure()
+logs.InitLogManager(options)
+logger = logs.GetLogManager().GetLogger(__name__)
+logger.info("Starting application...")
 
 # TODO update analyse for V3
-mods = LoadMods(config.maps_dir, p_args.mod_list)
-maps = GetMapsFromMods(mods)
+raw_maps = load_raw_maps(options.playlist)
+maps = EnrichMaps(config, raw_maps)
 
 for map in maps:
-    pfx = map.get_map_prefix()
+    AddBadgesToMap(map, config.demo_dir)
+
+for map in maps:
+    map: FlatMap = map
+    pfx = map.GetMapPrefix()
     files = glob.glob(config.demo_dir + f"/{pfx}*")
     stats = []
     lumps = []
@@ -32,4 +45,3 @@ for map in maps:
             print("has levelStats")
 
     print("go")
- #   GetStatsForMap(map)
