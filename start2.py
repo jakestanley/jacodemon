@@ -2,7 +2,6 @@
 import threading
 import queue
 import time
-import copy
 import subprocess
 
 import lib.py.arguments as args
@@ -19,13 +18,13 @@ from lib.py.ui.demoselect import OpenDemoSelection
 from lib.py.ui.mapselect import OpenMapSelection
 from lib.py.ui.options import OpenOptionsGui
 from lib.py.ui.config import OpenConfigDialog
-from lib.py.wad import GetMapEntriesFromFiles
 from lib.py.demo import GetDemosForMap, AddBadgesToMap
 from lib.py.macros import Macros, GetMacros
 from lib.py.notifications import Notifications, GetNotifications
 from lib.py.io import IO, GetIo
 from lib.py.scenes import SceneManager
 from lib.py.keys import *
+from lib.py.map import EnrichMaps
 
 ui_queue = queue.Queue()
 signaling = Signaling(ui_queue)
@@ -70,20 +69,7 @@ if options.last():
 if not map:
 
     raw_maps = load_raw_maps(options.playlist)
-    maps = []
-    for map in raw_maps:
-        map.ProcessFiles(config.maps_dir)
-
-        # if there isn't a MapId, we need to look up the maps
-        if not map.MapId:
-            mapentries = GetMapEntriesFromFiles(map.GetFiles(), config.maps_dir)
-            for mapentry in mapentries:
-                enriched_map = copy.deepcopy(map)
-                enriched_map.SetMapId(mapentry["MapId"])
-                enriched_map.SetMapName(mapentry["MapName"])
-                maps.append(enriched_map)
-        else:
-            maps.append(map)
+    maps = EnrichMaps(config, raw_maps)
 
     for map in maps:
         AddBadgesToMap(map, config.demo_dir)
