@@ -1,7 +1,6 @@
 import sys
 from PyQt6.QtCore import QUrl
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
-#from PyQt6.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 
 class WebPageWindow(QMainWindow):
