@@ -1,7 +1,7 @@
 appdirs
 jsonpickle
 obsws_python
-pyqt5
+pyqt6
 PyQtWebEngine
 
 # unix only

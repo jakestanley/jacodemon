@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 
 from lib.py.ui.mapselect import GridViewWindow
 
@@ -21,6 +21,6 @@ def OpenDemoSelection(demos):
     window.index_selected.connect(handle_index_selected)
 
     window.show()
-    app.exec_()
+    app.exec()
 
     return selected
