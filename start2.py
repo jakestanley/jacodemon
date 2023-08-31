@@ -2,14 +2,13 @@
 import threading
 import queue
 import time
-import copy
 import subprocess
 
 import lib.py.arguments as args
 import lib.py.logs as logs
 from lib.py.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from lib.py.config import Config, LoadConfig
-from lib.py.csv import csv_is_valid, load_raw_maps
+from lib.py.csv import load_raw_maps
 from lib.py.last import *
 from lib.py.launch import LaunchConfig
 from lib.py.obs import *
@@ -19,13 +18,13 @@ from lib.py.ui.demoselect import OpenDemoSelection
 from lib.py.ui.mapselect import OpenMapSelection
 from lib.py.ui.options import OpenOptionsGui
 from lib.py.ui.config import OpenConfigDialog
-from lib.py.wad import GetMapEntriesFromFiles
 from lib.py.demo import GetDemosForMap, AddBadgesToMap
 from lib.py.macros import Macros, GetMacros
 from lib.py.notifications import Notifications, GetNotifications
 from lib.py.io import IO, GetIo
 from lib.py.scenes import SceneManager
 from lib.py.keys import *
+from lib.py.map import EnrichMaps
 
 ui_queue = queue.Queue()
 signaling = Signaling(ui_queue)
@@ -69,29 +68,8 @@ if options.last():
 
 if not map:
 
-    if not os.path.exists(options.playlist):
-        logger.critical(f"Could not find playlist file: {options.playlist}")
-        sys.exit(1)
-
-    if not csv_is_valid(options.playlist):
-        logger.critical("CSV header is invalid. See output")
-        sys.exit(1)
-
     raw_maps = load_raw_maps(options.playlist)
-    maps = []
-    for map in raw_maps:
-        map.ProcessFiles(config.maps_dir)
-
-        # if there isn't a MapId, we need to look up the maps
-        if not map.MapId:
-            mapentries = GetMapEntriesFromFiles(map.GetFiles(), config.maps_dir)
-            for mapentry in mapentries:
-                enriched_map = copy.deepcopy(map)
-                enriched_map.SetMapId(mapentry["MapId"])
-                enriched_map.SetMapName(mapentry["MapName"])
-                maps.append(enriched_map)
-        else:
-            maps.append(map)
+    maps = EnrichMaps(config, raw_maps)
 
     for map in maps:
         AddBadgesToMap(map, config.demo_dir)

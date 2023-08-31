@@ -5,6 +5,7 @@
 *.jpg
 *.png
 last.json
+report.json
 tmp/
 .idea/
 __pycache__

@@ -1,6 +1,6 @@
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QStandardItemModel, QStandardItem
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTableView
 
 column_order = ['Badge', 'ModName', 'MapId', 'MapName', 'Author', 'CompLevel', 'Files', 'Merge', 'Port', 'Notes']
 
@@ -48,6 +48,6 @@ def OpenMapSelection(maps):
     window.index_selected.connect(handle_index_selected)
 
     window.show()
-    app.exec_()
+    app.exec()
 
     return selected

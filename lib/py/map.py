@@ -1,6 +1,8 @@
 import os
 import sys
+import copy
 from typing import List
+from lib.py.wad import GetMapEntriesFromFiles
 
 class FlatMap:
     def __init__(self, ModName, Files, MapId=None, MapName=None, Author=None, 
@@ -118,3 +120,23 @@ class FlatMap:
         dic['Notes'] = self._Notes
 
         return dic
+
+def EnrichMaps(config, raw_maps):
+
+    enriched_maps = []
+
+    for map in raw_maps:
+        map.ProcessFiles(config.maps_dir)
+
+        # if there isn't a MapId, we need to look up the maps
+        if not map.MapId:
+            mapentries = GetMapEntriesFromFiles(map.GetFiles(), config.maps_dir)
+            for mapentry in mapentries:
+                enriched_map = copy.deepcopy(map)
+                enriched_map.SetMapId(mapentry["MapId"])
+                enriched_map.SetMapName(mapentry["MapName"])
+                enriched_maps.append(enriched_map)
+        else:
+            enriched_maps.append(map)
+
+    return enriched_maps

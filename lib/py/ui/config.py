@@ -3,7 +3,7 @@ import sys
 from lib.py.config import Config, Mod
 from lib.py.macros import KeyNames
 
-from PyQt5.QtWidgets import QApplication, \
+from PyQt6.QtWidgets import QApplication, \
     QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QFileDialog, QDialogButtonBox, QGroupBox, QLabel, QListWidget, QListWidgetItem, QCheckBox
 
 class ConfigDialog(QDialog):
@@ -25,7 +25,7 @@ class ConfigDialog(QDialog):
         macros_layout.addWidget(self.create_bindings_group(cfg))
         macros_group.setLayout(macros_layout)
         
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
 
@@ -263,22 +263,18 @@ class ConfigDialog(QDialog):
             self.mods.takeItem(self.mods.row(item))
 
     def OpenManyFilesDialog(self):
-        options = QFileDialog.Option()
-        files, _ = QFileDialog.getOpenFileNames(self, "Add Files", "", options=options)
+        files, _ = QFileDialog.getOpenFileNames(self, "Add Files", "")
 
         return files
 
     def OpenSingleFileDialog(self, types, line):
-        options = QFileDialog.Option()
-        file, _ = QFileDialog.getOpenFileName(self, "Open File", "", types, options=options)
+        file, _ = QFileDialog.getOpenFileName(self, "Open File", "", types)
 
         if file:
             line.setText(file)
 
     def OpenDirectoryDialog(self, what, line):
-        options = QFileDialog.Options()
-        options |= QFileDialog.ShowDirsOnly
-
+        options = QFileDialog.Option.ShowDirsOnly
         directory = QFileDialog.getExistingDirectory(self, f"Select {what} directory", "", options=options)
 
         if directory:
@@ -289,7 +285,7 @@ def OpenConfigDialog(cfg: Config):
 
     dialog = ConfigDialog(cfg)
 
-    if dialog.exec_() == QDialog.Accepted:
+    if dialog.exec() == QDialog.DialogCode.Accepted:
         cfg.iwad_dir = dialog.iwad_path.text()
         cfg.maps_dir = dialog.maps_path.text()
         cfg.demo_dir = dialog.demo_path.text()

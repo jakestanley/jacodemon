@@ -1,7 +1,7 @@
 import sys
-from PyQt5.QtCore import QUrl
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
+from PyQt6.QtCore import QUrl
+from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
+from PyQt6.QtWebEngineWidgets import QWebEngineView
 
 class WebPageWindow(QMainWindow):
     def __init__(self):
@@ -29,7 +29,7 @@ def OpenDoomWiki():
     app = QApplication(sys.argv)
     webPageWindow = WebPageWindow()
     webPageWindow.show()
-    app.exec_()
+    app.exec()
 
 if __name__ == "__main__":
     sys.exit(OpenDoomWiki())

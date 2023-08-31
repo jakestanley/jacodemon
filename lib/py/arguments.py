@@ -6,21 +6,30 @@ parser = argparse.ArgumentParser()
 
 def ToOptions(args) -> Options:
     options = Options()
-    options.playlist = args.playlist
-    options.gui = not args.no_gui
-    options.obs = not args.no_obs
-    options.mods = not args.no_mods
-    options.auto_record = not args.no_auto_record
-    options.record_demo = not args.no_demo
-    options.music = args.music
-    options.crispy = args.crispy
-    options.stdout_log_level = args.stdout_log_level.upper()
+    options.playlist            = args.playlist
+    options.gui                 = not args.no_gui
+    options.stdout_log_level    = args.stdout_log_level.upper()
 
-    if args.last:
+    # these are not common so we perform hasattr checks
+    if hasattr(args, 'no_obs'):
+        options.obs         = not args.no_obs
+    if hasattr(args, 'no_mods'):
+        options.mods        = not args.no_mods
+    if hasattr(args, 'no_auto_record'):
+        options.auto_record = not args.no_auto_record
+    if hasattr(args, 'no_demo'):
+        options.record_demo = not args.no_demo
+    if hasattr(args, 'music'):
+        options.music       = args.music
+    if hasattr(args, 'crispy'):
+        options.crispy      = args.crispy
+    
+
+    if hasattr(args, 'last') and args.last:
         options.mode = MODE_LAST
-    elif args.random:
+    elif hasattr(args, 'random') and args.random:
         options.mode = MODE_RANDOM
-    elif args.replay:
+    elif hasattr(args, 'replay') and args.replay:
         options.mode = MODE_REPLAY
     else:
         options.mode = MODE_NORMAL
@@ -30,6 +39,7 @@ def ToOptions(args) -> Options:
 def _get_common_args():
     parser.add_argument("-p", "--playlist",     type=str,               help="Playlist")
     parser.add_argument("-g", "--no-gui",       action='store_true',    help="Command line operation only")
+    parser.add_argument("-sll", "--stdout-log-level", type=str,        help="Log level that should also be printed to console", default='INFO')
 
 def get_args():
     _get_common_args()
@@ -46,8 +56,6 @@ def get_args():
     modes.add_argument("-rp", "--replay",      action='store_true',    help="Replay a demo")
     modes.add_argument("-r",  "--random",      action='store_true',    help="Pick random map from playlist")
     modes.add_argument("-l",  "--last",        action='store_true',    help="If saved, play last map")
-
-    parser.add_argument("-sll", "--stdout-log-level", type=str,        help="Log level that should also be printed to console", default='INFO')
 
     args = parser.parse_args()
 

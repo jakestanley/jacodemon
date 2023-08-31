@@ -1,7 +1,7 @@
 import sys
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QDialog, QHBoxLayout, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QDialog, QHBoxLayout, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel
 
 from lib.py.options import Options, MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
 
@@ -80,7 +80,7 @@ class OptionsDialog(QDialog):
         self.checkbox_auto_record.setEnabled(self.options.obs)
 
         # confirm or close
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
         layout.addWidget(button_box)
@@ -172,7 +172,7 @@ def OpenOptionsGui(options: Options):
 
     dialog = OptionsDialog(options=options)
 
-    if dialog.exec_() == QDialog.Accepted:
+    if dialog.exec() == QDialog.DialogCode.Accepted:
         options.obs = dialog.checkbox_obs.isChecked()
         options.mods = dialog.checkbox_mods.isChecked()
         options.music = dialog.checkbox_music.isChecked()
