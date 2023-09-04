@@ -1,7 +1,7 @@
 import sys
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QDialog, QHBoxLayout, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel
+from PyQt6.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel
 
 from lib.py.options import Options, MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
 
@@ -168,7 +168,6 @@ class OptionsDialog(QDialog):
 
 
 def OpenOptionsGui(options: Options):
-    app = QApplication([])
 
     dialog = OptionsDialog(options=options)
 

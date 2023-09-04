@@ -12,7 +12,7 @@ class SceneManager():
 
     def SwitchToBrowserScene(self):
         # TODO: consider a stack for this, but may be overkill for my needs
-        self._previous_scene = self._obs.GetScene().current_program_scene_name
+        self._previous_scene = self._obs.GetScene()
         self._obs.SetScene(self._config.browser_scene)
         OpenDoomWiki()
         self._obs.SetScene(self._previous_scene)
