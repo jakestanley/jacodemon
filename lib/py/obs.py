@@ -105,7 +105,7 @@ class ObsController:
             self.notifications.notify("Recording stopped", f"Saved to '{newpath}'")
 
     def GetScene(self):
-        return self.obs_client.get_current_program_scene()
+        return self.obs_client.get_current_program_scene().current_program_scene_name
 
     def SetScene(self, title):
         self.obs_client.set_current_program_scene(title)

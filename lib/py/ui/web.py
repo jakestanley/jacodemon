@@ -26,10 +26,11 @@ class WebPageWindow(QMainWindow):
         self.setGeometry(100, 100, 1280, 768)
 
 def OpenDoomWiki():
-    app = QApplication(sys.argv)
+    app = QApplication.instance()
     webPageWindow = WebPageWindow()
     webPageWindow.show()
     app.exec()
 
 if __name__ == "__main__":
+    app = QApplication(sys.argv)
     sys.exit(OpenDoomWiki())

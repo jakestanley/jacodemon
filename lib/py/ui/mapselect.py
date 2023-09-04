@@ -37,7 +37,7 @@ def OpenMapSelection(maps):
     for map in maps:
         rows.append(map.Dictify())
 
-    app = QApplication([])
+    app = QApplication.instance()
     window = GridViewWindow(rows, column_order)
     selected = None
 

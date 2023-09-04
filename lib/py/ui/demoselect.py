@@ -10,7 +10,7 @@ def OpenDemoSelection(demos):
     for demo in demos:
         rows.append(demo.Dictify())
 
-    app = QApplication([])
+    app = QApplication.instance()
     window = GridViewWindow(rows, column_order)
     selected = None
 

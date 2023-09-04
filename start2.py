@@ -4,6 +4,7 @@ import queue
 import time
 import subprocess
 
+from PyQt6.QtWidgets import QApplication
 import lib.py.arguments as args
 import lib.py.logs as logs
 from lib.py.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
@@ -31,6 +32,7 @@ signaling = Signaling(ui_queue)
 options: Options = args.get_args()
 
 # set up logging now that we have arguments
+app = QApplication(sys.argv)
 logs.configure()
 logs.InitLogManager(options)
 logger = logs.GetLogManager().GetLogger(__name__)

@@ -3,8 +3,9 @@ import sys
 from lib.py.config import Config, Mod
 from lib.py.macros import KeyNames
 
-from PyQt6.QtWidgets import QApplication, \
-    QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QFileDialog, QDialogButtonBox, QGroupBox, QLabel, QListWidget, QListWidgetItem, QCheckBox
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, \
+    QPushButton, QFileDialog, QDialogButtonBox, QGroupBox, QLabel, \
+    QListWidget, QListWidgetItem, QCheckBox
 
 class ConfigDialog(QDialog):
     def __init__(self, cfg: Config, parent=None):
@@ -281,7 +282,6 @@ class ConfigDialog(QDialog):
             line.setText(directory)
 
 def OpenConfigDialog(cfg: Config):
-    app = QApplication([])
 
     dialog = ConfigDialog(cfg)
 
