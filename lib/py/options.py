@@ -6,6 +6,7 @@ MODE_REPLAY: int = 4
 class Options:
     def __init__(self):
         self.playlist = None
+        self.wad = None
         self.gui = None
         self.obs = None
         self.mods = None

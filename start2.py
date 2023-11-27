@@ -9,7 +9,7 @@ import lib.py.arguments as args
 import lib.py.logs as logs
 from lib.py.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from lib.py.config import Config, LoadConfig
-from lib.py.csv import load_raw_maps
+from lib.py.csv import load_raw_maps, load_raw_maps_from_wad
 from lib.py.last import *
 from lib.py.launch import LaunchConfig
 from lib.py.obs import *
@@ -70,7 +70,11 @@ if options.last():
 
 if not map:
 
-    raw_maps = load_raw_maps(options.playlist)
+    if options.wad:
+        raw_maps = load_raw_maps_from_wad(options.wad)
+    else:
+        raw_maps = load_raw_maps(options.playlist)
+
     maps = EnrichMaps(config, raw_maps)
 
     for map in maps:

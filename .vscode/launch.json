@@ -78,6 +78,18 @@
             ]
         },
         {
+            "name": "Start2 (No OBS, No Demo, WAD path)",
+            "type": "python",
+            "request": "launch",
+            "program": "start2.py",
+            "args": [
+                "--wad",
+                "/Users/jake/Dropbox/Games/Doom/WADs/Maps/SIGIL_v1_21.wad",
+                "--no-obs",
+                "--no-demo"
+            ]
+        },
+        {
             "name": "Start2 (No OBS, No Demo, Quiet)",
             "type": "python",
             "request": "launch",

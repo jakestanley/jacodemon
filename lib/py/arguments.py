@@ -7,6 +7,7 @@ parser = argparse.ArgumentParser()
 def ToOptions(args) -> Options:
     options = Options()
     options.playlist            = args.playlist
+    options.wad                 = args.wad
     options.gui                 = not args.no_gui
     options.stdout_log_level    = args.stdout_log_level.upper()
 
@@ -37,9 +38,11 @@ def ToOptions(args) -> Options:
     return options
 
 def _get_common_args():
-    parser.add_argument("-p", "--playlist",     type=str,               help="Playlist")
     parser.add_argument("-g", "--no-gui",       action='store_true',    help="Command line operation only")
     parser.add_argument("-sll", "--stdout-log-level", type=str,        help="Log level that should also be printed to console", default='INFO')
+    # mutually exclusive
+    parser.add_argument("-p", "--playlist",     type=str,               help="Playlist")
+    parser.add_argument("-w", "--wad",          type=str,               help="WAD")
 
 def get_args():
     _get_common_args()

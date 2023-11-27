@@ -124,3 +124,18 @@ def load_raw_maps(csv_path) -> List[FlatMap]:
         raw_maps.append(map)
     
     return raw_maps
+
+def load_raw_maps_from_wad(wad_path) -> List[FlatMap]:
+    
+    logger = GetLogManager().GetLogger(__name__)
+
+    # TODO try absolute path, then try path relative to configured Maps path
+    if not os.path.exists(wad_path):
+        logger.critical(f"Could not find WAD file: {wad_path}")
+        sys.exit(1)
+
+    raw_maps = []
+    map = FlatMap(os.path.splitext(os.path.basename(wad_path))[0], wad_path)
+    raw_maps.append(map)
+
+    return raw_maps

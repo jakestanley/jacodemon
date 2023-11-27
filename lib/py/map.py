@@ -6,7 +6,7 @@ from lib.py.wad import GetMapEntriesFromFiles
 
 class FlatMap:
     def __init__(self, ModName, Files, MapId=None, MapName=None, Author=None, 
-                 CompLevel=None, Merges=[], Port=None, 
+                 CompLevel=None, Merges: str = "", Port=None, 
                  Notes=None):
 
         # public, required
