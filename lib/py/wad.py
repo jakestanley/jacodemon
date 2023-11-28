@@ -3,7 +3,8 @@ import re
 import subprocess
 from typing import List
 
-regex_mapentries = '(E\dM\d|MAP\d\d|MAPINFO)'
+regex_mapentries = '\t(E\dM\d|MAP\d\d)'
+regex_lumps = '\t(UMAPINFO|MAPINFO)'
 DOOM_regex = r'^E(\d)M(\d)$'
 DOOM2_regex = r'^MAP(\d+)$'
 
@@ -22,9 +23,6 @@ def GetDoom2Warp(mapId):
     map = re.match(DOOM2_regex, mapId).group(1)
     return [f"{int(map)}"]
 
-def GetModsFromModsList(verified, maps_dir):
-    return None
-
 def GetMapEntriesFromFiles(files: List[str], maps_dir):
 
     # TODO UMAPINFO support
@@ -33,11 +31,16 @@ def GetMapEntriesFromFiles(files: List[str], maps_dir):
     for file in files:
         ext = os.path.splitext(file)[1]
         if ext.lower() == ".wad":
-            wadls = f"wad-ls {os.path.join(maps_dir, file)}"
+            if os.path.exists(file):
+                final_path = file
+            else:
+                final_path = os.path.join(maps_dir, file)
+            wadls = f"wad-ls {final_path}"
             output = subprocess.check_output(wadls, shell=True, universal_newlines=True)
+            lumps = list(set(re.findall(regex_lumps, output)))
             mapentries = list(set(re.findall(regex_mapentries, output)))
-            if "MAPINFO" in mapentries:
-                wadread = f"wad-read {os.path.join(maps_dir, file)} MAPINFO"
+            if "MAPINFO" in lumps:
+                wadread = f"wad-read {final_path} MAPINFO"
                 output = subprocess.check_output(wadread, shell=True, universal_newlines=True)
                 mapentries = re.findall("(E\dM\d|MAP\d\d) \"(.*)\"", output)
                 for mapentry in mapentries:
