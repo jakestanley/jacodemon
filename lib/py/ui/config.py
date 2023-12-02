@@ -140,6 +140,17 @@ class ConfigDialog(QDialog):
         hlayout.addWidget(self.dsda_cfg_path_picker)
         return hlayout
     
+    def create_dsda_hud_picker(self, cfg):
+        hlayout: QHBoxLayout = QHBoxLayout()
+        self.dsda_hud_path = QLineEdit(self)
+        self.dsda_hud_path.setText(cfg.dsdadoom_hud_lump)
+        self.dsda_hud_path.setEnabled(False)
+        self.dsda_hud_path_picker = QPushButton("Select dsda HUD lump file", self)
+        self.dsda_hud_path_picker.clicked.connect(lambda: self.OpenSingleFileDialog("All Files (*);;LUMP Files (*.lmp)", self.dsda_hud_path))
+        hlayout.addWidget(self.dsda_hud_path)
+        hlayout.addWidget(self.dsda_hud_path_picker)
+        return hlayout
+    
     def create_general_group(self, cfg):
         group_box = QGroupBox("General", self)
         vlayout = QVBoxLayout()
@@ -163,6 +174,9 @@ class ConfigDialog(QDialog):
 
         dsda_config = self.create_dsda_cfg_picker(cfg)
         vlayout.addLayout(dsda_config)
+
+        dsda_hud = self.create_dsda_hud_picker(cfg)
+        vlayout.addLayout(dsda_hud)
 
         group_box.setLayout(vlayout)
         return group_box
@@ -299,6 +313,7 @@ def OpenConfigDialog(cfg: Config):
         cfg.default_complevel = dialog.default_complevel.text()
         cfg.set_dsda_path(dialog.dsda_path.text())
         cfg.dsda_cfg = dialog.dsda_cfg_path.text()
+        cfg.dsdadoom_hud_lump = dialog.dsda_hud_path.text()
         cfg.play_scene = dialog.play_scene.text()
         cfg.wait_scene = dialog.wait_scene.text()
         cfg.browser_scene = dialog.browser_scene.text()
