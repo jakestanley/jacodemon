@@ -7,16 +7,12 @@ from lib.py.map import FlatMap
 from lib.py.map_utils import *
 from lib.py.options import Options
 
-ULTRA_VIOLENCE = 4
-DEFAULT_SKILL = ULTRA_VIOLENCE
-
 class LaunchConfig:
     def __init__(self, options, config):
         self._options: Options = options
         self._config: Config = config
         self.timestamp = None
         self._map: FlatMap = None
-        self._skill = DEFAULT_SKILL
         self._comp_level = None
         self._window = True
         self._demo_path = None
@@ -110,7 +106,7 @@ class LaunchConfig:
         if not self._options.music:
             doom_args.append('-nomusic')
 
-        doom_args.extend(['-skill', f"{self._skill}"])
+        doom_args.extend(['-skill', f"{self._options.skill}"])
 
         return doom_args
 

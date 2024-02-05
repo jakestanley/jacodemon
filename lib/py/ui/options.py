@@ -1,9 +1,11 @@
 import sys
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel
+from PyQt6.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel, QLineEdit
 
 from lib.py.options import Options, MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
+
+DEFAULT_SKILL = "4"
 
 class OptionsDialog(QDialog):
     def __init__(self, parent=None, options: Options = None):
@@ -18,6 +20,11 @@ class OptionsDialog(QDialog):
 
         # build layout
         layout: QVBoxLayout = QVBoxLayout(self)
+
+        # options: skill
+        self.skill = QLineEdit(self)
+        self.skill.setText(options.skill or DEFAULT_SKILL)
+        layout.addWidget(self.skill)
 
         # options: demo
         self.checkbox_record_demo = QCheckBox("Record demo lump")
@@ -179,6 +186,7 @@ def OpenOptionsGui(options: Options):
         options.record_demo = dialog.checkbox_record_demo.isChecked()
         options.crispy = dialog.checkbox_crispy.isChecked()
         options.mode = dialog.get_mode()
+        options.skill = dialog.skill.text()
         options.stdout_log_level = next(radio.text() for radio in [dialog.ll_info, dialog.ll_warning, dialog.ll_debug, dialog.ll_error] if radio.isChecked())
     else:
         sys.exit(0)

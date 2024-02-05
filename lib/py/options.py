@@ -11,6 +11,7 @@ class Options:
         self.obs = None
         self.mods = None
         self.music = None
+        self.skill = None
         self.auto_record = None
         self.record_demo = None
         self.crispy = None
