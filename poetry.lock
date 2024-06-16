@@ -51,6 +51,24 @@ files = [
 ]
 
 [[package]]
+name = "common-py"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = "^3.12"
+files = []
+develop = false
+
+[package.dependencies]
+appdirs = "^1.4.4"
+
+[package.source]
+type = "git"
+url = "https://github.com/jakestanley/common-py.git"
+reference = "main"
+resolved_reference = "80cc00e31bfe150734bf7e3b6fd9c24c7a643031"
+
+[[package]]
 name = "iniconfig"
 version = "2.0.0"
 description = "brain-dead simple config-ini parsing"
@@ -369,4 +387,4 @@ test = ["websockets"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "dca87abfbdcdbb57f341cda194c50cdb6a2476d7c33ae7c8e6ea8abef8028e3e"
+content-hash = "d4f5fff58ed69640f8b1c5157ba132b795cc260435400c2aec77c1841abb902e"
