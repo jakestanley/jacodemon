@@ -3,6 +3,8 @@ import os
 import appdirs
 import json
 
+from common_py.config import GetConfigPath
+
 _KEY_IWAD_DIR = 'iwad_dir'
 _KEY_MAPS_DIR = 'maps_dir'
 _KEY_DEMO_DIR = 'demo_dir'
@@ -67,7 +69,7 @@ class Config:
                 self.mods.append(Mod(mod.get('path'), mod.get('enabled', True)))
 
     def Save(self):
-        config_path = GetConfigPath()
+        config_path = GetConfigPath("doom-manager")
         
         settings = {}
         settings[_KEY_IWAD_DIR] = self.iwad_dir
@@ -98,15 +100,9 @@ class Config:
         else:
             print(f"Error: could not set dsda_path to '{path}'")
 
-def GetConfigPath() -> str:
-
-    config_dir = appdirs.user_config_dir(appname="doom-manager", appauthor="com.github.jakestanley")
-    os.makedirs(config_dir, exist_ok=True)
-    return os.path.join(config_dir, "config.json")
-
 def LoadConfig() -> Config:
 
-    config_path = GetConfigPath()
+    config_path = GetConfigPath("doom-manager")
     print(f"Loading config from {config_path}")
 
     try:
