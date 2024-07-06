@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "streaming"
+version = "0.1.0"
+description = ""
+authors = ["Jake Stanley <prudentia713@gmail.com>"]
+readme = "README.md"
+package-mode=false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+appdirs = "^1.4.4"
+jsonpickle = "^3.2.2"
+obsws-python = "^1.7.0"
+PyQt6 = "^6.7.0"
+
+[tool.poetry.group.dev.dependencies]
+PyQt6-WebEngine = "^6.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
