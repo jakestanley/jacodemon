@@ -1,6 +1,6 @@
 import unittest
 
-from lib.py.stats import *
+from jacodemon.stats import *
 
 
 class TestStats(unittest.TestCase):

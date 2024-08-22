@@ -1,6 +1,6 @@
 import unittest
 
-from lib.py.csv import *
+from jacodemon.csv import *
 
 
 class TestCsv(unittest.TestCase):

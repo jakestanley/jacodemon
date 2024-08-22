@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Python: Current File",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
@@ -17,25 +17,34 @@
         },
         {
             "name": "Run tests",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "run_tests.py"
         },
         {
             "name": "Start2",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv"
             ]
         },
         {
-            "name": "Start2 (Last)",
-            "type": "python",
+            "name": "Start (Freestyle)",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
+            "args": [
+
+            ]
+        },
+        {
+            "name": "Start2 (Last)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "scripts/start.py",
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv",
@@ -44,9 +53,9 @@
         },
         {
             "name": "Start2 (Debug, Last)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv",
@@ -56,9 +65,9 @@
         },
         {
             "name": "Start2 (No OBS)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv",
@@ -67,9 +76,9 @@
         },
         {
             "name": "Start2 (No OBS, No Demo)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv",
@@ -79,9 +88,9 @@
         },
         {
             "name": "Start2 (No OBS, No Demo, WAD path)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
             "args": [
                 "--wad",
                 "/Users/jake/Dropbox/Games/Doom/WADs/Maps/SIGIL_v1_21.wad",
@@ -91,9 +100,9 @@
         },
         {
             "name": "Start2 (No OBS, No Demo, Quiet)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv",
@@ -104,9 +113,9 @@
         },
         {
             "name": "Start2 (No OBS, No Demo, Last)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv",
@@ -117,9 +126,9 @@
         },
         {
             "name": "Start2 (No Auto, No Demo, Last)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv",
@@ -130,9 +139,9 @@
         },
         {
             "name": "Start2 (Replay)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv",
@@ -141,9 +150,9 @@
         },
         {
             "name": "Start2 (Replay + No OBS)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "start2.py",
+            "program": "scripts/start.py",
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv",
@@ -152,7 +161,7 @@
         },
         {
             "name": "Analyse",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "analyse.py",
             "args": [

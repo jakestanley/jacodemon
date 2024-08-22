@@ -1,24 +1,29 @@
 [tool.poetry]
 name = "jacodemon"
-version = "0.1.0"
+version = "1.12.0"
 description = "A Doom launcher with support for managing OBS"
 authors = ["Jake Stanley <prudentia713@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 common-py = { git = "https://github.com/jakestanley/common-py.git", branch = "main" }
-python = "^3.12"
+python = ">=3.12,<3.13"
 appdirs = "^1.4.4"
 jsonpickle = "^3.2.1"
 obsws-python = "^1.7.0"
-PyQt6 = "^6.7.0"
-PyQt6-WebEngine = "^6.7.0"
+pyside6 = "^6.7.1"
 ahk = "^1.7.6"
 ahk-binary = "^2023.9.0"
 
 [tool.poetry.group.dev.dependencies]
 parameterized = "^0.9.0"
 pytest = "^8.2.2"
+
+[tool.poetry.group.win.dependencies]
+win11toast = "^0.35"
+
+[tool.poetry.scripts]
+jacodemon = "scripts.start:main"
 
 [build-system]
 requires = ["poetry-core"]
