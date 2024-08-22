@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QApplication
 import jacodemon.arguments as args
 import jacodemon.logs as logs
 from jacodemon.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
-from jacodemon.config import Config, LoadConfig
+from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.csv import load_raw_maps, load_raw_maps_from_wad
 from jacodemon.last import *
 from jacodemon.launch import LaunchConfig
@@ -40,11 +40,11 @@ def main():
     logger = logs.GetLogManager().GetLogger(__name__)
     logger.info("Starting application...")
 
-    config: Config = LoadConfig()
+    config: JacodemonConfig = GetConfig()
 
     # if last selected, skip the gui
     if not options.last():
-        OpenConfigDialog(config)
+        OpenConfigDialog()
         config.Save()
 
         OpenOptionsGui(options)

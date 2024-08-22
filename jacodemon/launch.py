@@ -2,7 +2,7 @@ import platform
 import os
 from datetime import datetime
 
-from jacodemon.config import Config
+from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.map import FlatMap
 from jacodemon.map_utils import *
 from jacodemon.options import Options
@@ -11,9 +11,9 @@ ULTRA_VIOLENCE = 4
 DEFAULT_SKILL = ULTRA_VIOLENCE
 
 class LaunchConfig:
-    def __init__(self, options, config):
+    def __init__(self, options):
         self._options: Options = options
-        self._config: Config = config
+        self._config: JacodemonConfig = GetConfig()
         self.timestamp = None
         self._map: FlatMap = None
         self._skill = DEFAULT_SKILL

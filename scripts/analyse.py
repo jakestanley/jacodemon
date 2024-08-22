@@ -6,7 +6,7 @@ from typing import List
 import jacodemon.arguments as args
 import jacodemon.logs as logs
 from jacodemon.options import Options
-from jacodemon.config import Config, LoadConfig
+from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.map import FlatMap, EnrichMaps
 from jacodemon.csv import load_raw_maps
 from jacodemon.demo import Demo, GetDemosForMap, AddBadgesToMap
@@ -76,7 +76,7 @@ class MapReport:
 map_reports = []
 
 options: Options = args.get_analyse_args()
-config: Config = LoadConfig()
+config: JacodemonConfig = GetConfig()
 
 # set up logging now that we have arguments
 logs.configure()

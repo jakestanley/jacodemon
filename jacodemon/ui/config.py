@@ -1,6 +1,6 @@
 import sys
 
-from jacodemon.config import Config, Mod
+from jacodemon.config import JacodemonConfig, Mod, GetConfig
 from jacodemon.macros import KeyNames
 
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, \
@@ -8,10 +8,11 @@ from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, \
     QListWidget, QListWidgetItem, QCheckBox
 
 class ConfigDialog(QDialog):
-    def __init__(self, cfg: Config, parent=None):
+    def __init__(self, parent=None):
         super(ConfigDialog, self).__init__(parent)
         self.setWindowTitle("Configure")
         self.setGeometry(100, 100, 800, 200)
+        cfg: JacodemonConfig = GetConfig()
 
         # build layout
         layout: QVBoxLayout = QVBoxLayout(self)
@@ -94,7 +95,7 @@ class ConfigDialog(QDialog):
         self.maps_path_picker.clicked.connect(lambda: self.OpenDirectoryDialog("maps", self.maps_path))
         return maps_hlayout
     
-    def create_qol_layout(self, cfg: Config):
+    def create_qol_layout(self, cfg: JacodemonConfig):
         layout: QHBoxLayout = QHBoxLayout()
 
         self.mods = QListWidget(self)
@@ -181,7 +182,7 @@ class ConfigDialog(QDialog):
         group_box.setLayout(vlayout)
         return group_box
     
-    def create_obs_group(self, cfg: Config):
+    def create_obs_group(self, cfg: JacodemonConfig):
         # TODO complete test button functionality
         group_box = QGroupBox("OBS", self)
         vlayout = QVBoxLayout()
@@ -229,7 +230,7 @@ class ConfigDialog(QDialog):
     def clicked_macro_key(self, key):
         print(key.name)
 
-    def create_keys_group(self, cfg: Config):
+    def create_keys_group(self, cfg: JacodemonConfig):
 
         group_box = QGroupBox("Keys", self)
         group_box.setFixedWidth(300)
@@ -253,7 +254,7 @@ class ConfigDialog(QDialog):
         group_box.setLayout(vbox)
         return group_box
     
-    def create_bindings_group(self, cfg: Config):
+    def create_bindings_group(self, cfg: JacodemonConfig):
         group_box = QGroupBox("Bindings", self)
         vlayout = QVBoxLayout()
 
@@ -295,9 +296,10 @@ class ConfigDialog(QDialog):
         if directory:
             line.setText(directory)
 
-def OpenConfigDialog(cfg: Config):
+def OpenConfigDialog():
 
-    dialog = ConfigDialog(cfg)
+    dialog = ConfigDialog()
+    cfg: JacodemonConfig = GetConfig()
 
     if dialog.exec() == QDialog.DialogCode.Accepted:
         cfg.iwad_dir = dialog.iwad_path.text()

@@ -8,12 +8,12 @@ from jacodemon.logs import GetLogManager
 
 import obsws_python as obs
 
-from jacodemon.config import Config
+from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.notifications import Notifications
 
 class ObsController:
-    def __init__(self, config: Config, notifications: Notifications, io: IO):
-        self.config = config
+    def __init__(self,notifications: Notifications, io: IO):
+        self.config: JacodemonConfig = GetConfig()
         self.notifications = notifications
         self.io = io
         self._logger = GetLogManager().GetLogger(__name__)
