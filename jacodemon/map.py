@@ -3,6 +3,7 @@ import sys
 import copy
 from typing import List
 from jacodemon.wad import GetMapEntriesFromFiles
+from jacodemon.config import GetConfig
 
 class FlatMap:
     def __init__(self, ModName, Files, MapId=None, MapName=None, Author=None, 
@@ -121,9 +122,10 @@ class FlatMap:
 
         return dic
 
-def EnrichMaps(config, raw_maps):
+def EnrichMaps(raw_maps):
 
     enriched_maps = []
+    config: JacodemonConfig = GetConfig()
 
     for map in raw_maps:
         map.ProcessFiles(config.maps_dir)

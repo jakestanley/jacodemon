@@ -54,15 +54,15 @@ def main():
 
     notifications: Notifications = GetNotifications()
     io: IO = GetIo()
-    launch = LaunchConfig(options, config)
+    launch = LaunchConfig(options)
 
     if options.obs:
-        obsController = ObsController(config, notifications, io)
+        obsController = ObsController(notifications, io)
     else:
         obsController = NoObsController(notifications)
 
     obsController.Setup()
-    sceneManager = SceneManager(obsController, config)
+    sceneManager = SceneManager(obsController)
 
     obsController.SetScene(config.wait_scene)
 

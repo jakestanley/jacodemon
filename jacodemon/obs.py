@@ -120,7 +120,7 @@ class ObsController:
 
 class NoObsController(ObsController):
     def __init__(self, notifications: Notifications):
-        super().__init__(config=None, notifications=notifications, io=None)
+        super().__init__(notifications=notifications, io=None)
 
     def Setup(self):
         return
