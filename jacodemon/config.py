@@ -1,6 +1,7 @@
 import os
 
 from common_py.config import Config
+from jacodemon.model.maps import MapSet, LoadMapSet
 
 _CONFIG_SINGLETON = None
 
@@ -20,6 +21,7 @@ _KEY_CHOCOLATEDOOM_PATH = 'chocolatedoom_path'
 _KEY_CHOCOLATEDOOM_CFG_DEFAULT = 'chocolatedoom_cfg_default'
 _KEY_CHOCOLATEDOOM_CFG_EXTRA = 'chocolatedoom_cfg_extra'
 _KEY_CRISPYDOOM_PATH = 'crispydoom_path'
+_KEY_SETS = 'sets'
 
 class Mod:
     def __init__(self, path: str, enabled: bool = True):
@@ -63,6 +65,9 @@ class JacodemonConfig(Config):
         self.demo_dir = self.config.get(_KEY_DEMO_DIR)
         loaded_mods = self.config.get(_KEY_MODS, [])
 
+        # map sets
+        self.sets = [LoadMapSet(ms) for ms in self.config.get(_KEY_SETS, [])]
+
         self.mods = []
         for mod in loaded_mods:
             if isinstance(mod, str):
@@ -88,11 +93,16 @@ class JacodemonConfig(Config):
         self.config[_KEY_CHOCOLATEDOOM_CFG_DEFAULT] = self.chocolatedoom_cfg_default
         self.config[_KEY_CHOCOLATEDOOM_CFG_EXTRA] = self.chocolatedoom_cfg_extra
         self.config[_KEY_CRISPYDOOM_PATH] = self.crispydoom_path
+        self.config[_KEY_SETS] = [set.dictify() for set in self.sets]
 
     def _DefaultConfig(self):
         cfg: dict = {}
         cfg[_KEY_MODS] = []
+        cfg[_KEY_SETS] = []
         return cfg
+
+    def AddMapSet(self, mapset: MapSet):
+        self.sets.append(mapset)
 
     def set_dsda_path(self, path):
         if os.path.isfile(path):

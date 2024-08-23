@@ -52,7 +52,7 @@ files = [
 
 [[package]]
 name = "common-py"
-version = "0.1.1"
+version = "0.2.0"
 description = ""
 optional = false
 python-versions = ">=3.9"
@@ -65,8 +65,8 @@ appdirs = "^1.4.4"
 [package.source]
 type = "git"
 url = "https://github.com/jakestanley/common-py.git"
-reference = "0.1.1"
-resolved_reference = "6d7b0a4fb653eb5e245d1e475c078b11ffde00b2"
+reference = "0.2.0"
+resolved_reference = "7c975f34c2bc838448c1a6dcb415ed42f35bdce5"
 
 [[package]]
 name = "iniconfig"
@@ -379,4 +379,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "cf808c02dfeeea15d0aed40fd08c798d8a8e3b3e4d21b41d1656b5c968cb4846"
+content-hash = "60adec86ab4d041a144779ec83380a1c4fa6b8e9ea2ad42907e7a7ec99546384"

@@ -8,6 +8,9 @@ regex_lumps = '\t(UMAPINFO|MAPINFO)'
 DOOM_regex = r'^E(\d)M(\d)$'
 DOOM2_regex = r'^MAP(\d+)$'
 
+def IsValidWadPath(path):
+    return os.path.isfile(path)
+
 def IsDoom1(mapId):
     return re.match(DOOM_regex, mapId)
 

@@ -6,7 +6,7 @@ authors = ["Jake Stanley <prudentia713@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-common-py = { git = "https://github.com/jakestanley/common-py.git", tag = "0.1.1" }
+common-py = { git = "https://github.com/jakestanley/common-py.git", tag = "0.2.0" }
 python = ">=3.12,<3.13"
 appdirs = "^1.4.4"
 jsonpickle = "^3.2.1"
