@@ -19,11 +19,6 @@ Sensible defaults are chosen for recording and streaming
 
 ## Configuration
 
-### Script variables
-
-- This can now be configured in app
-- Deprecated: Update `config.json` accordingly. Currently the script is not resilient to missing values.
-
 ### Playlist format (CSV)
 
 I worked with ChatGPT to come up with a format that works for mods where a list of maps is provided and when one is not.

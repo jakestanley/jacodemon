@@ -1,13 +1,15 @@
 import os
 
 from common_py.config import Config
-from jacodemon.model.maps import MapSet, LoadMapSet
+
+import jacodemon.model.maps as maps
 
 _CONFIG_SINGLETON = None
 
 _KEY_IWAD_DIR = 'iwad_dir'
 _KEY_MAPS_DIR = 'maps_dir'
 _KEY_DEMO_DIR = 'demo_dir'
+_KEY_MODS_DIR = 'mods_dir'
 _KEY_MODS = 'mods'
 _KEY_DEFAULT_COMPLEVEL = 'default_complevel'
 _KEY_DSDA_PATH = 'dsda_path'
@@ -63,10 +65,11 @@ class JacodemonConfig(Config):
         self.iwad_dir = self.config.get(_KEY_IWAD_DIR)
         self.maps_dir = self.config.get(_KEY_MAPS_DIR)
         self.demo_dir = self.config.get(_KEY_DEMO_DIR)
+        self.mods_dir = self.config.get(_KEY_MODS_DIR)
         loaded_mods = self.config.get(_KEY_MODS, [])
 
         # map sets
-        self.sets = [LoadMapSet(ms) for ms in self.config.get(_KEY_SETS, [])]
+        self.sets = [maps.LoadMapSet(ms) for ms in self.config.get(_KEY_SETS, [])]
 
         self.mods = []
         for mod in loaded_mods:
@@ -80,6 +83,7 @@ class JacodemonConfig(Config):
         self.config[_KEY_IWAD_DIR] = self.iwad_dir
         self.config[_KEY_MAPS_DIR] = self.maps_dir
         self.config[_KEY_DEMO_DIR] = self.demo_dir
+        self.config[_KEY_MODS_DIR] = self.mods_dir
         self.config[_KEY_MODS] = [mod.Dictify() for mod in self.mods]
         self.config[_KEY_DEFAULT_COMPLEVEL] = self.default_complevel
         self.config[_KEY_DSDA_PATH] = self.dsda_path
@@ -101,8 +105,23 @@ class JacodemonConfig(Config):
         cfg[_KEY_SETS] = []
         return cfg
 
-    def AddMapSet(self, mapset: MapSet):
+    def AddMapSet(self, mapset: maps.MapSet):
         self.sets.append(mapset)
+
+        self.Save()
+
+    def RemoveMapSet(self, mapset: maps.MapSet):
+        for set in self.sets:
+            if set.id == mapset.id:
+                self.sets.remove(set)
+
+        self.Save()
+
+    def GetMapSetById(self, mapSetId):
+        for set in self.sets:
+            if set.id == mapSetId:
+                return set
+        raise Exception(f"Map set with id {mapSetId} not found")
 
     def set_dsda_path(self, path):
         if os.path.isfile(path):
@@ -112,8 +131,15 @@ class JacodemonConfig(Config):
         else:
             print(f"Error: could not set dsda_path to '{path}'")
 
-def GetConfig():
+"""
+If dummy is true, returns a DummyConfig instead of a JacodemonConfig
+"""
+def GetConfig(dummy=False):
     global _CONFIG_SINGLETON
     if _CONFIG_SINGLETON is None:
-        _CONFIG_SINGLETON = JacodemonConfig()
+        if dummy:
+            from jacodemon.dummy import DummyConfig
+            _CONFIG_SINGLETON = DummyConfig()
+        else:
+            _CONFIG_SINGLETON = JacodemonConfig()
     return _CONFIG_SINGLETON

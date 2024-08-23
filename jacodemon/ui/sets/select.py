@@ -1,3 +1,4 @@
+import copy
 from typing import List
 
 from PySide6.QtWidgets import QListWidget
@@ -9,11 +10,16 @@ from PySide6.QtWidgets import QListWidget
 from PySide6.QtWidgets import QWidget, QApplication
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QFileDialog
+from PySide6.QtWidgets import QStackedWidget
+from PySide6.QtWidgets import QDialog
 
 from jacodemon.wad import IsValidWadPath
 from jacodemon.model.maps import MapSet
 from jacodemon.config import JacodemonConfig, GetConfig
-from jacodemon.controller.set_controller import SetController, GetSetController
+from jacodemon.controller.sets.select import SelectSetController, GetSetController
+from jacodemon.controller.sets.edit import EditSetController, GetEditSetController
+from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelectController
+from jacodemon.files import FindDoomFiles
 
 class MapSetWidget(QWidget):
     def __init__(self, mapset: MapSet):
@@ -38,7 +44,7 @@ class MapSetWidget(QWidget):
             nameLabel.setStyleSheet("font-size: 14px; color: red;")
 
         # mapset path label
-        self.pathLabel = QLabel("\n".join(self.mapset.paths))
+        self.pathLabel = QLabel("\n".join([path.path for path in self.mapset.paths]))
         self.pathLabel.setStyleSheet("font-size: 12px; color: grey;")
 
         # setup layouts
@@ -77,18 +83,20 @@ class MapSetWidget(QWidget):
 
         self.setLayout(layout)
 
+    # TODO: open TXT file if it exists
     def open(self):
-        pass
+        GetMapsSelectController().Open(self, self.mapset.id)
 
     def edit(self):
-        pass
+        GetEditSetController().NewEdit(self, self.mapset.id)
 
     def remove(self):
-        pass
+        GetSetController().Remove(self.mapset)
 
-class SetWindow(QWidget):
 
-    def __init__(self, parent):
+class SelectSetWindow(QWidget):
+
+    def __init__(self, parent: QStackedWidget):
         super().__init__(parent)
         self.setWindowTitle("Select Set")
         self.layout = QVBoxLayout()
@@ -104,7 +112,7 @@ class SetWindow(QWidget):
         self.populateList()
 
     def handle_add(self):
-        GetSetController().Add(FindDoomFiles())
+        GetSetController().Add(FindDoomFiles(GetConfig().maps_dir))
 
     def populateList(self):
         self.listWidget.clear()
@@ -116,34 +124,11 @@ class SetWindow(QWidget):
             self.listWidget.addItem(listItem)
             self.listWidget.setItemWidget(listItem, mapsetWidget)
 
-def FindDoomFiles() -> str:
-    dialog = QFileDialog()
-    dialog.setFileMode(QFileDialog.FileMode.ExistingFiles)
-
-    title = "Select a map set"
-
-    fileName, _ = dialog.getOpenFileNames(None, title, "",
-        "Doom mod files (*.pk3 *.wad *.deh);;Other (*)")
-
-    return fileName
-
 def OpenSetSelection():
-    
-    # rows = []
-    # for map in maps:
-    #     rows.append(map.Dictify())
-    # to reuse this instance later, use QApplication.instance()
 
     app = QApplication.instance()
-    window = SetWindow(None)
+    window = SelectSetWindow(None)
     window.resize(800, 600)
-    # selected = None
-
-    # def handle_index_selected(index):
-    #     nonlocal selected
-    #     selected = maps[index]
-
-    # window.index_selected.connect(handle_index_selected)
 
     window.show()
     app.exec()
@@ -151,6 +136,6 @@ def OpenSetSelection():
     # return selected
 
 if __name__ == "__main__":
-    app = QApplication()
-    # TODO mock config
+    app = QApplication([])
+    GetConfig(True)
     OpenSetSelection()

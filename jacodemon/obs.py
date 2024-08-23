@@ -7,7 +7,6 @@ from jacodemon.io import IO
 from jacodemon.logs import GetLogManager
 
 import obsws_python as obs
-
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.notifications import Notifications
 

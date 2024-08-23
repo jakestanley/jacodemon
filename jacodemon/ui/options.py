@@ -1,11 +1,11 @@
 import sys
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel
 
 from jacodemon.options import Options, MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
 
-class OptionsDialog(QDialog):
+class OptionsDialog(QWidget):
     def __init__(self, parent=None, options: Options = None):
         super(OptionsDialog, self).__init__(parent)
 
@@ -28,26 +28,20 @@ class OptionsDialog(QDialog):
         # options: obs
         self.checkbox_obs = QCheckBox("Control OBS")
         self.checkbox_obs.setChecked(self.options.obs)
+        self.checkbox_obs.setToolTip("If unchecked, OBS will not be controlled")
         layout.addWidget(self.checkbox_obs)
-
-        checkbox_obs_label = QLabel("If unchecked, recording and scene control will be unavailable")
-        layout.addWidget(checkbox_obs_label)
 
         # options: auto-record 
         self.checkbox_auto_record = QCheckBox("Enable auto record")
         self.checkbox_auto_record.setChecked(self.options.auto_record and self.options.obs)
+        self.checkbox_auto_record.setToolTip("If unchecked, video recording will not be started automatically")
         layout.addWidget(self.checkbox_auto_record)
-
-        checkbox_auto_record_label = QLabel("If checked, video recording be started, ended automatically \nand the outputted recording will be renamed")
-        layout.addWidget(checkbox_auto_record_label)
 
         # options: mods
         self.checkbox_mods = QCheckBox("Enable mods")
+        self.checkbox_mods.setToolTip("If unchecked, any configured 'Quality of Life' mods \nwill not be included in the launch configuration")
         self.checkbox_mods.setChecked(self.options.mods)
         layout.addWidget(self.checkbox_mods)
-
-        checkbox_mods_label = QLabel("If unchecked, any configured 'Quality of Life' mods \nwill not be included in the launch configuration")
-        layout.addWidget(checkbox_mods_label)
 
         # options: Source port override TODO implement
         #groupbox_ports = QGroupBox("Source port")
@@ -56,11 +50,9 @@ class OptionsDialog(QDialog):
 
         # options: crispy doom
         self.checkbox_crispy = QCheckBox("Prefer Crispy Doom")
+        self.checkbox_crispy.setToolTip("If playing a Chocolate Doom mod, force it to launch with Crispy Doom")
         self.checkbox_crispy.setChecked(self.options.crispy)
         layout.addWidget(self.checkbox_crispy)
-
-        checkbox_crispy_label = QLabel("If playing a Chocolate Doom mod, force it to launch with Crispy Doom")
-        layout.addWidget(checkbox_crispy_label)
 
         # options: music
         self.checkbox_music = QCheckBox("Enable music")
@@ -68,22 +60,18 @@ class OptionsDialog(QDialog):
         layout.addWidget(self.checkbox_music)
 
         # options: operation modes
+        hlayout = QHBoxLayout()
         groupbox_modes = self.create_modes_group(options)
-        layout.addWidget(groupbox_modes)
+        hlayout.addWidget(groupbox_modes)
 
         # options: logging levels
         groupbox_logging_levels = self.create_logging_levels_group(options)
-        layout.addWidget(groupbox_logging_levels)
+        hlayout.addWidget(groupbox_logging_levels)
+        layout.addLayout(hlayout)
 
         # special controls
         self.checkbox_obs.stateChanged.connect(self.set_obs)
         self.checkbox_auto_record.setEnabled(self.options.obs)
-
-        # confirm or close
-        button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
-        button_box.accepted.connect(self.accept)
-        button_box.rejected.connect(self.reject)
-        layout.addWidget(button_box)
 
     def create_modes_group(self, options: Options):
         groupbox_modes = QGroupBox("Modes")
@@ -99,10 +87,8 @@ class OptionsDialog(QDialog):
         vlayout.addWidget(self.radio_last)
 
         self.radio_replay = QRadioButton("Replay", self)
+        self.radio_replay.setToolTip("Prompts to select a demo to replay")
         vlayout.addWidget(self.radio_replay)
-
-        checkbox_replay_label = QLabel("Prompts to select a demo to replay")
-        vlayout.addWidget(checkbox_replay_label)
 
         self.radio_normal.setChecked(options.mode is MODE_NORMAL)
         self.radio_random.setChecked(options.mode is MODE_RANDOM)
@@ -119,25 +105,25 @@ class OptionsDialog(QDialog):
 
     def create_logging_levels_group(self, options: Options):
         groupbox = QGroupBox("Logging")
-        hlayout = QHBoxLayout()
+        vlayout = QVBoxLayout()
 
         self.ll_debug = QRadioButton("DEBUG")
         self.ll_debug.setChecked("DEBUG" in options.stdout_log_level)
-        hlayout.addWidget(self.ll_debug)
+        vlayout.addWidget(self.ll_debug)
 
         self.ll_info = QRadioButton("INFO")
         self.ll_info.setChecked("INFO" in options.stdout_log_level)
-        hlayout.addWidget(self.ll_info)
+        vlayout.addWidget(self.ll_info)
 
         self.ll_warning = QRadioButton("WARN")
         self.ll_warning.setChecked("WARNING" in options.stdout_log_level or "WARN" in options.stdout_log_level)
-        hlayout.addWidget(self.ll_warning)
+        vlayout.addWidget(self.ll_warning)
 
         self.ll_error = QRadioButton("ERROR")
         self.ll_error.setChecked("ERROR" in options.stdout_log_level)
-        hlayout.addWidget(self.ll_error)
+        vlayout.addWidget(self.ll_error)
 
-        groupbox.setLayout(hlayout)
+        groupbox.setLayout(vlayout)
         return groupbox
 
     # only use state change methods when other fields are dependent on this value

@@ -7,6 +7,7 @@ import subprocess
 from PySide6.QtWidgets import QApplication
 import jacodemon.arguments as args
 import jacodemon.logs as logs
+from jacodemon.ui.main import MainWindow
 from jacodemon.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.csv import load_raw_maps, load_raw_maps_from_wad
@@ -18,7 +19,7 @@ from jacodemon.stats import Statistics, NewStatistics
 from jacodemon.ui.demoselect import OpenDemoSelection
 from jacodemon.ui.mapselect import OpenMapSelection
 from jacodemon.ui.options import OpenOptionsGui
-from jacodemon.ui.config import OpenConfigDialog
+from jacodemon.ui.config.general import OpenConfigDialog
 from jacodemon.demo import GetDemosForMap, AddBadgesToMap
 from jacodemon.macros import Macros, GetMacros
 from jacodemon.notifications import Notifications, GetNotifications
@@ -42,12 +43,13 @@ def main():
 
     config: JacodemonConfig = GetConfig()
 
+    # TODO reimplement in new layout
     # if last selected, skip the gui
-    if not options.last():
-        OpenConfigDialog()
-        config.Save()
-
-        OpenOptionsGui(options)
+    # if not options.last():
+        # OpenConfigDialog()
+        # config.Save()
+# 
+        # OpenOptionsGui(options)
 
     # reset logging configuration after options
     logger = logs.GetLogManager().GetLogger(__name__)
@@ -56,6 +58,8 @@ def main():
     io: IO = GetIo()
     launch = LaunchConfig(options)
 
+    # TODO if OBS is not running and no-obs flag is NOT 
+    #   set, warn with pop up and continue
     if options.obs:
         obsController = ObsController(notifications, io)
     else:
@@ -69,6 +73,10 @@ def main():
     map = None
     if options.last():
         map = GetLastMap()
+
+    mainWindow = MainWindow(options)
+    mainWindow.show()
+    sys.exit(app.exec())
 
     if not map:
 
