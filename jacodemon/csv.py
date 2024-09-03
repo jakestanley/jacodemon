@@ -125,6 +125,7 @@ def load_raw_maps(csv_path) -> List[FlatMap]:
     
     return raw_maps
 
+# TODO: move this into a different file, does nothing with CSVs
 def load_raw_maps_from_wad(wad_path) -> List[FlatMap]:
     
     logger = GetLogManager().GetLogger(__name__)

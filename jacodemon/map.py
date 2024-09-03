@@ -3,7 +3,7 @@ import sys
 import copy
 from typing import List
 from jacodemon.wad import GetMapEntriesFromFiles
-from jacodemon.config import GetConfig
+from jacodemon.config import JacodemonConfig, GetConfig
 
 class FlatMap:
     def __init__(self, ModName, Files, MapId=None, MapName=None, Author=None, 
@@ -19,7 +19,10 @@ class FlatMap:
         self.CompLevel = CompLevel
 
         # private, required
-        self._Files = Files.split('|')
+        if isinstance(Files, (list, tuple, set)):
+            self._Files = Files
+        else:
+            self._Files = Files.split('|')
 
         # private, optional
         self._MapName = MapName

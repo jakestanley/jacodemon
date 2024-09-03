@@ -5,7 +5,7 @@ from typing import List
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.model.maps import MapSet, MapSetPath
 
-from PySide6.QtWidgets import QInputDialog
+from PySide6.QtWidgets import QInputDialog, QMainWindow
 
 _SINGLETON = None
 
@@ -37,6 +37,12 @@ class SelectSetController:
     def Remove(self, ms: MapSet):
         GetConfig().RemoveMapSet(ms)
         # TODO redraw
+
+    def SetMainWindow(self, mainWindow: QMainWindow):
+        self._mainWindow = mainWindow
+
+    def Close(self):
+        self._mainWindow.close()
 
 def GetSetController():
     global _SINGLETON

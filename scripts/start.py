@@ -18,8 +18,6 @@ from jacodemon.options import Options
 from jacodemon.stats import Statistics, NewStatistics
 from jacodemon.ui.demoselect import OpenDemoSelection
 from jacodemon.ui.mapselect import OpenMapSelection
-from jacodemon.ui.options import OpenOptionsGui
-from jacodemon.ui.config.general import OpenConfigDialog
 from jacodemon.demo import GetDemosForMap, AddBadgesToMap
 from jacodemon.macros import Macros, GetMacros
 from jacodemon.notifications import Notifications, GetNotifications
@@ -27,6 +25,8 @@ from jacodemon.io import IO, GetIo
 from jacodemon.scenes import SceneManager
 from jacodemon.keys import *
 from jacodemon.map import EnrichMaps
+from jacodemon.controller.sets.select import SelectSetController, GetSetController
+from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelectController
 
 def main():
 
@@ -75,9 +75,13 @@ def main():
         map = GetLastMap()
 
     mainWindow = MainWindow(options)
+    GetSetController().SetMainWindow(mainWindow)
     mainWindow.show()
-    sys.exit(app.exec())
+    rt = app.exec()
 
+    OpenMapSelection(GetMapsSelectController().maps)
+
+    # TODO this is all trash now
     if not map:
 
         if options.wad:

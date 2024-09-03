@@ -85,7 +85,9 @@ class MapSetWidget(QWidget):
 
     # TODO: open TXT file if it exists
     def open(self):
-        GetMapsSelectController().Open(self, self.mapset.id)
+        # TODO SHOW RUNTIME OPTIONS BEFORE MAP LAUNCH (as well as in main dialog)
+        if(GetMapsSelectController().Open(self, self.mapset.id)):
+            GetSetController().Close()
 
     def edit(self):
         GetEditSetController().NewEdit(self, self.mapset.id)
@@ -131,9 +133,9 @@ def OpenSetSelection():
     window.resize(800, 600)
 
     window.show()
-    app.exec()
+    rt = app.exec()
 
-    # return selected
+    return
 
 if __name__ == "__main__":
     app = QApplication([])
