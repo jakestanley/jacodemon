@@ -8,7 +8,9 @@ from jacodemon.logs import GetLogManager
 
 import obsws_python as obs
 from jacodemon.config import JacodemonConfig, GetConfig
-from jacodemon.notifications import Notifications
+from jacodemon.options import Options, GetOptions
+from jacodemon.notifications import Notifications, GetNotifications
+from jacodemon.io import IO, GetIo
 
 class ObsController:
     def __init__(self,notifications: Notifications, io: IO):
@@ -107,6 +109,7 @@ class ObsController:
         return self.obs_client.get_current_program_scene().current_program_scene_name
 
     def SetScene(self, title):
+        # TODO handle scene does not exist
         self.obs_client.set_current_program_scene(title)
 
     def UpdateMapTitle(self, title):
@@ -117,7 +120,7 @@ class ObsController:
     def SetDemoName(self, name):
         self._demo_name = name
 
-class NoObsController(ObsController):
+class MockObsController(ObsController):
     def __init__(self, notifications: Notifications):
         super().__init__(notifications=notifications, io=None)
 
@@ -152,3 +155,20 @@ class NoObsController(ObsController):
 
     def UpdateMapTitle(self, title):
         self._logger.warning(f"OBS is disabled. Title provided: '{title}'")
+
+def GetObsController() -> ObsController:
+    # TODO if OBS is not running and no-obs flag is NOT 
+    #   set, warn with pop up and continue
+
+    options: Options = GetOptions()
+    notifications: Notifications = GetNotifications()
+    io: IO = GetIo()
+
+    if options.obs:
+        obsController = ObsController(notifications, io)
+    else:
+        obsController = MockObsController(notifications)
+
+    obsController.Setup()
+
+    return obsController

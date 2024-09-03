@@ -6,11 +6,11 @@ from jacodemon.ui.config.config import ConfigWidget
 
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, \
     QPushButton, QFileDialog, QDialogButtonBox, QGroupBox, QLabel, \
-    QListWidget, QListWidgetItem, QCheckBox
+    QListWidget, QListWidgetItem, QCheckBox, QDialog
 
-class GeneralDialog(ConfigWidget):
+class GeneralTab(ConfigWidget):
     def __init__(self, parent=None):
-        super(GeneralDialog, self).__init__(parent)
+        super(GeneralTab, self).__init__(parent)
         self.setWindowTitle("Configure")
 
         # build layout
@@ -163,7 +163,7 @@ class GeneralDialog(ConfigWidget):
 
 def OpenConfigDialog():
 
-    dialog = GeneralDialog()
+    dialog = GeneralTab()
     cfg: JacodemonConfig = GetConfig()
 
     if dialog.exec() == QDialog.DialogCode.Accepted:

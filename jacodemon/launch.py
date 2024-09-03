@@ -5,14 +5,13 @@ from datetime import datetime
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.map import FlatMap
 from jacodemon.map_utils import *
-from jacodemon.options import Options
+from jacodemon.options import Options, GetOptions
 
 ULTRA_VIOLENCE = 4
 DEFAULT_SKILL = ULTRA_VIOLENCE
 
 class LaunchConfig:
-    def __init__(self, options):
-        self._options: Options = options
+    def __init__(self):
         self._config: JacodemonConfig = GetConfig()
         self.timestamp = None
         self._map: FlatMap = None
@@ -86,7 +85,7 @@ class LaunchConfig:
         if len(self._map.patches) > 0:
             files.extend(self._map.patches)
 
-        if self._options.mods:
+        if GetOptions().mods:
             enabled_mods = [mod for mod in self._config.mods if mod.enabled]
             if len(enabled_mods) > 0:
                 files.extend(mod.path for mod in enabled_mods)
@@ -103,11 +102,11 @@ class LaunchConfig:
         if self._demo_path:
             doom_args.append("-playdemo")
             doom_args.append(self._demo_path)
-        elif self._options.record_demo:
+        elif GetOptions().record_demo:
             doom_args.append("-record")
             doom_args.append(os.path.join(self._config.demo_dir, self.get_demo_name() + ".lmp"))
 
-        if not self._options.music:
+        if not GetOptions().music:
             doom_args.append('-nomusic')
 
         doom_args.extend(['-skill', f"{self._skill}"])

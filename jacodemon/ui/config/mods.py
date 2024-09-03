@@ -6,9 +6,9 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
 from jacodemon.config import JacodemonConfig, GetConfig, Mod
 from jacodemon.files import FindDoomFiles
 
-class ModsDialog(ConfigWidget):
+class ModsTab(ConfigWidget):
     def __init__(self, parent=None):
-        super(ModsDialog, self).__init__(parent)
+        super(ModsTab, self).__init__(parent)
 
         self.layout: QVBoxLayout = QVBoxLayout(self)
         hlayout = QHBoxLayout(self)

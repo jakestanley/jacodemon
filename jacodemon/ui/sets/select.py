@@ -96,7 +96,7 @@ class MapSetWidget(QWidget):
         GetSetController().Remove(self.mapset)
 
 
-class SelectSetWindow(QWidget):
+class SelectSetTab(QWidget):
 
     def __init__(self, parent: QStackedWidget):
         super().__init__(parent)
@@ -129,7 +129,7 @@ class SelectSetWindow(QWidget):
 def OpenSetSelection():
 
     app = QApplication.instance()
-    window = SelectSetWindow(None)
+    window = SelectSetTab(None)
     window.resize(800, 600)
 
     window.show()

@@ -3,26 +3,26 @@ import threading
 import queue
 import time
 import subprocess
+import sys
 
-from PySide6.QtWidgets import QApplication
-import jacodemon.arguments as args
-import jacodemon.logs as logs
+from PySide6.QtWidgets import QApplication, QDialog
+from jacodemon.arguments import GetArgs
+from jacodemon.logs import GetLogManager
 from jacodemon.ui.main import MainWindow
 from jacodemon.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from jacodemon.config import JacodemonConfig, GetConfig
-from jacodemon.csv import load_raw_maps, load_raw_maps_from_wad
 from jacodemon.last import *
 from jacodemon.launch import LaunchConfig
-from jacodemon.obs import *
-from jacodemon.options import Options
+from jacodemon.obs import ObsController, GetObsController
+from jacodemon.options import Options, InitialiseOptions, GetOptions
 from jacodemon.stats import Statistics, NewStatistics
 from jacodemon.ui.demoselect import OpenDemoSelection
 from jacodemon.ui.mapselect import OpenMapSelection
-from jacodemon.demo import GetDemosForMap, AddBadgesToMap
+from jacodemon.ui.options import OpenOptionsDialog
+from jacodemon.demo import GetDemosForMap
 from jacodemon.macros import Macros, GetMacros
-from jacodemon.notifications import Notifications, GetNotifications
-from jacodemon.io import IO, GetIo
 from jacodemon.scenes import SceneManager
+
 from jacodemon.keys import *
 from jacodemon.map import EnrichMaps
 from jacodemon.controller.sets.select import SelectSetController, GetSetController
@@ -30,92 +30,67 @@ from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelect
 
 def main():
 
+    # signaling stuff
     ui_queue = queue.Queue()
     signaling = Signaling(ui_queue)
-    options: Options = args.get_args()
 
-    # set up logging now that we have arguments
-    app = QApplication(sys.argv)
-    logs.configure()
-    logs.InitLogManager(options)
-    logger = logs.GetLogManager().GetLogger(__name__)
+    # because of the different modes of operation, you must specify which 
+    #   args. in this script's case, it's the default args
+    InitialiseOptions(GetArgs())
+
+    # set up logging now that we have options
+    logger = GetLogManager().GetLogger(__name__)
     logger.info("Starting application...")
 
-    config: JacodemonConfig = GetConfig()
-
-    # TODO reimplement in new layout
-    # if last selected, skip the gui
-    # if not options.last():
-        # OpenConfigDialog()
-        # config.Save()
-# 
-        # OpenOptionsGui(options)
-
-    # reset logging configuration after options
-    logger = logs.GetLogManager().GetLogger(__name__)
-
-    notifications: Notifications = GetNotifications()
-    io: IO = GetIo()
-    launch = LaunchConfig(options)
-
-    # TODO if OBS is not running and no-obs flag is NOT 
-    #   set, warn with pop up and continue
-    if options.obs:
-        obsController = ObsController(notifications, io)
-    else:
-        obsController = NoObsController(notifications)
-
-    obsController.Setup()
+    # set up OBS on app launch, before any config in case we're streamin'
+    obsController: ObsController = GetObsController()
     sceneManager = SceneManager(obsController)
-
-    obsController.SetScene(config.wait_scene)
-
+    obsController.SetScene(GetConfig().wait_scene)
+    
+    # check if last option is provided and if so, select that map
     map = None
-    if options.last():
+    if GetOptions().last():
         map = GetLastMap()
 
-    mainWindow = MainWindow(options)
-    GetSetController().SetMainWindow(mainWindow)
-    mainWindow.show()
-    rt = app.exec()
+    # prepare the QApplication context for its first (potential) usage
+    app = QApplication(sys.argv)
 
-    OpenMapSelection(GetMapsSelectController().maps)
-
-    # TODO this is all trash now
+    # if last wasn't used, or it was and there was no last map selected, then 
+    #   run the usual start window
     if not map:
 
-        if options.wad:
-            raw_maps = load_raw_maps_from_wad(options.wad)
-        else:
-            raw_maps = load_raw_maps(options.playlist)
+        # TODO wrap this in a function, like OpenMapSelection below
+        mainWindow = MainWindow()
+        GetSetController().SetMainWindow(mainWindow)
+        if mainWindow.exec() != QDialog.DialogCode.Accepted:
+            sys.exit(0)
 
-        maps = EnrichMaps(config, raw_maps)
-
-        for map in maps:
-            AddBadgesToMap(map, config.demo_dir)
-
-        if options.random():
-            import random
-            map = random.choice(maps)
-        else:
-            map = OpenMapSelection(maps)
+        map = OpenMapSelection(GetMapsSelectController().maps)
 
     if not map:
         logger.info("A map was not selected. Exiting normally")
         sys.exit(0)
 
-    if options.replay():
-        demos = GetDemosForMap(map, config.demo_dir)
+    # allow player to view and edit provided options before launch
+    OpenOptionsDialog()
+
+    # if replay is enabled, we need to select a demo for the map
+    # TODO: this is probably massively broken with the rewrite. FIXME
+    if GetOptions().replay():
+        demos = GetDemosForMap(map, GetConfig().demo_dir)
         demo = OpenDemoSelection(demos)
         if not demo:
             logger.info("A demo was not selected. Exiting normally")
             sys.exit(0)
-    elif not options.random():
+    else:
+        # for next time last is used, save the selected map
+        logger.debug("Saving selected map for next time")
         SaveSelectedMap(map)
 
+    launch = LaunchConfig()
     launch.set_map(map)
 
-    if options.replay():
+    if GetOptions().replay():
         demo_name = demo.name
         launch.set_replay(demo.path)
     else:
@@ -123,7 +98,8 @@ def main():
 
     command = launch.get_command()
 
-    obsController.SetScene(config.play_scene)
+    # prepare OBS, the game is about to start
+    obsController.SetScene(GetConfig().play_scene)
     obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
     obsController.SetDemoName(demo_name)
 
@@ -135,11 +111,11 @@ def main():
     macros.add_hotkey_callback(KEY_NUMPAD_3, callback=signaling.SwitchToBrowserScene)
     macros.listen()
 
-    if options.auto_record:
+    if GetOptions().auto_record:
         obsController.StartRecording()
 
-    if not options.replay():
-        statistics: Statistics = NewStatistics(launch, config.demo_dir)
+    if not GetOptions().replay():
+        statistics: Statistics = NewStatistics(launch, GetConfig().demo_dir)
 
     logger.debug(f"Running command: {' '.join(command)}")
     subprocess_thread = threading.Thread(target=lambda: subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE))
@@ -156,14 +132,15 @@ def main():
                 sceneManager.SwitchToBrowserScene() # blocking
 
     # update stats and save
-    if not options.replay():
+    if not GetOptions().replay():
         statistics.set_level_stats()
         statistics.write_stats()
 
-    if options.auto_record:
+    if GetOptions().auto_record:
+        # TODO: handle recording already stopped, maybe manually or by error
         obsController.StopRecording()
 
-    obsController.SetScene(config.wait_scene)
+    obsController.SetScene(GetConfig().wait_scene)
 
 if __name__ == "__main__":
     main()

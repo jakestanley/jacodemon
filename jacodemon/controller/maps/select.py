@@ -6,6 +6,7 @@ from jacodemon.ui.mapselect import OpenMapSelection
 
 from jacodemon.map import FlatMap, EnrichMaps, GetMapEntriesFromFiles
 from jacodemon.csv import load_raw_maps_from_wad
+from jacodemon.demo import GetDemosForMap, AddBadgesToMap
 
 _SINGLETON = None
 
@@ -35,6 +36,9 @@ class MapsSelectController:
         mapSet: MapSet = GetConfig().GetMapSetById(mapSetId)
         raw_maps = LoadRawMapsFromMapSet(mapSet)
         self.maps = EnrichMaps(raw_maps)
+        for map in self.maps:
+            AddBadgesToMap(map, GetConfig().demo_dir)
+
         if len(self.maps) > 0:
             return True
         return False

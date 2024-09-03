@@ -53,6 +53,7 @@ def AddBadgesToMap(map: FlatMap, demo_dir):
 
     if stats_files:
         for stats_file in stats_files:
+            # hard coded ignore for demos/stats named test, i have loads
             if stats_file.find("test") >= 0:
                 continue
             stats = LoadStatistics(None, stats_file)

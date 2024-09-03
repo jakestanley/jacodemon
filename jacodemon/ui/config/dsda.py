@@ -5,9 +5,9 @@ from jacodemon.ui.config.config import ConfigWidget
 from jacodemon.config import JacodemonConfig, GetConfig
 from PySide6.QtWidgets import QGroupBox
 
-class DsdaDialog(ConfigWidget):
+class DsdaTab(ConfigWidget):
     def __init__(self, parent=None):
-        super(DsdaDialog, self).__init__(parent)
+        super(DsdaTab, self).__init__(parent)
 
         vlayout = QVBoxLayout(self)
 

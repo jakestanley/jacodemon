@@ -4,9 +4,9 @@ from jacodemon.config import JacodemonConfig, GetConfig
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
     QLabel, QLineEdit
 
-class ObsDialog(ConfigWidget):
+class ObsTab(ConfigWidget):
     def __init__(self, parent=None):
-        super(ObsDialog, self).__init__(parent)
+        super(ObsTab, self).__init__(parent)
 
         cfg: JacodemonConfig = GetConfig()
         layout: QVBoxLayout = QVBoxLayout(self)
