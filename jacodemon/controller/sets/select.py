@@ -31,6 +31,10 @@ class SelectSetController:
         gameinfo = GetInfoFromFiles(paths)
         if "Title" in gameinfo and gameinfo["Title"] is not None:
             title = gameinfo["Title"]
+
+        title, ok = QInputDialog.getText(None, "Map set name", "Enter a reference for this map set:", text=title)
+        if not ok:
+            return False
         
         ms: MapSet = MapSet(
             paths=[MapSetPath(path) for path in paths], 
@@ -38,10 +42,6 @@ class SelectSetController:
             iwad= gameinfo.get("IWAD"),
             compLevel=gameinfo.get("complevel")
         )
-
-        title, ok = QInputDialog.getText(None, "Map set name", "Enter a reference for this map set:", text=title)
-        if not ok:
-            return False
 
         GetConfig().AddMapSet(ms)
         return ms
