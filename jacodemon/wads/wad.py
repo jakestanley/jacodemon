@@ -1,133 +1,126 @@
 import os
 import re
 import subprocess
+
 from typing import List
+from omg import wad as omgwad
+from jacodemon.wads.lumps.umapinfo import parse_umapinfo
+from jacodemon.wads.lumps.gameinfo import parse_gameinfo
+from jacodemon.wads.lumps.complevel import parse_complevel
+from jacodemon.wads.lumps.zmapinfo import parse_zmapinfo
 
-from jacodemon.wads.umapinfo import parse_umapinfo
+def EnrichMapsFromUmapinfo(maps, umapinfo):
+    for map in maps:
+        mapId = map['MapId']
+        if mapId in umapinfo:
+            if 'MapName' not in map or map['MapName'] is None:
+                map['MapName'] = umapinfo[mapId].get('levelname')
+            if 'ParTime' not in map or map['ParTime'] is None:
+                map['ParTime'] = umapinfo[mapId].get('partime')
+            if 'NextSecretMap' not in map or map['NextSecretMap'] is None:
+                map['NextSecretMap'] = umapinfo[mapId].get('nextsecret')
+            if 'Author' not in map or map['Author'] is None:
+                map['Author'] = umapinfo[mapId].get('author')
+            if 'NextMap' not in map or map['NextMap'] is None:
+                map['NextMap'] = umapinfo[mapId].get('next')
 
-# TODO: consider "wad util package separate from this"
-regex_mapentries = '\t(E\dM\d|MAP\d\d)'
-regex_lumps = '\t(UMAPINFO|MAPINFO)'
-DOOM_regex = r'^E(\d)M(\d)$'
-DOOM2_regex = r'^MAP(\d+)$'
+def EnrichMapsFromZmapinfo(maps, zmapinfo):
+    for map in maps:
+        mapId = map['MapId']
+        if mapId in zmapinfo:
+            if 'MapName' not in map or map['MapName'] is None:
+                map['MapName'] = zmapinfo[mapId].get('levelname')
 
-def IsValidWadPath(path):
-    return os.path.isfile(path)
+# TODO don't do this every freakin time unless you click refresh
+def GetMapEntriesFromWad(file) -> List[dict]:
+    if not os.path.exists(file):
+        raise Exception(f"WAD {file} not found")
+        
+    maps = []
 
-def IsDoom1(mapId):
-    return re.match(DOOM_regex, mapId)
+    wad = omgwad.WAD(file)
 
-def IsDoom2(mapId):
-    return re.match(DOOM2_regex, mapId)
+    # get the basic list of maps
+    maps.extend([{"MapId": string} for string in wad.maps.keys()])
 
-def GetDoom1Warp(mapId):
-    episodeno = (re.match(DOOM_regex, mapId).group(1))
-    mapno = (re.match(DOOM_regex, mapId).group(2))
-    return [episodeno, mapno]
+    # try and get more info
+    if "UMAPINFO" in wad.data:
+        umapinfo = parse_umapinfo(wad.data['UMAPINFO'].data)
+        EnrichMapsFromUmapinfo(maps, umapinfo)
 
-def GetDoom2Warp(mapId):
-    map = re.match(DOOM2_regex, mapId).group(1)
-    return [f"{int(map)}"]
+    if "ZMAPINFO" in wad.data:
+        zmapinfo = parse_zmapinfo(wad.data['ZMAPINFO'].data)
+        EnrichMapsFromZmapinfo(maps, zmapinfo)
 
-def GetMapEntriesFromFiles(files: List[str], maps_dir = None):
+    return maps
+
+def GetMapEntriesFromFiles(files: List[str], maps_dir = None) -> List[dict]:
 
     # TODO UMAPINFO support
     maps = []
 
     for file in files:
+        
+        ext = os.path.splitext(file)[1]
+        # TODO: .pk3 handling
+        if ext.lower() == ".wad":
+            if os.path.exists(file):
+                final_path = file
+            else:
+                final_path = os.path.join(maps_dir, file)
+            maps.extend(GetMapEntriesFromWad(final_path))
+        else:
+            continue
+
+    return maps
+
+def GetInfoFromWad(file) -> dict:
+
+    if not os.path.exists(file):
+        raise Exception(f"WAD {file} not found")
+
+    wad = omgwad.WAD(file)
+
+    gameinfo = {}
+
+    # GAMEINFO returns useful fields such as:
+    #   - STARTUPTITLE (essentially the mod name, this could be gleaned)
+    #   - IWAD (obvs the IWAD you need to use)
+    if "GAMEINFO" in wad.data:
+        gameinfo.update(parse_gameinfo(wad.data['GAMEINFO'].data))
+    
+    if "COMPLVL" in wad.data:
+        gameinfo.update(parse_complevel(wad.data['COMPLVL'].data))
+    
+    # WADINFO may be necessary if a TXT file is not present
+    if "WADINFO" in wad.data:
+        gameinfo.update({'wadinfo': wad.data['WADINFO'].data})
+
+    return gameinfo
+
+def GetInfoFromFiles(files: List[str], maps_dir = None) -> dict:
+
+    gameinfo = {}
+
+    for file in files:
+
         ext = os.path.splitext(file)[1]
         if ext.lower() == ".wad":
             if os.path.exists(file):
                 final_path = file
             else:
                 final_path = os.path.join(maps_dir, file)
-            wadls = f"wad-ls {final_path}"
-            output = subprocess.check_output(wadls, shell=True, universal_newlines=True)
-            lumps = list(set(re.findall(regex_lumps, output)))
-            mapentries = list(set(re.findall(regex_mapentries, output)))
-            if "MAPINFO" in lumps:
-                wadread = f"wad-read {final_path} MAPINFO"
-                output = subprocess.check_output(wadread, shell=True, universal_newlines=True)
-                mapentries = re.findall("(E\dM\d|MAP\d\d) \"(.*)\"", output)
-                for mapentry in mapentries:
-                    map = {}
-                    map['MapId'] = mapentry[0]
-                    map['MapName'] = mapentry[1]
-                    maps.append(map)
-            else:
-                mapentries.sort()
-                for mapentry in mapentries:
-                    map = {}
-                    map['MapId'] = mapentry
-                    map['MapName'] = ""
-                    maps.append(map)
+            gameinfo.update(GetInfoFromWad(final_path))
 
-    return maps
-
-import struct
-
-def read_wad_file(file_path):
-    with open(file_path, 'rb') as f:
-        # Read the header
-        wad_type = f.read(4).decode('ascii')  # "IWAD" or "PWAD"
-        num_lumps = struct.unpack('<I', f.read(4))[0]  # Number of lumps
-        directory_offset = struct.unpack('<I', f.read(4))[0]  # Offset to directory
-
-        # Read the directory
-        f.seek(directory_offset)
-        directory = []
-        for _ in range(num_lumps):
-            offset = struct.unpack('<I', f.read(4))[0]
-            size = struct.unpack('<I', f.read(4))[0]
-            name = f.read(8).decode('ascii').rstrip('\x00')  # Read the lump name
-            directory.append({'offset': offset, 'size': size, 'name': name})
-
-        print(f'{"Name":<8} {"Offset":<8} {"Size":<8}')
-        print('-' * 30)
-        for entry in directory:
-            print(f"{entry['name']:<8} {entry['offset']:<8} {entry['size']:<8}")
-            
-        # Optionally, read the lumps data
-        lumps_data = {}
-        for entry in directory:
-            f.seek(entry['offset'])
-            lumps_data[entry['name']] = f.read(entry['size'])
-
-        return directory
-
-def read_specific_lump(file_path, lump_name, directory):
-    with open(file_path, 'rb') as f:
-        # Find the lump in the directory
-        for entry in directory:
-            if entry['name'] == lump_name:
-                f.seek(entry['offset'])
-                lump_data = f.read(entry['size'])
-                return lump_data
-
-    # If the lump name is not found, return None
-    print(f"Lump '{lump_name}' not found in the WAD file.")
-    return None
+    return gameinfo
 
 # TODO this does not belong in this repo. too much of it is from chatgpt
 if __name__ == '__main__':
     import sys
-    # Usage example
-    #wad_file_path = '/Users/jake/Dropbox/Games/Doom/WADs/Maps/d2isov2/D2ISOv2.wad'
-    wad_file_path = 'D:\Dropbox\Games\Doom\WADs\Maps\eviternity2\Eviternity II.wad'
-    directory = read_wad_file(wad_file_path)
 
-    # attempt to find maps in the most basic ass way
-    mapentries = []
-    for entry in directory:
-        if re.match('(E\dM\d|MAP\d\d)', entry['name']):
-            mapentries.append(entry['name'])
+    path = "tests/data/thirdparty/eviternity2.wad"
+    entries = GetMapEntriesFromFiles([path])
+    gameinfo = GetInfoFromWad(path)
 
-    # in order of best to last, attempt to find map info
-    umapinfo_lump = read_specific_lump(wad_file_path, "UMAPINFO", directory)
-    if umapinfo_lump:
-        umapinfo = parse_umapinfo(umapinfo_lump)
-    zmapinfo_lump = read_specific_lump(wad_file_path, "ZMAPINFO", directory)
-    mapinfo_lump = read_specific_lump(wad_file_path, "MAPINFO", directory)
-
-
+    # stick a breakpoint here if you need it
     sys.exit(0)

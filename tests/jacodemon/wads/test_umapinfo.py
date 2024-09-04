@@ -1,6 +1,6 @@
 import unittest
 
-from jacodemon.wads.umapinfo import parse_umapinfo
+from jacodemon.wads.lumps.umapinfo import parse_umapinfo
 
 class TestCsv(unittest.TestCase):
 

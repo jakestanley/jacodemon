@@ -7,7 +7,6 @@ from PySide6.QtCore import Qt, QModelIndex, QAbstractTableModel
 
 from jacodemon.config import GetConfig
 from jacodemon.model.maps import MapSet, MapSetPath
-from jacodemon.wads.wad import IsValidWadPath
 import jacodemon.controller.sets.edit as edit
 from jacodemon.files import FindDoomFiles, FindIwad
 

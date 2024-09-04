@@ -14,7 +14,6 @@ from PySide6.QtWidgets import QFileDialog
 from PySide6.QtWidgets import QStackedWidget
 from PySide6.QtWidgets import QDialog
 
-from jacodemon.wads.wad import IsValidWadPath
 from jacodemon.model.maps import MapSet
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.controller.sets.select import SelectSetController, GetSetController
@@ -134,7 +133,7 @@ class SelectSetTab(QWidget):
 def OpenSetSelection():
 
     app = QApplication.instance()
-    window = SelectSetTab(None)
+    window = SelectSetTab(None, None)
     window.resize(800, 600)
 
     window.show()

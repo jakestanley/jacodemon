@@ -199,6 +199,17 @@ websocket-client = "*"
 dev = ["black", "isort", "pytest", "pytest-randomly"]
 
 [[package]]
+name = "omgifol"
+version = "0.5.1"
+description = "A Python library for manipulation of Doom WAD files"
+optional = false
+python-versions = ">=3.3"
+files = [
+    {file = "omgifol-0.5.1-py3-none-any.whl", hash = "sha256:fac4a42fbeacafca642cad9f14e03e2c01c72d7a7464e269f0dbdc40fb675b3a"},
+    {file = "omgifol-0.5.1.tar.gz", hash = "sha256:6674596a489822fdf9fc32a868446bb14d813f0d3a2a8c4edf7dc6ef730a28d9"},
+]
+
+[[package]]
 name = "packaging"
 version = "24.1"
 description = "Core utilities for Python packages"
@@ -379,4 +390,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "60adec86ab4d041a144779ec83380a1c4fa6b8e9ea2ad42907e7a7ec99546384"
+content-hash = "eae9722cecae0c82e11f7c3096e73b9f475ba40e72d3683ff63cd2a6978ea0f2"

@@ -15,6 +15,7 @@ pyside6 = "^6.7.1"
 ahk = { "version" = "^1.7.6", platform = "win32" }
 ahk-binary = { "version" = "^2023.9.0", platform = "win32" }
 win11toast = { "version" = "^0.35", platform = "win32" }
+omgifol = "0.5.1"
 
 [tool.poetry.group.dev.dependencies]
 parameterized = "^0.9.0"
