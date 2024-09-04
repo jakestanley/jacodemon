@@ -10,7 +10,6 @@ from PySide6.QtWidgets import QVBoxLayout
 from PySide6.QtWidgets import QListWidget
 from PySide6.QtWidgets import QWidget, QApplication
 from PySide6.QtWidgets import QLabel
-from PySide6.QtWidgets import QFileDialog
 from PySide6.QtWidgets import QStackedWidget
 from PySide6.QtWidgets import QDialog
 
@@ -55,8 +54,6 @@ class MapSetWidget(QWidget):
         vLayout.addWidget(self.pathLabel)
 
         layout.addLayout(vLayout)
-
-        # TODO: if any files are not valid, warn and disable Open button
 
         # Open button
         vLayout = QVBoxLayout()
