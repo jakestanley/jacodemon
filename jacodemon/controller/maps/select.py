@@ -1,11 +1,13 @@
 from typing import List
 
+from jacodemon.logs import LogManager, GetLogManager
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.model.maps import MapSet
 
 from jacodemon.map import FlatMap, EnrichMaps, GetMapEntriesFromFiles
 from jacodemon.csv import load_raw_maps_from_wad
 from jacodemon.demo import GetDemosForMap, AddBadgesToMap
+from jacodemon.controller.maps.cache import LoadMapsFromCache, AddMapsToCache
 
 _SINGLETON = None
 
@@ -33,11 +35,27 @@ class MapsSelectController:
         self.mapSet: MapSet = None
         self.maps: List[FlatMap] = []
 
-    def Open(self, mapSetId):
-        # TODO: not sure if this should all be in here
+    def LoadMaps(self, mapSetId) -> bool:
+
+        logger = GetLogManager().GetLogger(__name__)
+
+        # TODO: if files change, evict cache
         self.mapSet: MapSet = GetConfig().GetMapSetById(mapSetId)
+        self.maps = LoadMapsFromCache(mapSetId)
+        
+        if self.maps:
+            logger.info(f"Loaded {len(self.maps)} maps from cache")
+            return
+        
+        logger.info("Cache miss. Loading maps from scratch")
+
         raw_maps = LoadRawMapsFromMapSet(self.mapSet)
         self.maps = EnrichMaps(raw_maps)
+        AddMapsToCache(mapSetId, self.maps)
+
+    def Open(self, mapSetId):
+
+        self.LoadMaps(mapSetId)
         for map in self.maps:
             AddBadgesToMap(map, GetConfig().demo_dir)
 

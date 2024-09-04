@@ -9,9 +9,7 @@ from PySide6.QtWidgets import QLabel
 from PySide6.QtGui import QBrush
 
 
-_COLUMN_ORDER = ['MapId', 'Badge', 'MapName', 'Author', 
-                #  'ModName', 'CompLevel', 'Files', 'Merge', 'Port', 
-                'Notes']
+_COLUMN_ORDER = ['MapId', 'Badge', 'MapName', 'Author', 'Notes']
 
 class MapTableWidget(QTableView):
     index_selected = Signal(int)

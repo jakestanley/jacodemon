@@ -83,9 +83,6 @@ def GetInfoFromWad(file) -> dict:
 
     gameinfo = {}
 
-    # GAMEINFO returns useful fields such as:
-    #   - STARTUPTITLE (essentially the mod name, this could be gleaned)
-    #   - IWAD (obvs the IWAD you need to use)
     if "GAMEINFO" in wad.data:
         gameinfo.update(parse_gameinfo(wad.data['GAMEINFO'].data))
     
@@ -114,7 +111,6 @@ def GetInfoFromFiles(files: List[str], maps_dir = None) -> dict:
 
     return gameinfo
 
-# TODO this does not belong in this repo. too much of it is from chatgpt
 if __name__ == '__main__':
     import sys
 
