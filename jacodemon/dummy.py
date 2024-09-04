@@ -25,6 +25,8 @@ def _DummyMapSet() -> MapSet:
 class DummyConfig(config.JacodemonConfig):
     def __init__(self) -> None:
         self.sets = [_DummyMapSet()]
+        self.iwad_dir = "D:\Dropbox\Games\Doom\WADs\IWADs"
+        self.maps_dir = "D:\Dropbox\Games\Doom\WADs\Maps"
 
     def _PrepareSave(self):
         print("_PrepareSave called on inert DummyConfig")

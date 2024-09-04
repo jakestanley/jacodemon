@@ -9,6 +9,9 @@ from PySide6.QtWidgets import QInputDialog, QMainWindow
 
 _SINGLETON = None
 
+def EnrichMapSet(ms: MapSet):
+    pass
+
 class SelectSetController:
     def __init__(self):
         if _SINGLETON is not None:
@@ -31,6 +34,7 @@ class SelectSetController:
             return False
 
         ms: MapSet = MapSet([MapSetPath(path) for path in paths], name)
+        EnrichMapSet(ms)
         GetConfig().AddMapSet(ms)
         return ms
 

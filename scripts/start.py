@@ -8,7 +8,7 @@ import sys
 from PySide6.QtWidgets import QApplication, QDialog
 from jacodemon.arguments import GetArgs
 from jacodemon.logs import GetLogManager
-from jacodemon.ui.main import MainWindow
+from jacodemon.ui.dialogs.config import OpenConfigDialog
 from jacodemon.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.last import *
@@ -16,6 +16,8 @@ from jacodemon.launch import LaunchConfig
 from jacodemon.obs import ObsController, GetObsController
 from jacodemon.options import Options, InitialiseOptions, GetOptions
 from jacodemon.stats import Statistics, NewStatistics
+from jacodemon.model.maps import MapSet
+from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelectController
 from jacodemon.ui.demoselect import OpenDemoSelection
 from jacodemon.ui.mapselect import OpenMapSelection
 from jacodemon.ui.options import OpenOptionsDialog
@@ -24,9 +26,6 @@ from jacodemon.macros import Macros, GetMacros
 from jacodemon.scenes import SceneManager
 
 from jacodemon.keys import *
-from jacodemon.map import EnrichMaps
-from jacodemon.controller.sets.select import SelectSetController, GetSetController
-from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelectController
 
 def main():
 
@@ -53,19 +52,22 @@ def main():
         map = GetLastMap()
 
     # prepare the QApplication context for its first (potential) usage
-    app = QApplication(sys.argv)
+    app = QApplication([])
 
     # if last wasn't used, or it was and there was no last map selected, then 
     #   run the usual start window
     if not map:
 
         # TODO wrap this in a function, like OpenMapSelection below
-        mainWindow = MainWindow()
-        GetSetController().SetMainWindow(mainWindow)
-        if mainWindow.exec() != QDialog.DialogCode.Accepted:
+        if OpenConfigDialog() == QDialog.DialogCode.Rejected:
+            logger.info("ConfigDialog was closed. Exiting normally")
             sys.exit(0)
 
-        map = OpenMapSelection(GetMapsSelectController().maps)
+        # GetSetController().SetMainWindow(mainWindow)
+        # if mainWindow.exec() != QDialog.DialogCode.Accepted:
+        #     sys.exit(0)
+
+        map = OpenMapSelection()
 
     if not map:
         logger.info("A map was not selected. Exiting normally")

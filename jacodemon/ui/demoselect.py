@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QApplication
 
-from jacodemon.ui.mapselect import GridViewWindow
+from jacodemon.ui.mapselect import MapTableWidget
 
 column_order = ['Lump', 'Time', 'Kills', 'Items', 'Secrets']
 
@@ -11,7 +11,7 @@ def OpenDemoSelection(demos):
         rows.append(demo.Dictify())
 
     app = QApplication.instance()
-    window = GridViewWindow(rows, column_order)
+    window = MapTableWidget(rows, column_order)
     selected = None
 
     def handle_index_selected(index):

@@ -1,6 +1,7 @@
 import copy
 from typing import List
 
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QListWidget
 from PySide6.QtWidgets import QListWidgetItem
 from PySide6.QtWidgets import QHBoxLayout
@@ -13,7 +14,7 @@ from PySide6.QtWidgets import QFileDialog
 from PySide6.QtWidgets import QStackedWidget
 from PySide6.QtWidgets import QDialog
 
-from jacodemon.wad import IsValidWadPath
+from jacodemon.wads.wad import IsValidWadPath
 from jacodemon.model.maps import MapSet
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.controller.sets.select import SelectSetController, GetSetController
@@ -22,9 +23,10 @@ from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelect
 from jacodemon.files import FindDoomFiles
 
 class MapSetWidget(QWidget):
-    def __init__(self, mapset: MapSet):
+    def __init__(self, mapset: MapSet, close_signal: Signal):
         super().__init__()
-        self.mapset = mapset
+        self.mapset: MapSet = mapset
+        self.close_signal: Signal = close_signal
         self.initUI()
 
     def initUI(self):
@@ -86,8 +88,8 @@ class MapSetWidget(QWidget):
     # TODO: open TXT file if it exists
     def open(self):
         # TODO SHOW RUNTIME OPTIONS BEFORE MAP LAUNCH (as well as in main dialog)
-        if(GetMapsSelectController().Open(self, self.mapset.id)):
-            GetSetController().Close()
+        if(GetMapsSelectController().Open(self.mapset.id)):
+            self.close_signal.emit(QDialog.DialogCode.Accepted)
 
     def edit(self):
         GetEditSetController().NewEdit(self, self.mapset.id)
@@ -98,9 +100,12 @@ class MapSetWidget(QWidget):
 
 class SelectSetTab(QWidget):
 
-    def __init__(self, parent: QStackedWidget):
+    def __init__(self, parent: QStackedWidget, close_signal: Signal):
         super().__init__(parent)
         self.setWindowTitle("Select Set")
+
+        self.close_signal = close_signal
+
         self.layout = QVBoxLayout()
 
         self.add_button = QPushButton("New map set")
@@ -121,7 +126,7 @@ class SelectSetTab(QWidget):
 
         for mapset in GetConfig().sets:
             listItem = QListWidgetItem(self.listWidget)
-            mapsetWidget = MapSetWidget(mapset)
+            mapsetWidget = MapSetWidget(mapset, self.close_signal)
             listItem.setSizeHint(mapsetWidget.sizeHint())
             self.listWidget.addItem(listItem)
             self.listWidget.setItemWidget(listItem, mapsetWidget)

@@ -2,7 +2,7 @@ import os
 import sys
 import copy
 from typing import List
-from jacodemon.wad import GetMapEntriesFromFiles
+from jacodemon.wads.wad import GetMapEntriesFromFiles
 from jacodemon.config import JacodemonConfig, GetConfig
 
 class FlatMap:

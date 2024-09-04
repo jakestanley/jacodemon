@@ -161,25 +161,25 @@ class GeneralTab(ConfigWidget):
         if directory:
             line.setText(directory)
 
-def OpenConfigDialog():
+# def OpenConfigDialog():
 
-    dialog = GeneralTab()
-    cfg: JacodemonConfig = GetConfig()
+#     dialog = GeneralTab()
+#     cfg: JacodemonConfig = GetConfig()
 
-    if dialog.exec() == QDialog.DialogCode.Accepted:
-        cfg.iwad_dir = dialog.iwad_path.text()
-        cfg.maps_dir = dialog.maps_path.text()
-        cfg.demo_dir = dialog.demo_path.text()
-        cfg.mods_dir = dialog.mods_path.text()
+#     if dialog.exec() == QDialog.DialogCode.Accepted:
+#         cfg.iwad_dir = dialog.iwad_path.text()
+#         cfg.maps_dir = dialog.maps_path.text()
+#         cfg.demo_dir = dialog.demo_path.text()
+#         cfg.mods_dir = dialog.mods_path.text()
 
-        cfg.default_complevel = dialog.default_complevel.text()
-        cfg.set_dsda_path(dialog.dsda_path.text())
-        cfg.dsda_cfg = dialog.dsda_cfg_path.text()
-        cfg.dsdadoom_hud_lump = dialog.dsda_hud_path.text()
-        cfg.play_scene = dialog.play_scene.text()
-        cfg.wait_scene = dialog.wait_scene.text()
-        cfg.browser_scene = dialog.browser_scene.text()
-        cfg.title_source = dialog.title_source.text()
-        # TODO chocolate/crispy inputs
-    else:
-        sys.exit(0)
+#         cfg.default_complevel = dialog.default_complevel.text()
+#         cfg.set_dsda_path(dialog.dsda_path.text())
+#         cfg.dsda_cfg = dialog.dsda_cfg_path.text()
+#         cfg.dsdadoom_hud_lump = dialog.dsda_hud_path.text()
+#         cfg.play_scene = dialog.play_scene.text()
+#         cfg.wait_scene = dialog.wait_scene.text()
+#         cfg.browser_scene = dialog.browser_scene.text()
+#         cfg.title_source = dialog.title_source.text()
+#         # TODO chocolate/crispy inputs
+#     else:
+#         sys.exit(0)

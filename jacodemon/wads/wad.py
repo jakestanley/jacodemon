@@ -3,6 +3,9 @@ import re
 import subprocess
 from typing import List
 
+from jacodemon.wads.umapinfo import parse_umapinfo
+
+# TODO: consider "wad util package separate from this"
 regex_mapentries = '\t(E\dM\d|MAP\d\d)'
 regex_lumps = '\t(UMAPINFO|MAPINFO)'
 DOOM_regex = r'^E(\d)M(\d)$'
@@ -105,27 +108,26 @@ def read_specific_lump(file_path, lump_name, directory):
     print(f"Lump '{lump_name}' not found in the WAD file.")
     return None
 
-
-
 # TODO this does not belong in this repo. too much of it is from chatgpt
 if __name__ == '__main__':
     import sys
     # Usage example
-    wad_file_path = '/Users/jake/Dropbox/Games/Doom/WADs/Maps/d2isov2/D2ISOv2.wad'
+    #wad_file_path = '/Users/jake/Dropbox/Games/Doom/WADs/Maps/d2isov2/D2ISOv2.wad'
+    wad_file_path = 'D:\Dropbox\Games\Doom\WADs\Maps\eviternity2\Eviternity II.wad'
     directory = read_wad_file(wad_file_path)
 
-    # attempt to find maps
+    # attempt to find maps in the most basic ass way
     mapentries = []
     for entry in directory:
         if re.match('(E\dM\d|MAP\d\d)', entry['name']):
-            mapentries.append(entry)
+            mapentries.append(entry['name'])
 
-    # Read specific lump by name
-    lump_name = 'ZMAPINFO'
-    lump_data = read_specific_lump(wad_file_path, lump_name, directory)
+    # in order of best to last, attempt to find map info
+    umapinfo_lump = read_specific_lump(wad_file_path, "UMAPINFO", directory)
+    if umapinfo_lump:
+        umapinfo = parse_umapinfo(umapinfo_lump)
+    zmapinfo_lump = read_specific_lump(wad_file_path, "ZMAPINFO", directory)
+    mapinfo_lump = read_specific_lump(wad_file_path, "MAPINFO", directory)
 
-    if lump_data is not None:
-        print(f"Read {len(lump_data)} bytes from lump '{lump_name}'")
-    else:
-        print("Lump data could not be read.")
+
     sys.exit(0)

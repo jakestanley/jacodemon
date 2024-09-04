@@ -22,8 +22,10 @@ class MapSet:
         self.id = uuid.uuid4() if id is None else id
         self.name = name
         self.paths: List[MapSetPath] = paths
-        # TODO port
+        # TODO port and complevel
+        self.iwad = ""
         self.port = ""
+        self.compLevel = ""
 
     def HasInvalidConfiguration(self):
         for path in self.paths:

@@ -15,19 +15,21 @@ class EditSetController:
 
     def NewEdit(self, parent, mapSetId):
         mapSet: MapSet = GetConfig().GetMapSetById(mapSetId)
-        mapSetCopy = mapSet.Copy()
-        dialog = EditSetDialog(parent, mapSetCopy)
+        dialog = EditSetDialog(parent, mapSet)
         result = dialog.exec()
         if result == QDialog.DialogCode.Accepted:
+
+            model = dialog.tableView.model()
+            row_count = model.rowCount()
+            column_count = model.columnCount()
+
+            for row in range(row_count):
+                for column in range(column_count):
+                    item = model.item(row, column)
+                    print(item.text())
+
             mapSet.name = dialog.mapSet.name
             mapSet.paths = dialog.mapSet.paths
-
-    # only modify the copy
-    def Toggle(self, dialog, path, state):
-        for p in dialog.mapSet.paths:
-            if p.path == path:
-                p.enabled = state
-        return
 
 def GetEditSetController() -> EditSetController:
     global _SINGLETON
