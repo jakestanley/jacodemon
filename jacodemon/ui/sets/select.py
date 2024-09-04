@@ -26,6 +26,7 @@ class MapSetWidget(QWidget):
 
     def __init__(self, mapset: MapSet, close_signal: Signal, parent):
         super().__init__(parent)
+        self.close_signal = close_signal
         self.mapset: MapSet = mapset
         self.initUI()
 
