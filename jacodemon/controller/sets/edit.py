@@ -4,6 +4,7 @@ from jacodemon.model.maps import MapSet
 
 from jacodemon.ui.sets.edit import EditSetDialog
 from PySide6.QtWidgets import QDialog
+from PySide6.QtCore import Qt
 
 _SINGLETON = None
 
@@ -17,19 +18,14 @@ class EditSetController:
         mapSet: MapSet = GetConfig().GetMapSetById(mapSetId)
         dialog = EditSetDialog(parent, mapSet)
         result = dialog.exec()
+
         if result == QDialog.DialogCode.Accepted:
 
-            model = dialog.tableView.model()
-            row_count = model.rowCount()
-            column_count = model.columnCount()
-
-            for row in range(row_count):
-                for column in range(column_count):
-                    item = model.item(row, column)
-                    print(item.text())
-
-            mapSet.name = dialog.mapSet.name
-            mapSet.paths = dialog.mapSet.paths
+            # TODO reload button, in case you messed up the complevel and want to re-import it or summat
+            mapSet.compLevel = dialog.comp_level_line_edit.text()
+            mapSet.iwad = dialog.iwad_line_edit.text()
+            mapSet.paths = dialog.GetPaths()
+            # TODO check saved
 
 def GetEditSetController() -> EditSetController:
     global _SINGLETON

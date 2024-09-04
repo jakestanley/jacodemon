@@ -5,12 +5,12 @@ from typing import List
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.model.maps import MapSet, MapSetPath
 
+from jacodemon.wads.wad import GetMapEntriesFromFiles
+from jacodemon.wads.wad import GetInfoFromFiles
+
 from PySide6.QtWidgets import QInputDialog, QMainWindow
 
 _SINGLETON = None
-
-def EnrichMapSet(ms: MapSet):
-    pass
 
 class SelectSetController:
     def __init__(self):
@@ -23,18 +23,26 @@ class SelectSetController:
         if paths is None or len(paths) == 0:
             return
 
-        name, ext = os.path.splitext(os.path.basename(paths[0]))
+        title, ext = os.path.splitext(os.path.basename(paths[0]))
         if ext.startswith("."):
             ext = ext[1:]
 
         # a small bit of ui here isn't toooo bad
-        # TODO need to do a directory insert select instead
-        name, ok = QInputDialog.getText(None, "Map set name", "Enter a reference for this map set:", text=name)
+        gameinfo = GetInfoFromFiles(paths)
+        if "Title" in gameinfo and gameinfo["Title"] is not None:
+            title = gameinfo["Title"]
+        
+        ms: MapSet = MapSet(
+            paths=[MapSetPath(path) for path in paths], 
+            name=title,
+            iwad= gameinfo.get("IWAD"),
+            compLevel=gameinfo.get("complevel")
+        )
+
+        title, ok = QInputDialog.getText(None, "Map set name", "Enter a reference for this map set:", text=title)
         if not ok:
             return False
 
-        ms: MapSet = MapSet([MapSetPath(path) for path in paths], name)
-        EnrichMapSet(ms)
         GetConfig().AddMapSet(ms)
         return ms
 
@@ -53,3 +61,11 @@ def GetSetController():
     if _SINGLETON is None:
         _SINGLETON = SelectSetController()
     return _SINGLETON
+
+if __name__ == "__main__":
+    import sys
+    from PySide6.QtWidgets import QApplication
+
+    app = QApplication(sys.argv)
+    ms: MapSet = GetSetController().Add(["tests/data/thirdparty/eviternity2.wad"])
+    sys.exit(0)

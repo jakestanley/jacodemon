@@ -226,9 +226,9 @@ class EditSetDialog(QDialog):
     def GetPaths(self):
         paths = []
         for row in range(self.model.rowCount()):
-            enabled = self.model.data(self.model.index(row, 0), Qt.CheckStateRole) == Qt.Checked
             path = self.model.data(self.model.index(row, 1), Qt.DisplayRole)
-            paths.append(MapSetPath(enabled, path))
+            enabled = self.model.data(self.model.index(row, 0), Qt.CheckStateRole) == Qt.Checked
+            paths.append(MapSetPath(path, enabled))
 
         return paths
 

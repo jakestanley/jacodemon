@@ -18,14 +18,14 @@ class MapSetPath:
         }
 
 class MapSet:
-    def __init__(self, paths: List[MapSetPath], name = None, id=None) -> None:
+    def __init__(self, paths: List[MapSetPath], name = None, id=None, iwad=None, compLevel=None) -> None:
         self.id = uuid.uuid4() if id is None else id
         self.name = name
         self.paths: List[MapSetPath] = paths
         # TODO port and complevel
-        self.iwad = ""
+        self.iwad = iwad
         self.port = ""
-        self.compLevel = ""
+        self.compLevel = compLevel
 
     def HasInvalidConfiguration(self):
         for path in self.paths:
@@ -47,7 +47,10 @@ class MapSet:
             # in case UUID is not set, i.e before this code was added, set it
             "id": str(self.id) if self.id else uuid.uuid4(),
             "name": self.name,
-            "paths": [path.dictify() for path in self.paths]
+            "paths": [path.dictify() for path in self.paths],
+            "iwad": self.iwad,
+            "port": self.port,
+            "compLevel": self.compLevel
         }
 
 def LoadMapSet(dict) -> MapSet:
@@ -55,4 +58,8 @@ def LoadMapSet(dict) -> MapSet:
     for path in dict["paths"]:
         paths.append(MapSetPath(path["path"], path["enabled"]))
 
-    return MapSet(paths, dict["name"], dict.get("id"))
+    return MapSet(paths=paths, 
+                  name=dict["name"], 
+                  id=dict.get("id"), 
+                  iwad=dict.get("iwad"), 
+                  compLevel=dict.get("compLevel"))
