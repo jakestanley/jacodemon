@@ -97,7 +97,6 @@ class _SelectMapDialog(QDialog):
         if action == QDialog.DialogCode.Accepted:
             self.accept()
 
-# TODO refactor to consider map sets and display info etc
 def OpenMapSelection():
 
     # at this point a map set and its maps MUST have been loaded
@@ -105,4 +104,5 @@ def OpenMapSelection():
     dialog = _SelectMapDialog(table_rows, GetMapsSelectController().mapSet)
 
     rs = dialog.exec()
+    # TODO return to previous window on reject
     return rs

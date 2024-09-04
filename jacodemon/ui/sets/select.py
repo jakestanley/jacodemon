@@ -22,10 +22,12 @@ from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelect
 from jacodemon.files import FindDoomFiles
 
 class MapSetWidget(QWidget):
-    def __init__(self, mapset: MapSet, close_signal: Signal):
-        super().__init__()
+
+    change_signal = Signal()
+
+    def __init__(self, mapset: MapSet, close_signal: Signal, parent):
+        super().__init__(parent)
         self.mapset: MapSet = mapset
-        self.close_signal: Signal = close_signal
         self.initUI()
 
     def initUI(self):
@@ -92,9 +94,11 @@ class MapSetWidget(QWidget):
 
     def edit(self):
         GetEditSetController().NewEdit(self, self.mapset.id)
+        self.change_signal.emit()
 
     def remove(self):
         GetSetController().Remove(self.mapset)
+        self.change_signal.emit()
 
 
 class SelectSetTab(QWidget):
@@ -119,13 +123,15 @@ class SelectSetTab(QWidget):
 
     def handle_add(self):
         GetSetController().Add(FindDoomFiles(GetConfig().maps_dir))
+        self.populateList()
 
     def populateList(self):
         self.listWidget.clear()
 
         for mapset in GetConfig().sets:
             listItem = QListWidgetItem(self.listWidget)
-            mapsetWidget = MapSetWidget(mapset, self.close_signal)
+            mapsetWidget = MapSetWidget(mapset, self.close_signal, self)
+            mapsetWidget.change_signal.connect(self.populateList)
             listItem.setSizeHint(mapsetWidget.sizeHint())
             self.listWidget.addItem(listItem)
             self.listWidget.setItemWidget(listItem, mapsetWidget)
