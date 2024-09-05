@@ -72,7 +72,7 @@ def GetMapEntriesFromFiles(files: List[str], maps_dir = None) -> List[dict]:
         else:
             continue
 
-    return maps
+    return sorted(maps, key=lambda x: x['MapId'])
 
 def GetInfoFromWad(file) -> dict:
 
