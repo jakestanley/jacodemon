@@ -60,6 +60,9 @@ class Statistics:
             return True
         else:
             return False
+        
+    def get_timestamp(self):
+        return self._stats[_KEY_TIMESTAMP]
 
     def get_time(self):
         if self._stats[_KEY_LEVEL_STATS]:

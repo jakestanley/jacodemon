@@ -5,7 +5,7 @@ from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.model.maps import MapSet
 
 from jacodemon.map import FlatMap, EnrichMaps, GetMapEntriesFromFiles
-from jacodemon.demo import GetDemosForMap, AddBadgesToMap
+from jacodemon.model.demo import GetDemosForMap, AddBadgesToMap
 from jacodemon.controller.maps.cache import LoadMapsFromCache, AddMapsToCache
 
 _SINGLETON = None

@@ -18,10 +18,9 @@ from jacodemon.options import Options, InitialiseOptions, GetOptions
 from jacodemon.stats import Statistics, NewStatistics
 from jacodemon.model.maps import MapSet
 from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelectController
-from jacodemon.ui.demoselect import OpenDemoSelection
-from jacodemon.ui.mapselect import OpenMapSelection
+from jacodemon.ui.dialogs.mapselect import OpenSelectMapDialog
 from jacodemon.ui.dialogs.options import OpenOptionsDialog
-from jacodemon.demo import GetDemosForMap
+from jacodemon.model.demo import GetDemosForMap
 from jacodemon.macros import Macros, GetMacros
 from jacodemon.scenes import SceneManager
 
@@ -67,7 +66,7 @@ def main():
         if cd.last:
             map = GetLastMap()
         else:
-            map = OpenMapSelection()
+            map = OpenSelectMapDialog()
 
     if not map:
         logger.info("A map was not selected. Exiting normally")
@@ -76,16 +75,8 @@ def main():
     # allow player to view and edit provided options before launch
     OpenOptionsDialog()
 
-    # if replay is enabled, we need to select a demo for the map
-    # TODO: this is probably massively broken with the rewrite. FIXME
-    if GetOptions().replay():
-        demos = GetDemosForMap(map, GetConfig().demo_dir)
-        demo = OpenDemoSelection(demos)
-        if not demo:
-            logger.info("A demo was not selected. Exiting normally")
-            sys.exit(0)
     # if we're not selecting the last map
-    elif not GetOptions().last:
+    if not GetOptions().last:
         # for next time last is used, save the selected map
         logger.debug("Saving selected map for next time")
         SaveSelectedMap(map, GetMapsSelectController().mapSet.id)

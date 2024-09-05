@@ -9,7 +9,7 @@ from jacodemon.options import Options
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.map import FlatMap, EnrichMaps
 from jacodemon.csv import load_raw_maps
-from jacodemon.demo import Demo, GetDemosForMap, AddBadgesToMap
+from jacodemon.model.demo import Demo, GetDemosForMap, AddBadgesToMap
 
 class Badge:
     def __init__(self, rank, attempt, timestamp) -> None:

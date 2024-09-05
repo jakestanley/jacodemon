@@ -4,7 +4,8 @@ from PySide6.QtWidgets import QApplication, QVBoxLayout, QPushButton, \
 
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt, QModelIndex, QAbstractTableModel
-
+from PySide6.QtWidgets import QStyledItemDelegate, QPushButton, QStyleOptionButton, QStyle, QFileDialog
+from PySide6.QtCore import Qt, QEvent
 from jacodemon.config import GetConfig
 from jacodemon.model.maps import MapSet, MapSetPath
 import jacodemon.controller.sets.edit as edit
@@ -18,8 +19,7 @@ _COL_INDEX_MOVE_DOWN = 3
 _COL_INDEX_LOCATE = 4
 _COL_INDEX_REMOVE = 5
 
-from PySide6.QtWidgets import QStyledItemDelegate, QPushButton, QStyleOptionButton, QStyle, QFileDialog
-from PySide6.QtCore import Qt, QEvent
+
 
 class ButtonDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):

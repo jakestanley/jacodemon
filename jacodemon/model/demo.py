@@ -4,6 +4,8 @@ import os
 
 from itertools import groupby
 
+import jacodemon.model.demo_constants as DemoConstants
+
 from jacodemon.map import FlatMap
 from jacodemon.stats import Statistics, LoadStatistics
 
@@ -19,17 +21,19 @@ class Demo:
     def Dictify(self):
         dic = {}
 
-        dic['Lump'] = self.path
-        dic['Time'] = 'N/A'
-        dic['Kills'] = 'N/A'
-        dic['Items'] = 'N/A'
-        dic['Secrets'] = 'N/A'
+        dic[DemoConstants.KEY_LUMP] = self.path
+        dic[DemoConstants.KEY_TIMESTAMP] = 'N/A'
+        dic[DemoConstants.KEY_TIME] = 'N/A'
+        dic[DemoConstants.KEY_KILLS] = 'N/A'
+        dic[DemoConstants.KEY_ITEMS]  ='N/A'
+        dic[DemoConstants.KEY_SECRETS] = 'N/A'
 
         if self.stats:
-            dic['Time'] = self.stats.get_time()
-            dic['Kills'] = self.stats.get_kills()
-            dic['Items'] = self.stats.get_items()
-            dic['Secrets'] = self.stats.get_secrets()
+            dic[DemoConstants.KEY_TIMESTAMP] = self.stats.get_timestamp()
+            dic[DemoConstants.KEY_TIME] = self.stats.get_time()
+            dic[DemoConstants.KEY_KILLS] = self.stats.get_kills()
+            dic[DemoConstants.KEY_ITEMS] = self.stats.get_items()
+            dic[DemoConstants.KEY_SECRETS] = self.stats.get_secrets()
 
         return dic
 
