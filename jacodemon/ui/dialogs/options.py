@@ -75,14 +75,14 @@ class OptionsWidget(QWidget):
         layout.addWidget(self.checkbox_music)
 
         # options: operation modes
-        hlayout = QHBoxLayout()
-        groupbox_modes = self.create_modes_group()
-        hlayout.addWidget(groupbox_modes)
+        # hlayout = QHBoxLayout()
+        # groupbox_modes = self.create_modes_group()
+        # hlayout.addWidget(groupbox_modes)
 
         # options: logging levels
-        groupbox_logging_levels = self.create_logging_levels_group()
-        hlayout.addWidget(groupbox_logging_levels)
-        layout.addLayout(hlayout)
+        # groupbox_logging_levels = self.create_logging_levels_group()
+        # hlayout.addWidget(groupbox_logging_levels)
+        # layout.addLayout(hlayout)
 
         # special controls
         self.checkbox_obs.stateChanged.connect(self.set_obs)
@@ -180,7 +180,7 @@ def OpenOptionsDialog():
         GetOptions().auto_record         = ow.checkbox_auto_record.isChecked()
         GetOptions().record_demo         = ow.checkbox_record_demo.isChecked()
         GetOptions().crispy              = ow.checkbox_crispy.isChecked()
-        GetOptions().mode                = ow.get_mode()
-        GetOptions().stdout_log_level    = next(radio.text() for radio in [ow.ll_info, ow.ll_warning, ow.ll_debug, ow.ll_error] if radio.isChecked())
+        # GetOptions().mode                = ow.get_mode()
+        # GetOptions().stdout_log_level    = next(radio.text() for radio in [ow.ll_info, ow.ll_warning, ow.ll_debug, ow.ll_error] if radio.isChecked())
     else:
         sys.exit(0)

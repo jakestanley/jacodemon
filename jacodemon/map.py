@@ -8,7 +8,7 @@ from jacodemon.config import JacodemonConfig, GetConfig
 class FlatMap:
     def __init__(self, ModName, Files, MapId=None, MapName=None, Author=None, 
                  CompLevel=None, Merges: str = "", Port=None, 
-                 Notes=None):
+                 Notes=None, MapSetId: str = None):
 
         # public, required
         self.ModName = ModName
@@ -17,6 +17,7 @@ class FlatMap:
         self.MapId = MapId
         self.Port = Port
         self.CompLevel = CompLevel
+        self.MapSetId = MapSetId
 
         # private, required
         if isinstance(Files, (list, tuple, set)):

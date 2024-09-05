@@ -8,7 +8,7 @@ import sys
 from PySide6.QtWidgets import QApplication, QDialog
 from jacodemon.arguments import GetArgs
 from jacodemon.logs import GetLogManager
-from jacodemon.ui.dialogs.config import OpenConfigDialog
+from jacodemon.ui.dialogs.config import ConfigDialog
 from jacodemon.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.last import *
@@ -58,16 +58,16 @@ def main():
     #   run the usual start window
     if not map:
 
-        # TODO wrap this in a function, like OpenMapSelection below
-        if OpenConfigDialog() == QDialog.DialogCode.Rejected:
+        cd = ConfigDialog()
+        
+        if cd.exec() == QDialog.DialogCode.Rejected:
             logger.info("ConfigDialog was closed. Exiting normally")
             sys.exit(0)
 
-        # GetSetController().SetMainWindow(mainWindow)
-        # if mainWindow.exec() != QDialog.DialogCode.Accepted:
-        #     sys.exit(0)
-
-        map = OpenMapSelection()
+        if cd.last:
+            map = GetLastMap()
+        else:
+            map = OpenMapSelection()
 
     if not map:
         logger.info("A map was not selected. Exiting normally")
@@ -84,12 +84,17 @@ def main():
         if not demo:
             logger.info("A demo was not selected. Exiting normally")
             sys.exit(0)
-    else:
+    # if we're not selecting the last map
+    elif not GetOptions().last:
         # for next time last is used, save the selected map
         logger.debug("Saving selected map for next time")
-        SaveSelectedMap(map)
+        SaveSelectedMap(map, GetMapsSelectController().mapSet.id)
 
     launch = LaunchConfig()
+    if GetMapsSelectController().mapSet:
+        launch.set_map_set(GetMapsSelectController().mapSet.id)
+    else:
+        GetMapsSelectController().Open(map.MapSetId)
     launch.set_map_set(GetMapsSelectController().mapSet)
     launch.set_map(map)
 
