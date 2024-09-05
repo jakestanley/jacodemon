@@ -126,8 +126,10 @@ class LaunchConfig:
     def set_map_set(self, mapSet):
         self._mapSet = mapSet
     
-    def set_replay(self, demo_path):
-        self._demo_path = demo_path
+    def set_replay(self, demo):
+        self._demo_path = demo.path
+        # FIXME: hack, should use method for this idk
+        self._comp_level = demo.stats._stats['compLevel']
 
     # demo_name
     def get_demo_name(self):

@@ -102,7 +102,7 @@ def main():
     if GetOptions().replay():
         demo = GetDemosForMap(map, GetConfig().demo_dir)[demo_index]
         demo_name = demo.name
-        launch.set_replay(demo.path)
+        launch.set_replay(demo)
     else:
         demo_name = launch.get_demo_name()
 
