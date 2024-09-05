@@ -13,10 +13,7 @@ class Demo:
     def __init__(self, lump_path, stats_path=None):
         self.path = lump_path
         self.name, _ = os.path.splitext(os.path.basename(lump_path))
-        self.stats: Statistics = None
-        if stats_path:
-            self.stats = LoadStatistics(self.name, stats_path)
-                
+        self.stats: Statistics = LoadStatistics(self.name, stats_path)            
 
     def Dictify(self):
         dic = {}
@@ -87,4 +84,4 @@ def GetDemosForMap(map: FlatMap, demo_dir):
             if demo_files[0].endswith(".lmp"):
                 demos.append(Demo(demo_files[0]))
 
-    return sorted(demos, key=lambda d: d.stats._stats['timestamp'], reverse=True)
+    return sorted(demos, key=lambda d: d.stats.get_timestamp(), reverse=True)

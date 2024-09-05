@@ -44,10 +44,11 @@ class Statistics:
 
     def __init__(self, timestamp, comp_level, sourcePort, 
                  command, demo_name, demo_dir=None, levelStats=None):
+
         self._stats = {}
-        # TODO stop using a `dict`
-        self._stats[_KEY_TIMESTAMP]     = timestamp
-        self._stats[_KEY_COMP_LEVEL]    = comp_level
+        # TODO stop using a `dict`, rather use dictify
+        self.timestamp = timestamp
+        self.comp_level = comp_level
         self._stats[_KEY_SOURCE_PORT]   = sourcePort
         self._stats[_KEY_ARGS]       = command
         self._stats[_KEY_LEVEL_STATS]   = levelStats
@@ -62,7 +63,9 @@ class Statistics:
             return False
         
     def get_timestamp(self):
-        return self._stats[_KEY_TIMESTAMP]
+        if self._stats:
+            return self._stats.get(_KEY_TIMESTAMP)
+        return None
 
     def get_time(self):
         if self._stats[_KEY_LEVEL_STATS]:
@@ -116,6 +119,7 @@ class Statistics:
 
 def NewStatistics(launch: LaunchConfig, demo_dir: str) -> Statistics:
     
+    os.remove(LEVELSTAT_TXT)
     statistics = Statistics(launch.timestamp, launch.get_comp_level(), 
                             launch.get_port(), launch.get_command(), 
                             launch.get_demo_name(), demo_dir)
@@ -124,13 +128,16 @@ def NewStatistics(launch: LaunchConfig, demo_dir: str) -> Statistics:
 
 def LoadStatistics(demo_name, stats_path) -> Statistics:
 
-    with open(stats_path, "r") as stats_file:
-        raw_json = json.load(stats_file)
-        statistics = Statistics(raw_json.get(_KEY_TIMESTAMP), 
-                                raw_json.get(_KEY_COMP_LEVEL),
-                                raw_json.get(_KEY_SOURCE_PORT),
-                                raw_json.get(_KEY_ARGS),
-                                demo_name, None, 
-                                raw_json.get(_KEY_LEVEL_STATS))
+    if stats_path:
+        with open(stats_path, "r") as stats_file:
+            raw_json = json.load(stats_file)
+            statistics = Statistics(raw_json.get(_KEY_TIMESTAMP), 
+                                    raw_json.get(_KEY_COMP_LEVEL),
+                                    raw_json.get(_KEY_SOURCE_PORT),
+                                    raw_json.get(_KEY_ARGS),
+                                    demo_name, None, 
+                                    raw_json.get(_KEY_LEVEL_STATS))
+    else:
+        statistics = Statistics(None, None, None, None, demo_name)
         
     return statistics
