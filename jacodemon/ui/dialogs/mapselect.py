@@ -205,10 +205,10 @@ def OpenSelectMapDialog() -> str:
     if dialog.selectedIndex is None:
         return None
     else:
-        if dialog.selectedDemo:
-            # TODO
-            print("play demo requested")
-        return GetMapsSelectController().maps[dialog.selectedIndex]
+        map = GetMapsSelectController().maps[dialog.selectedIndex]
+        if dialog.selectedDemo is not None:
+            return map, dialog.selectedDemo
+        return map, None
 
 if __name__ == "__main__":
     from PySide6.QtWidgets import QApplication

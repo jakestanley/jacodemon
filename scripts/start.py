@@ -14,7 +14,7 @@ from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.last import *
 from jacodemon.launch import LaunchConfig
 from jacodemon.obs import ObsController, GetObsController
-from jacodemon.options import Options, InitialiseOptions, GetOptions
+from jacodemon.options import Options, InitialiseOptions, GetOptions, MODE_LAST, MODE_REPLAY
 from jacodemon.stats import Statistics, NewStatistics
 from jacodemon.model.maps import MapSet
 from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelectController
@@ -41,7 +41,7 @@ def main():
     logger.info("Starting application...")
 
     # prepare the QApplication context for its first (potential) usage
-    app = QApplication([])
+    QApplication([])
 
     # set up OBS on app launch, before any config in case we're streamin'
     obsController: ObsController = GetObsController()
@@ -63,10 +63,18 @@ def main():
             logger.info("ConfigDialog was closed. Exiting normally")
             sys.exit(0)
 
+        # if user clicked play last, override and set it to be sure
         if cd.last:
+            GetOptions().mode = MODE_LAST
+
+        demo_index = None
+        if GetOptions().last():
             map = GetLastMap()
         else:
-            map = OpenSelectMapDialog()
+            map, demo_index = OpenSelectMapDialog()
+
+        if demo_index is not None:
+            GetOptions().mode = MODE_REPLAY
 
     if not map:
         logger.info("A map was not selected. Exiting normally")
@@ -75,8 +83,10 @@ def main():
     # allow player to view and edit provided options before launch
     OpenOptionsDialog()
 
-    # if we're not selecting the last map
-    if not GetOptions().last:
+    # if we're selecting the last map or replaying a demo, don't save
+    if GetOptions().last() or GetOptions().replay():
+        pass
+    else:
         # for next time last is used, save the selected map
         logger.debug("Saving selected map for next time")
         SaveSelectedMap(map, GetMapsSelectController().mapSet.id)
@@ -90,6 +100,7 @@ def main():
     launch.set_map(map)
 
     if GetOptions().replay():
+        demo = GetDemosForMap(map, GetConfig().demo_dir)[demo_index]
         demo_name = demo.name
         launch.set_replay(demo.path)
     else:
