@@ -20,7 +20,7 @@ from jacodemon.model.maps import MapSet
 from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelectController
 from jacodemon.ui.demoselect import OpenDemoSelection
 from jacodemon.ui.mapselect import OpenMapSelection
-from jacodemon.ui.options import OpenOptionsDialog
+from jacodemon.ui.dialogs.options import OpenOptionsDialog
 from jacodemon.demo import GetDemosForMap
 from jacodemon.macros import Macros, GetMacros
 from jacodemon.scenes import SceneManager
@@ -41,6 +41,9 @@ def main():
     logger = GetLogManager().GetLogger(__name__)
     logger.info("Starting application...")
 
+    # prepare the QApplication context for its first (potential) usage
+    app = QApplication([])
+
     # set up OBS on app launch, before any config in case we're streamin'
     obsController: ObsController = GetObsController()
     sceneManager = SceneManager(obsController)
@@ -50,9 +53,6 @@ def main():
     map = None
     if GetOptions().last():
         map = GetLastMap()
-
-    # prepare the QApplication context for its first (potential) usage
-    app = QApplication([])
 
     # if last wasn't used, or it was and there was no last map selected, then 
     #   run the usual start window

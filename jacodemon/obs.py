@@ -11,6 +11,9 @@ from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.options import Options, GetOptions
 from jacodemon.notifications import Notifications, GetNotifications
 from jacodemon.io import IO, GetIo
+from jacodemon.exceptions import ObsControllerException
+
+from PySide6.QtWidgets import QMessageBox
 
 class ObsController:
     def __init__(self,notifications: Notifications, io: IO):
@@ -26,12 +29,16 @@ class ObsController:
     def Setup(self):
         try:
             self.obs_client = obs.ReqClient(host='localhost', port=4455, password='')
-        except ConnectionRefusedError:
-            self._logger.fatal("Unable to connect to OBS. Is it running? Is the Websocket API enabled? Should you have passed the --no-obs argument?")
-            sys.exit(1)
-        self.obs_client.set_current_program_scene(self.config.wait_scene)
-        if not self.obs_client.get_replay_buffer_status().output_active:
-            self.notifications.notify("Replay buffer disabled", "That's it really.")
+            self.obs_client.set_current_program_scene(self.config.wait_scene)
+            if not self.obs_client.get_replay_buffer_status().output_active:
+                self.notifications.notify("Replay buffer disabled", "That's it really.")
+        # catch specific exceptions
+        except ConnectionRefusedError as cause:
+            self._logger.error("Connection to OBS refused. Is it running? Is the Websocket API enabled?")
+            raise ObsControllerException(cause)
+        # catch all other exceptions
+        except Exception as cause:
+            raise ObsControllerException(cause)
 
     def IsRecording(self):
         return self.obs_client.get_record_status().output_active
@@ -156,19 +163,39 @@ class MockObsController(ObsController):
     def UpdateMapTitle(self, title):
         self._logger.warning(f"OBS is disabled. Title provided: '{title}'")
 
+def PromptUserContinueExit():
+    message_box = QMessageBox()
+
+    message_box.setWindowTitle("OBS is unavailable")
+    message_box.setText("OBS is not running and the --no-obs flag was not set. Would you like to continue anyway?")
+
+    continue_button = message_box.addButton("Continue", QMessageBox.AcceptRole)
+    exit_button = message_box.addButton("Exit", QMessageBox.RejectRole)
+    
+    # Execute the dialog and get the user's response
+    message_box.exec()
+
+    if message_box.clickedButton() == continue_button:
+        return True
+    elif message_box.clickedButton() == exit_button:
+        return False
+
 def GetObsController() -> ObsController:
-    # TODO if OBS is not running and no-obs flag is NOT 
-    #   set, warn with pop up and continue
 
     options: Options = GetOptions()
     notifications: Notifications = GetNotifications()
     io: IO = GetIo()
 
     if options.obs:
-        obsController = ObsController(notifications, io)
+        try:
+            obsController = ObsController(notifications, io)
+            obsController.Setup()
+        except ObsControllerException:
+            if PromptUserContinueExit():
+                obsController = MockObsController(notifications)
+            else:
+                sys.exit(0)
     else:
         obsController = MockObsController(notifications)
-
-    obsController.Setup()
 
     return obsController

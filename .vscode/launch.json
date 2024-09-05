@@ -25,11 +25,7 @@
             "name": "Start2",
             "type": "debugpy",
             "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv"
-            ]
+            "program": "scripts/start.py"
         },
         {
             "name": "Start (Freestyle)",
