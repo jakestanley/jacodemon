@@ -30,6 +30,7 @@ class DsdaTab(ConfigWidget):
         cfg.dsda_path = self.dsda_path.text()
         cfg.dsda_cfg = self.dsda_cfg_path.text()
         cfg.dsdadoom_hud_lump = self.dsda_hud_path.text()
+        cfg.Save()
 
     def revert(self):
         self.LoadValuesFromConfig()

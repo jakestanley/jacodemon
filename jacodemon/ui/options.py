@@ -173,13 +173,14 @@ def OpenOptionsDialog():
     dialog = OptionsDialog()
 
     if dialog.exec() == QDialog.DialogCode.Accepted:
-        GetOptions().obs = dialog.checkbox_obs.isChecked()
-        GetOptions().mods = dialog.checkbox_mods.isChecked()
-        GetOptions().music = dialog.checkbox_music.isChecked()
-        GetOptions().auto_record = dialog.checkbox_auto_record.isChecked()
-        GetOptions().record_demo = dialog.checkbox_record_demo.isChecked()
-        GetOptions().crispy = dialog.checkbox_crispy.isChecked()
-        GetOptions().mode = dialog.get_mode()
-        GetOptions().stdout_log_level = next(radio.text() for radio in [dialog.ll_info, dialog.ll_warning, dialog.ll_debug, dialog.ll_error] if radio.isChecked())
+        ow = dialog.options_widget
+        GetOptions().obs                 = ow.checkbox_obs.isChecked()
+        GetOptions().mods                = ow.checkbox_mods.isChecked()
+        GetOptions().music               = ow.checkbox_music.isChecked()
+        GetOptions().auto_record         = ow.checkbox_auto_record.isChecked()
+        GetOptions().record_demo         = ow.checkbox_record_demo.isChecked()
+        GetOptions().crispy              = ow.checkbox_crispy.isChecked()
+        GetOptions().mode                = ow.get_mode()
+        GetOptions().stdout_log_level    = next(radio.text() for radio in [ow.ll_info, ow.ll_warning, ow.ll_debug, ow.ll_error] if radio.isChecked())
     else:
         sys.exit(0)

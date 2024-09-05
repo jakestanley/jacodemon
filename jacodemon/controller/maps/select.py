@@ -21,7 +21,7 @@ def LoadRawMapsFromMapSet(mapSet: MapSet) -> List[FlatMap]:
             ModName=mapSet.name, 
             Files=files,
             MapId=map['MapId'],
-            MapName=map['MapName']))
+            MapName=map.get('MapName')))
         
     return maps
 

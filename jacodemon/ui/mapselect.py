@@ -8,10 +8,12 @@ from jacodemon.model.maps import MapSet, MapSetPath
 from PySide6.QtWidgets import QLabel
 from PySide6.QtGui import QBrush
 
+import sys
 
 _COLUMN_ORDER = ['MapId', 'Badge', 'MapName', 'Author', 'Notes']
 
 class MapTableWidget(QTableView):
+
     index_selected = Signal(int)
 
     def __init__(self, data, parent):
@@ -29,12 +31,11 @@ class MapTableWidget(QTableView):
                 item.setEditable(False)  # Set the item as uneditable
             self.model.appendRow(row_items)
 
-        self.doubleClicked.connect(self.handle_double_click)
+        self.doubleClicked.connect(self._HandleDoubleClick)
         self.resizeColumnsToContents()
 
-    def handle_double_click(self, index):
+    def _HandleDoubleClick(self, index):
         self.index_selected.emit(index.row())
-        self.close()  # Close the window
 
 class PathsTableWidget(QTableView):
 
@@ -73,8 +74,6 @@ class MapOverviewWidget(QWidget):
 
 class _SelectMapDialog(QDialog):
 
-    close_dialog = Signal(int)
-
     def __init__(self, maps: dict, mapSet: MapSet):
         super().__init__()
 
@@ -89,18 +88,31 @@ class _SelectMapDialog(QDialog):
         layout.addWidget(self.mapTableWidget)
         self.setLayout(layout)
 
-        self.close_dialog.connect(self._HandleClose)
+        self.mapTableWidget.index_selected.connect(self._HandleSelection)
 
     def _HandleClose(self, action):
         if action == QDialog.DialogCode.Accepted:
             self.accept()
 
-def OpenMapSelection():
+    def _HandleSelection(self, index):
+        self.selectedIndex = index
+        self.close()
+
+def OpenMapSelection() -> str:
+    """Returns MapId of the selected map or None"""
 
     # at this point a map set and its maps MUST have been loaded
     table_rows = [map.Dictify() for map in GetMapsSelectController().maps]
     dialog = _SelectMapDialog(table_rows, GetMapsSelectController().mapSet)
 
-    rs = dialog.exec()
-    # TODO return to previous window on reject
-    return rs
+    dialog.exec()
+    # TODO fix cancel bug
+    if dialog.selectedIndex is None:
+        return None
+    else:
+        return GetMapsSelectController().maps[dialog.selectedIndex]
+
+if __name__ == "__main__":
+    from PySide6.QtWidgets import QApplication
+    app = QApplication(sys.argv)
+    rs = OpenMapSelection()

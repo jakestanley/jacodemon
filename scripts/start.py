@@ -90,6 +90,7 @@ def main():
         SaveSelectedMap(map)
 
     launch = LaunchConfig()
+    launch.set_map_set(GetMapsSelectController().mapSet)
     launch.set_map(map)
 
     if GetOptions().replay():
