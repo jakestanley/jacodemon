@@ -201,7 +201,9 @@ def OpenSelectMapDialog() -> str:
     table_rows = [map.Dictify() for map in GetMapsSelectController().maps]
     dialog = _SelectMapDialog(table_rows, GetMapsSelectController().mapSet)
 
-    dialog.exec()
+    if dialog.exec() == QDialog.DialogCode.Rejected:
+        sys.exit(0)
+
     if dialog.selectedIndex is None:
         return None
     else:

@@ -56,7 +56,6 @@ def GetMapEntriesFromWad(file) -> List[dict]:
 
 def GetMapEntriesFromFiles(files: List[str], maps_dir = None) -> List[dict]:
 
-    # TODO UMAPINFO support
     maps = []
 
     for file in files:

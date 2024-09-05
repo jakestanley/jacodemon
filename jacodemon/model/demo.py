@@ -87,4 +87,4 @@ def GetDemosForMap(map: FlatMap, demo_dir):
             if demo_files[0].endswith(".lmp"):
                 demos.append(Demo(demo_files[0]))
 
-    return demos
+    return sorted(demos, key=lambda d: d.stats._stats['timestamp'], reverse=True)
