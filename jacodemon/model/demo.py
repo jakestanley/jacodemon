@@ -15,7 +15,7 @@ class Demo:
         self.name, _ = os.path.splitext(os.path.basename(lump_path))
         self.stats: Statistics = LoadStatistics(self.name, stats_path)            
 
-    def Dictify(self):
+    def to_dict(self):
         dic = {}
 
         dic[DemoConstants.KEY_LUMP] = self.path

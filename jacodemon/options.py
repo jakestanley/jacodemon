@@ -15,7 +15,6 @@ class Options:
         self.music = None
         self.auto_record = None
         self.record_demo = None
-        self.crispy = None
         self.mode = MODE_NORMAL
         self.stdout_log_level = None
 
@@ -46,8 +45,6 @@ def _ArgsToOptions(args) -> Options:
         options.record_demo = not args.no_demo
     if hasattr(args, 'music'):
         options.music       = args.music
-    if hasattr(args, 'crispy'):
-        options.crispy      = args.crispy
 
     if hasattr(args, 'last') and args.last:
         options.mode = MODE_LAST

@@ -19,10 +19,6 @@ _KEY_PLAY_SCENE = 'play_scene'
 _KEY_WAIT_SCENE = 'wait_scene'
 _KEY_BROWSER_SCENE = 'browser_scene'
 _KEY_TITLE_SOURCE = 'title_source'
-_KEY_CHOCOLATEDOOM_PATH = 'chocolatedoom_path'
-_KEY_CHOCOLATEDOOM_CFG_DEFAULT = 'chocolatedoom_cfg_default'
-_KEY_CHOCOLATEDOOM_CFG_EXTRA = 'chocolatedoom_cfg_extra'
-_KEY_CRISPYDOOM_PATH = 'crispydoom_path'
 _KEY_SETS = 'sets'
 
 class Mod:
@@ -30,7 +26,7 @@ class Mod:
         self.path = path
         self.enabled = enabled
 
-    def Dictify(self):
+    def to_dict(self):
         dic = {}
         dic['path'] = self.path
         dic['enabled'] = self.enabled
@@ -55,12 +51,6 @@ class JacodemonConfig(Config):
         self.browser_scene = self.config.get(_KEY_BROWSER_SCENE)
         self.title_source = self.config.get(_KEY_TITLE_SOURCE)
 
-        # chocolate/crispy doom
-        self.chocolatedoom_path = self.config.get(_KEY_CHOCOLATEDOOM_PATH)
-        self.chocolatedoom_cfg_default = self.config.get(_KEY_CHOCOLATEDOOM_CFG_DEFAULT)
-        self.chocolatedoom_cfg_extra = self.config.get(_KEY_CHOCOLATEDOOM_CFG_EXTRA)
-        self.crispydoom_path = self.config.get(_KEY_CRISPYDOOM_PATH)
-
         # files/directories
         self.iwad_dir = self.config.get(_KEY_IWAD_DIR)
         self.maps_dir = self.config.get(_KEY_MAPS_DIR)
@@ -84,7 +74,7 @@ class JacodemonConfig(Config):
         self.config[_KEY_MAPS_DIR] = self.maps_dir
         self.config[_KEY_DEMO_DIR] = self.demo_dir
         self.config[_KEY_MODS_DIR] = self.mods_dir
-        self.config[_KEY_MODS] = [mod.Dictify() for mod in self.mods]
+        self.config[_KEY_MODS] = [mod.to_dict() for mod in self.mods]
         self.config[_KEY_DEFAULT_COMPLEVEL] = self.default_complevel
         self.config[_KEY_DSDA_PATH] = self.dsda_path
         self.config[_KEY_DSDA_CFG] = self.dsda_cfg
@@ -93,11 +83,7 @@ class JacodemonConfig(Config):
         self.config[_KEY_WAIT_SCENE] = self.wait_scene
         self.config[_KEY_BROWSER_SCENE] = self.browser_scene
         self.config[_KEY_TITLE_SOURCE] = self.title_source
-        self.config[_KEY_CHOCOLATEDOOM_PATH] = self.chocolatedoom_path
-        self.config[_KEY_CHOCOLATEDOOM_CFG_DEFAULT] = self.chocolatedoom_cfg_default
-        self.config[_KEY_CHOCOLATEDOOM_CFG_EXTRA] = self.chocolatedoom_cfg_extra
-        self.config[_KEY_CRISPYDOOM_PATH] = self.crispydoom_path
-        self.config[_KEY_SETS] = [set.dictify() for set in self.sets]
+        self.config[_KEY_SETS] = [set.to_dict() for set in self.sets]
 
     def _DefaultConfig(self):
         cfg: dict = {}

@@ -129,7 +129,6 @@ class SetOverviewWidget(QWidget):
         layout = QVBoxLayout(self)
         
         layout.addWidget(PathsTableWidget(mapSet.paths, self))
-        layout.addWidget(QLabel(f"Port: {mapSet.port}"))
         layout.addWidget(QLabel(f"CompLevel: {mapSet.compLevel}"))
         layout.addStretch()
         self.setLayout(layout)
@@ -199,7 +198,7 @@ def OpenSelectMapDialog() -> str:
     """Returns MapId of the selected map or None"""
 
     # at this point a map set and its maps MUST have been loaded
-    table_rows = [map.Dictify() for map in GetMapsSelectController().maps]
+    table_rows = [map.to_dict() for map in GetMapsSelectController().maps]
     dialog = _SelectMapDialog(table_rows, GetMapsSelectController().mapSet)
 
     if dialog.exec() == QDialog.DialogCode.Rejected:

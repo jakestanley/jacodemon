@@ -10,6 +10,9 @@ from jacodemon.options import Options, GetOptions
 ULTRA_VIOLENCE = 4
 DEFAULT_SKILL = ULTRA_VIOLENCE
 
+# TODO later if we wish to properly implement multi port support, we may 
+#   wish to make this a super class. as a fun exercise we should make a 
+#   DsdaLaunchConfig subclass sooner than later
 class LaunchConfig:
     def __init__(self):
         self.timestamp = None
@@ -19,7 +22,6 @@ class LaunchConfig:
         self._comp_level = None
         self._window = True
         self._demo_path = None
-        self._port_override = None
 
     def get_comp_level(self):
         # this will be overridden in all branches
@@ -143,40 +145,11 @@ class LaunchConfig:
         map_prefix = self._map.GetMapPrefix()
         return f"{map_prefix}-{self.timestamp}"
 
-    def get_port(self):
-
-        # default port
-        final_port = "dsdadoom"
-        if (self._port_override):
-            final_port = self._port_override
-        elif (self._map.Port):
-            final_port = self._map.Port
-
-        # TODO if crispy override set.
-        # port_override > crispy override > chocolate
-        if final_port == "chocolate" and self._port_override is None:
-            if GetConfig().crispy:
-                final_port = "crispy"
-            else:
-                final_port = "chocolate"
-
-        return final_port
-
     # TODO: consider when we are replaying a demo should we get and tweak the args from the stats file?
     def get_command(self):
 
-        port = self.get_port()
-
-        command = []
-        if port in ["chocolate", "crispy"]:
-            if port == ["chocolate"]:
-                command.append(GetConfig().chocolatedoom_path)
-            else:
-                command.append(GetConfig().crispydoom_path)
-            command.extend(self.build_chocolate_doom_args())
-        elif port == "dsdadoom":
-            command.append(GetConfig().dsda_path)
-            # TODO: check dsda-doom path is set before attempting to launch
-            command.extend(self.build_dsda_doom_args())
+        command = [GetConfig().dsda_path]
+        # TODO: check dsda-doom path is set before attempting to launch
+        command.extend(self.build_dsda_doom_args())
 
         return command

@@ -58,31 +58,10 @@ class OptionsWidget(QWidget):
         self.checkbox_mods.setChecked(GetOptions().mods)
         layout.addWidget(self.checkbox_mods)
 
-        # options: Source port override TODO implement
-        #groupbox_ports = QGroupBox("Source port")
-        #checkbox_source_port = QCheckBox("Port")
-        #layout.addWidget(checkbox_source_port)
-
-        # options: crispy doom
-        self.checkbox_crispy = QCheckBox("Prefer Crispy Doom")
-        self.checkbox_crispy.setToolTip("If playing a Chocolate Doom mod, force it to launch with Crispy Doom")
-        self.checkbox_crispy.setChecked(GetOptions().crispy)
-        layout.addWidget(self.checkbox_crispy)
-
         # options: music
         self.checkbox_music = QCheckBox("Enable music")
         self.checkbox_music.setChecked(GetOptions().music)
         layout.addWidget(self.checkbox_music)
-
-        # options: operation modes
-        # hlayout = QHBoxLayout()
-        # groupbox_modes = self.create_modes_group()
-        # hlayout.addWidget(groupbox_modes)
-
-        # options: logging levels
-        # groupbox_logging_levels = self.create_logging_levels_group()
-        # hlayout.addWidget(groupbox_logging_levels)
-        # layout.addLayout(hlayout)
 
         # special controls
         self.checkbox_obs.stateChanged.connect(self.set_obs)
@@ -179,8 +158,5 @@ def OpenOptionsDialog():
         GetOptions().music               = ow.checkbox_music.isChecked()
         GetOptions().auto_record         = ow.checkbox_auto_record.isChecked()
         GetOptions().record_demo         = ow.checkbox_record_demo.isChecked()
-        GetOptions().crispy              = ow.checkbox_crispy.isChecked()
-        # GetOptions().mode                = ow.get_mode()
-        # GetOptions().stdout_log_level    = next(radio.text() for radio in [ow.ll_info, ow.ll_warning, ow.ll_debug, ow.ll_error] if radio.isChecked())
     else:
         sys.exit(0)

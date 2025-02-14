@@ -17,8 +17,6 @@ def GetArgs():
     parser.add_argument("-nd", "--no-demo",         action='store_true',    help="Demo recording will be disabled")
 
     parser.add_argument("-m",  "--music",       action='store_true',    help="Enable music")
-    parser.add_argument("-sp", "--source-port", type=str,               help="Override source port (force)")
-    parser.add_argument("-cr", "--crispy",      action='store_true',    help="Use Crispy Doom instead of Chocolate Doom")
     
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("-rp", "--replay",      action='store_true',    help="Replay a demo")

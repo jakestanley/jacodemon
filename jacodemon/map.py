@@ -7,7 +7,7 @@ from jacodemon.config import JacodemonConfig, GetConfig
 
 class FlatMap:
     def __init__(self, ModName, Files, MapId=None, MapName=None, Author=None, 
-                 CompLevel=None, Merges: str = "", Port=None, 
+                 CompLevel=None, Merges: str = "", 
                  Notes=None, MapSetId: str = None):
 
         # public, required
@@ -15,7 +15,6 @@ class FlatMap:
 
         # public, optional
         self.MapId = MapId
-        self.Port = Port
         self.CompLevel = CompLevel
         self.MapSetId = MapSetId
 
@@ -103,7 +102,7 @@ class FlatMap:
             return self._MapName
         return self.MapId
 
-    def Dictify(self):
+    def to_dict(self):
         dic = {}
 
         dic['Badge'] = ''

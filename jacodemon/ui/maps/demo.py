@@ -82,5 +82,5 @@ class DemoTableView(QWidget):
 
     def Update(self, map):
         demos = GetDemosForMap(map, GetConfig().demo_dir)
-        self.model.refreshData([demo.Dictify() for demo in demos])
+        self.model.refreshData([demo.to_dict() for demo in demos])
         self.table_view.resizeColumnsToContents()

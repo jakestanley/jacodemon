@@ -6,25 +6,29 @@ class MapSetPath:
     def __init__(self, path, enabled=True):
         self.path = path
         self.enabled = enabled
-        # self.valid # TODO?
 
-    def Copy(self):
-        return MapSetPath(self.path, self.enabled)
-
-    def dictify(self):
+    def to_dict(self):
         return {
             "path": self.path,
             "enabled": self.enabled
         }
 
+    @classmethod
+    def from_dict(cls, data):
+        instance = cls()
+        instance.path = data.get('path')
+        instance.enabled = data.get('enabled', True)
+
+        return instance
+    
+
 class MapSet:
+
     def __init__(self, paths: List[MapSetPath], name = None, id=None, iwad=None, compLevel=None) -> None:
         self.id = uuid.uuid4() if id is None else id
         self.name = name
         self.paths: List[MapSetPath] = paths
-        # TODO port and complevel
         self.iwad = iwad
-        self.port = ""
         self.compLevel = compLevel
 
     def HasInvalidConfiguration(self):
@@ -35,23 +39,32 @@ class MapSet:
 
     def AddFile(self, path: str):
         self.paths.append(MapSetPath(path))
+        self.notify_change()
 
     def RemoveFile(self, path: str):
         self.paths = [p for p in self.paths if p.path != path]
+        self.notify_change()
 
-    def Copy(self):
-        return MapSet([path.Copy() for path in self.paths], self.name, self.id)
-
-    def dictify(self):
+    def to_dict(self):
         return {
             # in case UUID is not set, i.e before this code was added, set it
             "id": str(self.id) if self.id else uuid.uuid4(),
             "name": self.name,
-            "paths": [path.dictify() for path in self.paths],
             "iwad": self.iwad,
-            "port": self.port,
-            "compLevel": self.compLevel
+            "compLevel": self.compLevel,
+            "paths": [path.to_dict() for path in self.paths],
         }
+
+    @classmethod
+    def from_dict(cls, data):
+        instance = cls()
+        instance.id = data.get('id')
+        instance.name = data.get('name')
+        instance.iwad = data.get('iwad')
+        instance.compLevel = data.get('compLevel')
+        instance.paths = [MapSetPath.from_dict(path_data) for path_data in data.get('paths', [])]
+
+        return instance
 
 def LoadMapSet(dict) -> MapSet:
     paths = []

@@ -123,7 +123,7 @@ def NewStatistics(launch: LaunchConfig, demo_dir: str) -> Statistics:
     if os.path.exists(LEVELSTAT_TXT):
         os.remove(LEVELSTAT_TXT)
     statistics = Statistics(launch.timestamp, launch.get_comp_level(), 
-                            launch.get_port(), launch.get_command(), 
+                            "dsda-doom", launch.get_command(), 
                             launch.get_demo_name(), demo_dir)
 
     return statistics
