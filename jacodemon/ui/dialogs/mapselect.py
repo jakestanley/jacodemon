@@ -203,10 +203,11 @@ def OpenSelectMapDialog() -> str:
     dialog = _SelectMapDialog(table_rows, GetMapsSelectController().mapSet)
 
     if dialog.exec() == QDialog.DialogCode.Rejected:
-        sys.exit(0)
+        # TODO return to set select
+        return None, None
 
     if dialog.selectedIndex is None:
-        return None
+        return None, None
     else:
         map = GetMapsSelectController().maps[dialog.selectedIndex]
         if dialog.selectedDemo is not None:

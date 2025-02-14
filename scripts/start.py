@@ -38,7 +38,7 @@ def main():
 
     # set up logging now that we have options
     logger = GetLogManager().GetLogger(__name__)
-    logger.info("Starting application...")
+    logger.debug("Starting application...")
 
     # prepare the QApplication context for its first (potential) usage
     QApplication([])
@@ -56,29 +56,26 @@ def main():
     # if last wasn't used, or it was and there was no last map selected, then 
     #   run the usual start window
     if not map:
-
-        cd = ConfigDialog()
+        while(map is None):
         
-        if cd.exec() == QDialog.DialogCode.Rejected:
-            logger.info("ConfigDialog was closed. Exiting normally")
-            sys.exit(0)
+            cd = ConfigDialog()
+            
+            if cd.exec() == QDialog.DialogCode.Rejected:
+                logger.info("ConfigDialog was closed. Exiting normally")
+                sys.exit(0)
 
-        # if user clicked play last, override and set it to be sure
-        if cd.last:
-            GetOptions().mode = MODE_LAST
+            # if user clicked play last, override and set it to be sure
+            if cd.last:
+                GetOptions().mode = MODE_LAST
 
-        demo_index = None
-        if GetOptions().last():
-            map = GetLastMap()
-        else:
-            map, demo_index = OpenSelectMapDialog()
+            demo_index = None
+            if GetOptions().last():
+                map = GetLastMap()
+            else:
+                map, demo_index = OpenSelectMapDialog()
 
-        if demo_index is not None:
-            GetOptions().mode = MODE_REPLAY
-
-    if not map:
-        logger.info("A map was not selected. Exiting normally")
-        sys.exit(0)
+            if demo_index is not None:
+                GetOptions().mode = MODE_REPLAY
 
     # allow player to view and edit provided options before launch
     OpenOptionsDialog()
