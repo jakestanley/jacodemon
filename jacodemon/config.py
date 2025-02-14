@@ -117,6 +117,14 @@ class JacodemonConfig(Config):
 
         self.Save()
 
+    def TouchMapSet(self, mapSetId):
+        set = self.GetMapSetById(mapSetId)
+        self.sets.remove(set)
+        self.sets.append(set)
+
+        self.Save()
+
+
     def GetMapSetById(self, mapSetId):
         for set in self.sets:
             if set.id == mapSetId:

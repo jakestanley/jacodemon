@@ -54,6 +54,8 @@ class MapsSelectController:
 
     def Open(self, mapSetId):
 
+        GetConfig().TouchMapSet(mapSetId)
+
         self.LoadMaps(mapSetId)
         for map in self.maps:
             AddBadgesToMap(map, GetConfig().demo_dir)

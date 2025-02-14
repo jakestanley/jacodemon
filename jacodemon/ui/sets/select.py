@@ -126,7 +126,7 @@ class SelectSetTab(QWidget):
     def populateList(self):
         self.listWidget.clear()
 
-        for mapset in GetConfig().sets:
+        for mapset in reversed(GetConfig().sets):
             listItem = QListWidgetItem(self.listWidget)
             mapsetWidget = MapSetWidget(mapset, self.close_signal, self)
             mapsetWidget.change_signal.connect(self.populateList)
