@@ -39,6 +39,10 @@ class LaunchConfig:
             final_comp_level = str(GetConfig().default_complevel)
 
         # only numbers allowed as args
+        if final_comp_level == 'vanilla':
+            # https://doomwiki.org/wiki/COMPLVL
+            final_comp_level = 4
+
         if final_comp_level == 'mbf21':
             final_comp_level = 21
 
@@ -129,7 +133,7 @@ class LaunchConfig:
     def set_replay(self, demo):
         self._demo_path = demo.path
         # FIXME: hack, should use method for this idk
-        self._comp_level = demo.stats._stats['compLevel']
+        self._comp_level = demo.stats._stats.get('compLevel', self.get_comp_level())
 
     # demo_name
     def get_demo_name(self):
