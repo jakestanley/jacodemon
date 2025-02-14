@@ -21,6 +21,10 @@ omgifol = "0.5.1"
 parameterized = "^0.9.0"
 pytest = "^8.2.2"
 
+
+[tool.poetry.group.mac.dependencies]
+hammerspoon-bridge = "^1.0.0"
+
 [tool.poetry.scripts]
 jacodemon = "scripts.start:main"
 

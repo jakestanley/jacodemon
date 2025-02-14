@@ -78,8 +78,6 @@
             "program": "scripts/start.py",
             "justMyCode": false,
             "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv",
                 "--no-obs",
                 "-sll", "DEBUG"
             ]

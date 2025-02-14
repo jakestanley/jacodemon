@@ -13,6 +13,7 @@ def LoadMapsFromCache(mapSetId):
 
 def AddMapsToCache(mapSetId, maps):
     temp_folder = GetConfig().GetTemporaryFolder()
+    os.makedirs(temp_folder, exist_ok=True)
     cache_file = os.path.join(temp_folder, f"{mapSetId}.pkl")
     with open(cache_file, 'wb') as f:
         pickle.dump(maps, f)

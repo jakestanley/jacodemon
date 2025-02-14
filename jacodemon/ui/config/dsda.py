@@ -46,7 +46,7 @@ class DsdaTab(ConfigWidget):
         groupbox: QGroupBox = QGroupBox("Executable")
         vlayout: QVBoxLayout = QVBoxLayout()
         self.dsda_path = QLineEdit(self)
-        self.dsda_path.setEnabled(False)
+        self.dsda_path.setEnabled(True)
         # is self required for these?
         self.dsda_path_picker = QPushButton("Select dsda executable", self)
         self.dsda_path_picker.clicked.connect(lambda: self.OpenSingleFileDialog("All Files (*)", self.dsda_path))

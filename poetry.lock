@@ -69,6 +69,17 @@ reference = "0.2.0"
 resolved_reference = "7c975f34c2bc838448c1a6dcb415ed42f35bdce5"
 
 [[package]]
+name = "hammerspoon-bridge"
+version = "1.0.0"
+description = "Interoperate with Hammerspoon through its CLI"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "hammerspoon_bridge-1.0.0-py3-none-any.whl", hash = "sha256:052792b9b4084099ec7becac1c0924ad90b7086a02ca398e2ad6ebdfbcc4109c"},
+    {file = "hammerspoon_bridge-1.0.0.tar.gz", hash = "sha256:6ed6ce8a6aca631bd9850a92f4cf96b1186c85beffe5a63754fe012bf8f9eb6a"},
+]
+
+[[package]]
 name = "iniconfig"
 version = "2.0.0"
 description = "brain-dead simple config-ini parsing"
@@ -390,4 +401,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.13"
-content-hash = "eae9722cecae0c82e11f7c3096e73b9f475ba40e72d3683ff63cd2a6978ea0f2"
+content-hash = "37829ce643526349e42dc9586386c95aec621b00ea6794c465dcffeba9982d8b"
