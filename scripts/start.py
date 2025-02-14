@@ -26,6 +26,29 @@ from jacodemon.scenes import SceneManager
 
 from jacodemon.keys import *
 
+def GetMap():
+    cd = ConfigDialog()
+    
+    if cd.exec() == QDialog.DialogCode.Rejected:
+        logger = GetLogManager().GetLogger(__name__)
+        logger.debug("ConfigDialog was closed. Exiting normally")
+        sys.exit(0)
+
+    # if user clicked play last, override and set it to be sure
+    if cd.last:
+        GetOptions().mode = MODE_LAST
+
+    demo_index = None
+    if GetOptions().last():
+        map = GetLastMap()
+    else:
+        map, demo_index = OpenSelectMapDialog()
+
+    if demo_index is not None:
+        GetOptions().mode = MODE_REPLAY
+
+    return map, demo_index
+
 def main():
 
     # signaling stuff
@@ -57,25 +80,7 @@ def main():
     #   run the usual start window
     if not map:
         while(map is None):
-        
-            cd = ConfigDialog()
-            
-            if cd.exec() == QDialog.DialogCode.Rejected:
-                logger.info("ConfigDialog was closed. Exiting normally")
-                sys.exit(0)
-
-            # if user clicked play last, override and set it to be sure
-            if cd.last:
-                GetOptions().mode = MODE_LAST
-
-            demo_index = None
-            if GetOptions().last():
-                map = GetLastMap()
-            else:
-                map, demo_index = OpenSelectMapDialog()
-
-            if demo_index is not None:
-                GetOptions().mode = MODE_REPLAY
+            map, demo_index = GetMap()
 
     # allow player to view and edit provided options before launch
     OpenOptionsDialog()
