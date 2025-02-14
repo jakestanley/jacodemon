@@ -23,6 +23,7 @@ class MapTableWidget(QTableView):
 
         self.model = QStandardItemModel()
         self.setSelectionMode(QTableView.SelectionMode.SingleSelection)
+        self.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         self.setModel(self.model)
 
         # Create table headers based on keys in the first dictionary
