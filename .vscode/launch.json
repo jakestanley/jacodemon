@@ -72,6 +72,19 @@
             ]
         },
         {
+            "name": "Start2 (No OBS, Debug)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "scripts/start.py",
+            "justMyCode": false,
+            "args": [
+                "--playlist",
+                "./examples/v3_Season2.csv",
+                "--no-obs",
+                "-sll", "DEBUG"
+            ]
+        },
+        {
             "name": "Start2 (No OBS, No Demo)",
             "type": "debugpy",
             "request": "launch",

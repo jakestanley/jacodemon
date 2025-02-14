@@ -52,6 +52,7 @@ class Statistics:
         self._stats[_KEY_SOURCE_PORT]   = sourcePort
         self._stats[_KEY_ARGS]       = command
         self._stats[_KEY_LEVEL_STATS]   = levelStats
+        self._stats[_KEY_TIMESTAMP] = timestamp
         self._demo_name = demo_name
         self._demo_dir = demo_dir
         self._logger = GetLogManager().GetLogger(__name__)

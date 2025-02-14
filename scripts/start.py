@@ -27,16 +27,18 @@ from jacodemon.scenes import SceneManager
 from jacodemon.keys import *
 
 def GetMap():
-    cd = ConfigDialog()
-    
-    if cd.exec() == QDialog.DialogCode.Rejected:
-        logger = GetLogManager().GetLogger(__name__)
-        logger.debug("ConfigDialog was closed. Exiting normally")
-        sys.exit(0)
 
-    # if user clicked play last, override and set it to be sure
-    if cd.last:
-        GetOptions().mode = MODE_LAST
+    if not GetMapsSelectController().mapSet:
+        cd = ConfigDialog()
+        
+        if cd.exec() == QDialog.DialogCode.Rejected:
+            logger = GetLogManager().GetLogger(__name__)
+            logger.debug("ConfigDialog was closed. Exiting normally")
+            sys.exit(0)
+
+        # if user clicked play last, override and set it to be sure
+        if cd.last:
+            GetOptions().mode = MODE_LAST
 
     demo_index = None
     if GetOptions().last():
@@ -76,83 +78,88 @@ def main():
     if GetOptions().last():
         map = GetLastMap()
 
-    # if last wasn't used, or it was and there was no last map selected, then 
-    #   run the usual start window
-    if not map:
-        while(map is None):
-            map, demo_index = GetMap()
+    while (True):
 
-    # allow player to view and edit provided options before launch
-    OpenOptionsDialog()
+        # if last wasn't used, or it was and there was no last map selected, then 
+        #   run the usual start window
+        if not map:
+            while(map is None):
+                map, demo_index = GetMap()
 
-    # if we're selecting the last map or replaying a demo, don't save
-    if GetOptions().last() or GetOptions().replay():
-        pass
-    else:
-        # for next time last is used, save the selected map
-        logger.debug("Saving selected map for next time")
-        SaveSelectedMap(map, GetMapsSelectController().mapSet.id)
+        # allow player to view and edit provided options before launch
+        OpenOptionsDialog()
 
-    launch = LaunchConfig()
-    if GetMapsSelectController().mapSet:
-        launch.set_map_set(GetMapsSelectController().mapSet.id)
-    else:
-        GetMapsSelectController().Open(map.MapSetId)
-    launch.set_map_set(GetMapsSelectController().mapSet)
-    launch.set_map(map)
-
-    if GetOptions().replay():
-        demo = GetDemosForMap(map, GetConfig().demo_dir)[demo_index]
-        demo_name = demo.name
-        launch.set_replay(demo)
-    else:
-        demo_name = launch.get_demo_name()
-
-    command = launch.get_command()
-
-    # prepare OBS, the game is about to start
-    obsController.SetScene(GetConfig().play_scene)
-    obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
-    obsController.SetDemoName(demo_name)
-
-    macros: Macros = GetMacros()
-    # TODO move this to configuration somehow
-    macros.add_hotkey_callback(KEY_NUMPAD_0, callback=obsController.SaveReplay)
-    macros.add_hotkey_callback(KEY_DOT, callback=obsController.CancelRecording)
-    macros.add_hotkey_callback(KEY_DEL, callback=obsController.CancelRecording)
-    macros.add_hotkey_callback(KEY_NUMPAD_3, callback=signaling.SwitchToBrowserScene)
-    macros.listen()
-
-    if GetOptions().auto_record:
-        obsController.StartRecording()
-
-    if not GetOptions().replay():
-        statistics: Statistics = NewStatistics(launch, GetConfig().demo_dir)
-
-    logger.debug(f"Running command: {' '.join(command)}")
-    subprocess_thread = threading.Thread(target=lambda: subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE))
-    subprocess_thread.start()
-
-    # process events that require main thread, i.e UI stuff
-    # TODO could this be in the signaling class?
-    while subprocess_thread.is_alive():
-        if ui_queue.empty():
-            time.sleep(1)
+        # if we're selecting the last map or replaying a demo, don't save
+        if GetOptions().last() or GetOptions().replay():
+            pass
         else:
-            signal = ui_queue.get()
-            if signal == SWITCH_TO_BROWSER_SCENE:
-                sceneManager.SwitchToBrowserScene() # blocking
+            # for next time last is used, save the selected map
+            logger.debug("Saving selected map for next time")
+            SaveSelectedMap(map, GetMapsSelectController().mapSet.id)
 
-    # update stats and save
-    if not GetOptions().replay():
-        statistics.set_level_stats()
-        statistics.write_stats()
+        launch = LaunchConfig()
+        if GetMapsSelectController().mapSet:
+            launch.set_map_set(GetMapsSelectController().mapSet.id)
+        else:
+            # TODO: this triggers badges load, but on return after game close, badges are not reloaded
+            GetMapsSelectController().Open(map.MapSetId)
+        launch.set_map_set(GetMapsSelectController().mapSet)
+        launch.set_map(map)
 
-    if GetOptions().auto_record:
-        # TODO: handle recording already stopped, maybe manually or by error
-        obsController.StopRecording()
+        if GetOptions().replay():
+            demo = GetDemosForMap(map, GetConfig().demo_dir)[demo_index]
+            demo_name = demo.name
+            launch.set_replay(demo)
+        else:
+            demo_name = launch.get_demo_name()
 
-    obsController.SetScene(GetConfig().wait_scene)
+        command = launch.get_command()
+
+        # prepare OBS, the game is about to start
+        obsController.SetScene(GetConfig().play_scene)
+        obsController.UpdateMapTitle(f"{map.ModName}: {map.GetTitle()}")
+        obsController.SetDemoName(demo_name)
+
+        macros: Macros = GetMacros()
+        # TODO move this to configuration somehow
+        macros.add_hotkey_callback(KEY_NUMPAD_0, callback=obsController.SaveReplay)
+        macros.add_hotkey_callback(KEY_DOT, callback=obsController.CancelRecording)
+        macros.add_hotkey_callback(KEY_DEL, callback=obsController.CancelRecording)
+        macros.add_hotkey_callback(KEY_NUMPAD_3, callback=signaling.SwitchToBrowserScene)
+        macros.listen()
+
+        if GetOptions().auto_record:
+            obsController.StartRecording()
+
+        if not GetOptions().replay():
+            statistics: Statistics = NewStatistics(launch, GetConfig().demo_dir)
+
+        logger.debug(f"Running command: {' '.join(command)}")
+        subprocess_thread = threading.Thread(target=lambda: subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE))
+        subprocess_thread.start()
+
+        # process events that require main thread, i.e UI stuff
+        # TODO could this be in the signaling class?
+        while subprocess_thread.is_alive():
+            if ui_queue.empty():
+                time.sleep(1)
+            else:
+                signal = ui_queue.get()
+                if signal == SWITCH_TO_BROWSER_SCENE:
+                    sceneManager.SwitchToBrowserScene() # blocking
+
+        # update stats and save
+        if not GetOptions().replay():
+            statistics.set_level_stats()
+            statistics.write_stats()
+
+        if GetOptions().auto_record:
+            # TODO: handle recording already stopped, maybe manually or by error
+            obsController.StopRecording()
+
+        obsController.SetScene(GetConfig().wait_scene)
+
+        map = None
 
 if __name__ == "__main__":
     main()

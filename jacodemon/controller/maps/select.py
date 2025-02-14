@@ -57,6 +57,7 @@ class MapsSelectController:
         GetConfig().TouchMapSet(mapSetId)
 
         self.LoadMaps(mapSetId)
+        # TODO: retrigger on map select reload, i.e after completing a level
         for map in self.maps:
             AddBadgesToMap(map, GetConfig().demo_dir)
 
