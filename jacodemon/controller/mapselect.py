@@ -25,15 +25,8 @@ class ControllerMapSelect(QObject):
     def on_mapset_updated(self):
 
         # TODO you may wish to reset demo, map, etc etc
-        # if self.app_model.mapSet is None:
-        #     self.view.mapTableWidget.setMaps([])
-        #     return
-
-        # self.view.mapTableWidget.set_maps(self.app_model.mapSet.maps)
-        pass
-
-
-
+        flatmaps = [map.to_dict() for map in self.app_model.maps]
+        self.view.mapTableWidget.populate(flatmaps)
 
 # def OpenSelectMapDialog() -> str:
 #     """Returns MapId of the selected map or None"""

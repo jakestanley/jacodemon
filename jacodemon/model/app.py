@@ -4,9 +4,11 @@ from PySide6.QtCore import QObject, Signal
 from jacodemon.model.flatmap import FlatMap
 
 # TODO consider last map service? :D
+# TODO move this into map service?
 from jacodemon.last import GetLastMap
 from jacodemon.model.mod import Mod
 from jacodemon.service.config_service import ConfigService
+from jacodemon.service.map_service import MapService
 from jacodemon.service.map_set_service import MapSetService
 
 # TODO move Options into model?
@@ -34,19 +36,20 @@ class AppModel(QObject):
     # most generic signal that isn't covered by the others
     config_updated = Signal()
     
-    def __init__(self, config_service: ConfigService, map_set_service: MapSetService, options_service: OptionsService):
+    def __init__(self, 
+                 config_service: ConfigService, map_set_service: MapSetService, 
+                 map_service: MapService, options_service: OptionsService):
         super().__init__()
 
         self.config_service = config_service
-        self.config = self.config_service.config
-
-        self.maps = {}
-
-        self.mapSet = None
-        # do we want to load map sets in the constructor?
-        self.mapSets = map_set_service.LoadMapSets(self.config.sets)
-
+        self.map_set_service = map_set_service
+        self.map_service = map_service
         self.options_service: OptionsService = options_service
+
+        self.config = self.config_service.config
+        # do we want to load map sets in the constructor?
+        self.mapSets = self.map_set_service.LoadMapSets(self.config.sets)
+        self.maps = []
         self.options: Options = self.options_service.GetOptions()
 
     def update(self):
@@ -124,6 +127,10 @@ class AppModel(QObject):
     def GetLastMap(self) -> FlatMap:
         return GetLastMap()
     
+    def _TouchMapSet(self, mapSet):
+        self.mapSets.remove(mapSet)
+        self.mapSets.append(mapSet)
+
     def SetMapSet(self, mapSetId):
 
         for mapSet in self.mapSets:
@@ -131,6 +138,9 @@ class AppModel(QObject):
                 self.mapSet = mapSet
                 break
 
+        self._TouchMapSet(mapSet)
+
+        self.maps = self.map_service.LoadMaps(mapSet)
         self.selected_mapset_updated.emit()
 
 def InitialiseAppModel():
@@ -139,10 +149,12 @@ def InitialiseAppModel():
 
     config_service = ConfigService()
     map_set_service = MapSetService()
+    map_service = MapService()
     options_service = OptionsService()
 
     # model, view, controller setup
     return AppModel(
         config_service=config_service, 
         map_set_service=map_set_service,
+        map_service=map_service,
         options_service=options_service)

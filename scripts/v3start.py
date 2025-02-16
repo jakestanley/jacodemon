@@ -3,10 +3,6 @@ from PySide6.QtWidgets import QApplication
 from jacodemon.arguments import GetArgs
 from jacodemon.options import InitialiseOptions
 
-from jacodemon.service.config_service import ConfigService
-from jacodemon.service.map_set_service import MapSetService
-
-from jacodemon.config import GetConfig
 from jacodemon.manager import UIManager, UIState
 
 from jacodemon.model.app import AppModel, InitialiseAppModel
@@ -18,8 +14,6 @@ from jacodemon.controller.prelaunch import ControllerPreLaunch
 from jacodemon.view.config import ViewConfig
 from jacodemon.view.mapselect import ViewMapSelect
 from jacodemon.view.prelaunch import ViewPreLaunch
-
-from jacodemon.app import AppController
 
 def start():
 
@@ -43,15 +37,12 @@ def start():
     controller_pre_launch = ControllerPreLaunch(app_model, view_pre_launch)
     controller_pre_launch.accept_signal.connect(lambda: ui_manager.set_state(UIState.SUBPROCESS))
 
-    # NOTE: can subscribe to any app_model event emissions in the dialog constructors
     ui_manager.register_view(UIState.SELECT_SET,    view_config)
     ui_manager.register_view(UIState.SELECT_MAP,    view_map_select)
     ui_manager.register_view(UIState.PRE_LAUNCH,    view_pre_launch)
 
     # force all appmodel signals to emit, which should refresh all UIs
     app_model.update()
-
-    controller = AppController()
 
     ui_manager.show()
     app.exec()

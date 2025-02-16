@@ -1,6 +1,6 @@
 from jacodemon.model.maps import MapSetPath, MapSet
 
-def LoadMapSet(dict) -> MapSet:
+def _LoadMapSet(dict) -> MapSet:
     paths = []
     for path in dict["paths"]:
         paths.append(MapSetPath(path["path"], path["enabled"]))
@@ -17,4 +17,4 @@ class MapSetService:
         pass
 
     def LoadMapSets(self, sets):
-        return [LoadMapSet(ms) for ms in sets]
+        return [_LoadMapSet(ms) for ms in sets]

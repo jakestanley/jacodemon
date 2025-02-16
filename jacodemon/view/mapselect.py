@@ -26,7 +26,7 @@ class MapTableWidget(QTableView):
         self.selectionModel().selectionChanged.connect(self._HandleSelection)
         self.resizeColumnsToContents()
 
-    def set_maps(self, data):
+    def populate(self, data):
         # TODO should replace, not append
         for row_dict in data:
             row_items = [QStandardItem(str(row_dict[key])) for key in _COLUMN_ORDER]

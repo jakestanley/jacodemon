@@ -93,7 +93,6 @@ class JacodemonConfig(Config):
 
         self.Save()
 
-
     def GetMapSetById(self, mapSetId):
         for set in self.sets:
             if set.id == mapSetId:

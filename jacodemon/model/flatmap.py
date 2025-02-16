@@ -120,7 +120,7 @@ class FlatMap:
         dic['CompLevel'] = self.CompLevel
         dic['Files'] = ", ".join(self._Files)
         dic['Merge'] = ",".join(self._Merges)
-        dic['Port'] = self.Port
+        # dic['Port'] = self.Port
         dic['Notes'] = self._Notes
 
         return dic
