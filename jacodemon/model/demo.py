@@ -6,8 +6,8 @@ from itertools import groupby
 
 import jacodemon.model.demo_constants as DemoConstants
 
-from jacodemon.map import FlatMap
-from jacodemon.stats import Statistics, LoadStatistics
+from jacodemon.model.flatmap import FlatMap
+from jacodemon.service.dsda.stats import Statistics, LoadStatistics
 
 class Demo:
     def __init__(self, lump_path, stats_path=None):

@@ -8,28 +8,28 @@ import sys
 from PySide6.QtWidgets import QApplication, QDialog
 from jacodemon.arguments import GetArgs
 from jacodemon.logs import GetLogManager
-from jacodemon.ui.dialogs.config import ConfigDialog
+from jacodemon.ui.view.config import ViewConfig
 from jacodemon.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.last import *
 from jacodemon.launch import LaunchConfig
-from jacodemon.obs import ObsController, GetObsController
+from jacodemon.service.obs.obs import ObsController, GetObsController
 from jacodemon.options import Options, InitialiseOptions, GetOptions, MODE_LAST, MODE_REPLAY
-from jacodemon.stats import Statistics, NewStatistics
+from jacodemon.service.dsda.stats import Statistics, NewStatistics
 from jacodemon.model.maps import MapSet
 from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelectController
-from jacodemon.ui.dialogs.mapselect import OpenSelectMapDialog
-from jacodemon.ui.dialogs.options import OpenOptionsDialog
+from jacodemon.ui.view.mapselect import OpenSelectMapDialog
+from jacodemon.ui.view.prelaunch import OpenOptionsDialog
 from jacodemon.model.demo import GetDemosForMap
 from jacodemon.macros import Macros, GetMacros
-from jacodemon.scenes import SceneManager
+from jacodemon.service.obs.scenes import SceneManager
 
 from jacodemon.keys import *
 
 def GetMap():
 
     if not GetMapsSelectController().mapSet:
-        cd = ConfigDialog()
+        cd = ViewConfig()
         
         if cd.exec() == QDialog.DialogCode.Rejected:
             logger = GetLogManager().GetLogger(__name__)

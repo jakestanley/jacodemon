@@ -21,17 +21,7 @@ _KEY_BROWSER_SCENE = 'browser_scene'
 _KEY_TITLE_SOURCE = 'title_source'
 _KEY_SETS = 'sets'
 
-class Mod:
-    def __init__(self, path: str, enabled: bool = True):
-        self.path = path
-        self.enabled = enabled
-
-    def to_dict(self):
-        dic = {}
-        dic['path'] = self.path
-        dic['enabled'] = self.enabled
-        return dic
-
+# TODO move this into app model etc
 class JacodemonConfig(Config):
 
     def __init__(self) -> None:
@@ -56,17 +46,10 @@ class JacodemonConfig(Config):
         self.maps_dir = self.config.get(_KEY_MAPS_DIR)
         self.demo_dir = self.config.get(_KEY_DEMO_DIR)
         self.mods_dir = self.config.get(_KEY_MODS_DIR)
-        loaded_mods = self.config.get(_KEY_MODS, [])
 
-        # map sets
-        self.sets = [maps.LoadMapSet(ms) for ms in self.config.get(_KEY_SETS, [])]
-
-        self.mods = []
-        for mod in loaded_mods:
-            if isinstance(mod, str):
-                self.mods.append(Mod(mod))
-            else:
-                self.mods.append(Mod(mod.get('path'), mod.get('enabled', True)))
+        self.mods = self.config.get(_KEY_MODS, [])
+        # self.sets = [maps.LoadMapSet(ms) for ms in self.config.get(_KEY_SETS, [])]
+        self.sets = self.config.get(_KEY_SETS, [])
 
     def _PrepareSave(self):
 
@@ -132,7 +115,7 @@ def GetConfig(dummy=False):
     global _CONFIG_SINGLETON
     if _CONFIG_SINGLETON is None:
         if dummy:
-            from jacodemon.dummy import DummyConfig
+            from jacodemon.utils.dummy import DummyConfig
             _CONFIG_SINGLETON = DummyConfig()
         else:
             _CONFIG_SINGLETON = JacodemonConfig()

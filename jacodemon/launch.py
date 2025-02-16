@@ -3,8 +3,8 @@ import os
 from datetime import datetime
 
 from jacodemon.config import JacodemonConfig, GetConfig
-from jacodemon.map import FlatMap
-from jacodemon.map_utils import *
+from jacodemon.model.flatmap import FlatMap
+from jacodemon.misc.map_utils import *
 from jacodemon.options import Options, GetOptions
 
 ULTRA_VIOLENCE = 4

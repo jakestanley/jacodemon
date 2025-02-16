@@ -7,7 +7,7 @@ import jacodemon.arguments as args
 import jacodemon.logs as logs
 from jacodemon.options import Options
 from jacodemon.config import JacodemonConfig, GetConfig
-from jacodemon.map import FlatMap, EnrichMaps
+from jacodemon.model.flatmap import FlatMap, EnrichMaps
 from jacodemon.csv import load_raw_maps
 from jacodemon.model.demo import Demo, GetDemosForMap, AddBadgesToMap
 

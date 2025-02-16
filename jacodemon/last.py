@@ -4,7 +4,7 @@ from typing import Optional
 
 import jsonpickle
 
-from jacodemon.map import FlatMap
+from jacodemon.model.flatmap import FlatMap
 from jacodemon.model.maps import MapSet
 
 # constants

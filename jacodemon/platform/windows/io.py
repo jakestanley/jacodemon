@@ -1,4 +1,4 @@
-from jacodemon.io import IO
+from jacodemon.misc.io import IO
 from jacodemon.logs import LogManager, GetLogManager
 
 import os
