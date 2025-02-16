@@ -88,9 +88,9 @@ class MapSetListItem(QWidget):
 class MapSetList(QListWidget):
 
     # let's just keep it simple and return map set IDs instead of indexes
-    openItemRequested = Signal(str)
-    editItemRequested = Signal(str)
-    removeItemRequested = Signal(str)
+    openItemRequested: Signal = Signal(str)
+    editItemRequested: Signal = Signal(str)
+    removeItemRequested: Signal = Signal(str)
 
     def __init__(self):
         super().__init__()

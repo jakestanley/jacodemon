@@ -29,20 +29,16 @@ class ControllerSets:
         self.on_mapsets_updated()
 
     def on_add_mapset(self):
-        print( "poo")
-        pass
+        print( "Adding mapset")
 
     def on_open_mapset(self, mapSetId: str):
-        print( "poo")
-        pass
+        print(f"Opening {mapSetId}")
 
     def on_edit_mapset(self, mapSetId: str):
-        print( "poo")
-        pass
+        print(f"Editing {mapSetId}")
 
     def on_remove_mapset(self, mapSetId: str):
-        print( "poo")
-        pass
+        print(f"Removing {mapSetId}")
 
     def on_mapsets_updated(self):
 
