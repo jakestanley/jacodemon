@@ -1,5 +1,5 @@
 from jacodemon.model.app import AppModel
-from jacodemon.ui.view.mapselect import ViewMapSelect
+from jacodemon.view.mapselect import ViewMapSelect
 
 class ControllerMapSelect():
 

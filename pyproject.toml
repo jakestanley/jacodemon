@@ -27,6 +27,7 @@ hammerspoon-bridge = "^1.0.0"
 
 [tool.poetry.scripts]
 jacodemon = "scripts.start:main"
+v3 = "scripts.v3start:start"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,7 +1,7 @@
 from PySide6.QtCore import Qt, Signal
 
 from jacodemon.model.app import AppModel
-from jacodemon.ui.view.prelaunch import ViewPreLaunch
+from jacodemon.view.prelaunch import ViewPreLaunch
 
 from jacodemon.options import MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
 

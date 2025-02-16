@@ -1,4 +1,4 @@
-from jacodemon.ui.manager import UIState
+from jacodemon.manager import UIState
 
 class AppController:
 

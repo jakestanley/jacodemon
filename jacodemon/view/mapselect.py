@@ -2,7 +2,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QDialog, QWidget, QHBoxLayout, QVBoxLayout, QTableView, QPushButton
 
-from jacodemon.ui.maps.demo import DemoTableView
+from jacodemon.view.components.maps.demo import DemoTableView
 from PySide6.QtWidgets import QLabel, QGroupBox
 from PySide6.QtGui import QBrush
 

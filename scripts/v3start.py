@@ -7,17 +7,17 @@ from jacodemon.service.config_service import ConfigService
 from jacodemon.service.map_set_service import MapSetService
 
 from jacodemon.config import GetConfig
-from jacodemon.ui.manager import UIManager, UIState
+from jacodemon.manager import UIManager, UIState
 
 from jacodemon.model.app import AppModel, InitialiseAppModel
 
-from jacodemon.ui.controller.config import ControllerConfig
-from jacodemon.ui.controller.mapselect import ControllerMapSelect
-from jacodemon.ui.controller.prelaunch import ControllerPreLaunch
+from jacodemon.controller.config import ControllerConfig
+from jacodemon.controller.mapselect import ControllerMapSelect
+from jacodemon.controller.prelaunch import ControllerPreLaunch
 
-from jacodemon.ui.view.config import ViewConfig
-from jacodemon.ui.view.mapselect import ViewMapSelect
-from jacodemon.ui.view.prelaunch import ViewPreLaunch
+from jacodemon.view.config import ViewConfig
+from jacodemon.view.mapselect import ViewMapSelect
+from jacodemon.view.prelaunch import ViewPreLaunch
 
 from jacodemon.app import AppController
 

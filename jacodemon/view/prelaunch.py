@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel, QDialog
 
 class ViewPreLaunch(QDialog):
-    def __init__(self, parent):
-        super().__init__(parent)
+    def __init__(self):
+        super().__init__()
 
         self.setWindowTitle("Prelaunch Options")
 
