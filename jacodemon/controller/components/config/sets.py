@@ -14,17 +14,15 @@ class ControllerSets:
         #   unsure about file dialog/ui in between yet
         self.view.add_button.clicked.connect(self.on_add_mapset)
 
-        # TODO: I don't think we want Open actually, rather, we need to have 
-        #   a selected set and set that in the app model. When the user 
-        #   pushes start on the Config dialog, that's read and the UI moves
-        #   on. means that i don't have to put that messy logic in here.
-        # - Open
+        # do initial update
+        self.on_mapsets_updated()
+
+        # these are a fucking nightmare!!!
         self.view.mapSetList.openItemRequested.connect(self.on_open_mapset)
         self.view.mapSetList.editItemRequested.connect(self.on_edit_mapset)
         self.view.mapSetList.removeItemRequested.connect(self.on_remove_mapset)
-
-        # do initial update
-        self.on_mapsets_updated()
+    
+        print("Right, I've definitely just set up those connections")
 
     def on_add_mapset(self):
         print( "Adding mapset")

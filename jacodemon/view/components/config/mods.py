@@ -13,8 +13,8 @@ class ModsTab(ConfigWidget):
     def __init__(self, parent=None):
         super(ModsTab, self).__init__(parent)
 
-        self.layout: QVBoxLayout = QVBoxLayout(self)
-        hlayout = QHBoxLayout(self)
+        self.layout: QVBoxLayout = QVBoxLayout()
+        hlayout = QHBoxLayout()
 
         self.mods = QListWidget(self)
 

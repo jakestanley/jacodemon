@@ -73,16 +73,18 @@ class MapSetListItem(QWidget):
 class MapSetList(QListWidget):
 
     # let's just keep it simple and return map set IDs instead of indexes
-    openItemRequested: Signal = Signal(str)
-    editItemRequested: Signal = Signal(str)
-    removeItemRequested: Signal = Signal(str)
+    openItemRequested = Signal(str)
+    editItemRequested = Signal(str)
+    removeItemRequested = Signal(str)
+    print("initialised signals")
 
     def __init__(self):
         super().__init__()
-        self.gc_blocker_list = []
 
     def populate(self, mapsets: List[MapSet]):
-        # self.clear()
+        self.clear()
+
+        self.stuff = []
 
         for mapset in mapsets:
             item = QListWidgetItem()
@@ -93,11 +95,19 @@ class MapSetList(QListWidget):
             self.addItem(item)
             self.setItemWidget(item, widget)
 
-            the_fucking_id = mapset.id
-            widget.openButton.clicked.connect(partial(self.openItemRequested.emit, the_fucking_id))
-            widget.editButton.clicked.connect(partial(self.editItemRequested.emit, the_fucking_id))
-            widget.removeButton.clicked.connect(partial(self.removeItemRequested.emit, the_fucking_id))
+            mapset_id = mapset.id
+            widget.openButton.clicked.connect(partial(self.on_open_item, mapset_id))
+            widget.editButton.clicked.connect(partial(self.on_edit_item, mapset_id))
+            widget.removeButton.clicked.connect(partial(self.on_remove_item, mapset_id))
 
-            # list of shit
-            self.gc_blocker_list.append(item)
-            self.gc_blocker_list.append(widget)
+            self.stuff.append(widget)
+            self.stuff.append(item)
+
+    def on_open_item(self, id):
+        self.openItemRequested.emit(str(id))
+
+    def on_edit_item(self, id):
+        self.editItemRequested.emit(str(id))
+
+    def on_remove_item(self, id):
+        self.removeItemRequested.emit(str(id))

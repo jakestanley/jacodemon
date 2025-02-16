@@ -28,11 +28,12 @@ class ControllerConfig():
         obsTab = ObsTab()
         dsdaTab = DsdaTab()
 
-        ControllerSets(app_model, selectSetTab)
-        ControllerGeneral(app_model, generalTab)
-        ControllerMods(app_model, modsTab)
-        ControllerObs(app_model, obsTab)
-        ControllerDsda(app_model, dsdaTab)
+        # assigning these for the purpose of preventing them getting removed by gc
+        self.cSets = ControllerSets(app_model, selectSetTab)
+        self.cGeneral = ControllerGeneral(app_model, generalTab)
+        self.cMods = ControllerMods(app_model, modsTab)
+        self.cObs = ControllerObs(app_model, obsTab)
+        self.cDsda = ControllerDsda(app_model, dsdaTab)
 
         self.view.configTabWidget.addTab(selectSetTab, "Sets")
         self.view.configTabWidget.addTab(generalTab, "Config: General")
@@ -57,12 +58,15 @@ class ControllerConfig():
 
 if __name__ == "__main__":
 
+    import gc
     import sys
     from PySide6.QtWidgets import QApplication
 
     from jacodemon.misc.dummy import DummyArgs
     from jacodemon.options import InitialiseOptions
     from jacodemon.model.app import InitialiseAppModel
+
+    gc.disable()
 
     app = QApplication([])
 
