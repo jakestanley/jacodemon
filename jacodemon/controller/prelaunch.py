@@ -18,26 +18,26 @@ class ControllerPreLaunch():
         self.view.button_box.accepted.connect(self._accept)
         self.view.button_box.rejected.connect(self._reject)
 
-        self.view.checkbox_record_demo.stateChanged.connect(self.on_checkbox_toggled)
-        self.view.checkbox_obs.stateChanged.connect(self.on_checkbox_toggled)
-        self.view.checkbox_auto_record.stateChanged.connect(self.on_checkbox_toggled)
-        self.view.checkbox_mods.stateChanged.connect(self.on_checkbox_toggled)
-        self.view.checkbox_music.stateChanged.connect(self.on_checkbox_toggled)
+        # self.view.checkbox_record_demo.stateChanged.connect(self.on_checkbox_toggled)
+        # self.view.checkbox_obs.stateChanged.connect(self.on_checkbox_toggled)
+        # self.view.checkbox_auto_record.stateChanged.connect(self.on_checkbox_toggled)
+        # self.view.checkbox_mods.stateChanged.connect(self.on_checkbox_toggled)
+        # self.view.checkbox_music.stateChanged.connect(self.on_checkbox_toggled)
 
         self.refresh()
 
     def refresh(self):
-        self.view.checkbox_record_demo.setChecked(app_model.IsRecordDemoEnabled())
-        self.view.checkbox_record_demo.setEnabled(app_model.CanRecordDemo())
+        self.view.checkbox_record_demo.setChecked(self.app_model.IsRecordDemoEnabled())
+        self.view.checkbox_record_demo.setEnabled(self.app_model.CanRecordDemo())
 
-        self.view.checkbox_obs.setChecked(app_model.IsObsEnabled())
+        self.view.checkbox_obs.setChecked(self.app_model.IsObsEnabled())
 
-        self.view.checkbox_auto_record.setChecked(app_model.IsAutoRecordEnabled())
-        self.view.checkbox_auto_record.setEnabled(app_model.CanAutoRecord())
+        self.view.checkbox_auto_record.setChecked(self.app_model.IsAutoRecordEnabled())
+        self.view.checkbox_auto_record.setEnabled(self.app_model.CanAutoRecord())
 
-        self.view.checkbox_mods.setChecked(app_model.IsModsEnabled())
+        self.view.checkbox_mods.setChecked(self.app_model.IsModsEnabled())
 
-        self.view.checkbox_music.setChecked(app_model.IsMusicEnabled())
+        self.view.checkbox_music.setChecked(self.app_model.IsMusicEnabled())
 
         # TODO: these have been removed or moved. commented for reference later
         # self.view.radio_normal.toggled.connect(self.set_mode)
