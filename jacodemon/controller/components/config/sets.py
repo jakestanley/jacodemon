@@ -1,5 +1,3 @@
-from PySide6.QtWidgets import QListWidgetItem
-
 from jacodemon.model.app import AppModel
 
 from jacodemon.view.components.config.sets import SetsTab
@@ -32,13 +30,13 @@ class ControllerSets:
         print( "Adding mapset")
 
     def on_open_mapset(self, mapSetId: str):
-        print(f"Opening {mapSetId}")
+        print(f"Controller hit! Opening {mapSetId}")
 
     def on_edit_mapset(self, mapSetId: str):
-        print(f"Editing {mapSetId}")
+        print(f"Controller hit! Editing {mapSetId}")
 
     def on_remove_mapset(self, mapSetId: str):
-        print(f"Removing {mapSetId}")
+        print(f"Controller hit! Removing {mapSetId}")
 
     def on_mapsets_updated(self):
 

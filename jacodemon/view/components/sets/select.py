@@ -1,4 +1,5 @@
 from typing import List
+from functools import partial
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QListWidget
@@ -13,10 +14,6 @@ from PySide6.QtWidgets import QLabel
 from jacodemon.model.maps import MapSet
 
 class MapSetListItem(QWidget):
-
-    openClicked: Signal = Signal(str)
-    editClicked: Signal = Signal(str)
-    removeClicked: Signal = Signal(str)
 
     def __init__(self, mapset: MapSet):
         super().__init__()
@@ -54,19 +51,16 @@ class MapSetListItem(QWidget):
         self.openButton = QPushButton("Open")
         self.openButton.setMaximumWidth(80)
         self.openButton.setEnabled(invalid == False)
-        self.openButton.clicked.connect(self.on_open_clicked)
 
         # Edit
         self.editButton = QPushButton("Edit")
         self.editButton.setMaximumWidth(80)
         self.editButton.setEnabled(True)
-        self.editButton.clicked.connect(self.on_edit_clicked)
 
         # Remove
         self.removeButton = QPushButton("Remove")
         self.removeButton.setMaximumWidth(80)
         self.removeButton.setEnabled(True)
-        self.removeButton.clicked.connect(self.on_remove_clicked)
 
         vLayout.addWidget(self.openButton)
         vLayout.addWidget(self.editButton)
@@ -75,15 +69,6 @@ class MapSetListItem(QWidget):
         layout.addLayout(vLayout)
 
         self.setLayout(layout)
-
-    def on_open_clicked(self):
-        self.openClicked.emit(str(self.mapSetId))
-
-    def on_edit_clicked(self):
-        self.editClicked.emit(str(self.mapSetId))
-
-    def on_remove_clicked(self):
-        self.removeClicked.emit(str(self.mapSetId))
 
 class MapSetList(QListWidget):
 
@@ -94,19 +79,25 @@ class MapSetList(QListWidget):
 
     def __init__(self):
         super().__init__()
+        self.gc_blocker_list = []
 
     def populate(self, mapsets: List[MapSet]):
-        self.clear()
+        # self.clear()
 
         for mapset in mapsets:
             item = QListWidgetItem()
             widget = MapSetListItem(mapset)
 
             # ensure signals with indexes are emitted
-            widget.openClicked.connect(self.openItemRequested.emit)
-            widget.editClicked.connect(self.editItemRequested.emit)
-            widget.removeClicked.connect(self.removeItemRequested.emit)
-
             item.setSizeHint(widget.sizeHint())
             self.addItem(item)
             self.setItemWidget(item, widget)
+
+            the_fucking_id = mapset.id
+            widget.openButton.clicked.connect(partial(self.openItemRequested.emit, the_fucking_id))
+            widget.editButton.clicked.connect(partial(self.editItemRequested.emit, the_fucking_id))
+            widget.removeButton.clicked.connect(partial(self.removeItemRequested.emit, the_fucking_id))
+
+            # list of shit
+            self.gc_blocker_list.append(item)
+            self.gc_blocker_list.append(widget)
