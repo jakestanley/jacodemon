@@ -6,12 +6,9 @@ from jacodemon.ui.sets.edit import EditSetDialog
 from PySide6.QtWidgets import QDialog
 from PySide6.QtCore import Qt
 
-_SINGLETON = None
 
 class EditSetController:
     def __init__(self) -> None:
-        if _SINGLETON is not None:
-            raise Exception("EditSetController MUST only be instantiated once")
         super().__init__()
 
     def NewEdit(self, parent, mapSetId):
@@ -26,9 +23,3 @@ class EditSetController:
             mapSet.iwad = dialog.iwad_line_edit.text()
             mapSet.paths = dialog.GetPaths()
             # TODO check saved
-
-def GetEditSetController() -> EditSetController:
-    global _SINGLETON
-    if _SINGLETON is None:
-        _SINGLETON = EditSetController()
-    return _SINGLETON
