@@ -29,18 +29,23 @@ class ControllerSets:
         self.on_mapsets_updated()
 
     def on_add_mapset(self):
+        print( "poo")
         pass
 
-    def on_open_mapset(self, index):
-        print(index)
+    def on_open_mapset(self, mapSetId: str):
+        print( "poo")
         pass
 
-    def on_edit_mapset(self, index):
+    def on_edit_mapset(self, mapSetId: str):
+        print( "poo")
         pass
 
-    def on_remove_mapset(self, index):
+    def on_remove_mapset(self, mapSetId: str):
+        print( "poo")
         pass
 
     def on_mapsets_updated(self):
 
-        self.view.mapSetList.populate(self.app_model.mapSets)
+        # TODO: we always want to show the end of the list at the top cos 
+        #   of how i do the crappy list thing i'm tired i should probbly slep
+        self.view.mapSetList.populate(reversed(self.app_model.mapSets))

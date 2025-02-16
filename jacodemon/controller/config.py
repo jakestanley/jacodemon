@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QFileDialog, QListWidgetItem
+from PySide6.QtWidgets import QFileDialog
 
 from jacodemon.model.app import AppModel
 from jacodemon.view.config import ViewConfig

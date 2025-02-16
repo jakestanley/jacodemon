@@ -14,13 +14,13 @@ from jacodemon.model.maps import MapSet
 
 class MapSetListItem(QWidget):
 
-    openClicked: Signal = Signal(int)
-    editClicked: Signal = Signal(int)
-    removeClicked: Signal = Signal(int)
+    openClicked: Signal = Signal(str)
+    editClicked: Signal = Signal(str)
+    removeClicked: Signal = Signal(str)
 
-    def __init__(self, mapset: MapSet, index: int):
+    def __init__(self, mapset: MapSet):
         super().__init__()
-        self.index = index
+        self.mapSetId = mapset.id
         
         invalid = mapset.HasInvalidConfiguration()
 
@@ -77,28 +77,30 @@ class MapSetListItem(QWidget):
         self.setLayout(layout)
 
     def on_open_clicked(self):
-        self.openClicked.emit(self.index)
+        self.openClicked.emit(str(self.mapSetId))
 
     def on_edit_clicked(self):
-        self.editClicked.emit(self.index)
+        self.editClicked.emit(str(self.mapSetId))
 
     def on_remove_clicked(self):
-        self.removeClicked.emit(self.index)
+        self.removeClicked.emit(str(self.mapSetId))
 
 class MapSetList(QListWidget):
 
-    openItemRequested = Signal(int)
-    editItemRequested = Signal(int)
-    removeItemRequested = Signal(int)
+    # let's just keep it simple and return map set IDs instead of indexes
+    openItemRequested = Signal(str)
+    editItemRequested = Signal(str)
+    removeItemRequested = Signal(str)
 
     def __init__(self):
         super().__init__()
 
     def populate(self, mapsets: List[MapSet]):
         self.clear()
-        for index, mapset in enumerate(mapsets):
+
+        for mapset in mapsets:
             item = QListWidgetItem()
-            widget = MapSetListItem(mapset, index)
+            widget = MapSetListItem(mapset)
 
             # ensure signals with indexes are emitted
             widget.openClicked.connect(self.openItemRequested.emit)
