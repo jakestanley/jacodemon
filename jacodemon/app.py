@@ -3,7 +3,7 @@ from jacodemon.manager import UIState
 class AppController:
 
     def __init__(self):
-        self.current_state = UIState.CONFIG
+        self.current_state = UIState.SELECT_SET
 
     def set_state(self, new_state):
         if self.current_state.can_transition_to(new_state):
@@ -14,17 +14,17 @@ class AppController:
 
     def on_dialog_exit(self, ok: bool):
 
-        if self.current_state == UIState.CONFIG:
+        if self.current_state == UIState.SELECT_SET:
             if ok:
                 self.set_state(UIState.SELECT_MAP)
             else:
-                self.set_state(UIState.CONFIG)
+                self.set_state(UIState.SELECT_SET)
 
         elif self.current_state == UIState.SELECT_MAP:
             if ok:
                 self.set_state(UIState.PRE_LAUNCH)
             else:
-                self.set_state(UIState.CONFIG)
+                self.set_state(UIState.SELECT_SET)
 
         elif self.current_state == UIState.PRE_LAUNCH:
             if ok:

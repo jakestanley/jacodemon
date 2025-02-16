@@ -34,14 +34,19 @@ def start():
     view_map_select = ViewMapSelect()
     view_pre_launch = ViewPreLaunch()
 
-    presenter_config = ControllerConfig(app_model, view_config)
-    presenter_map_select = ControllerMapSelect(app_model, view_map_select)
-    presenter_pre_launch = ControllerPreLaunch(app_model, view_pre_launch)
+    controller_config = ControllerConfig(app_model, view_config)
+    controller_config.accept_signal.connect(lambda: ui_manager.set_state(UIState.SELECT_MAP))
+
+    controller_map_select = ControllerMapSelect(app_model, view_map_select)
+    controller_map_select.accept_signal.connect(lambda: ui_manager.set_state(UIState.PRE_LAUNCH))
+
+    controller_pre_launch = ControllerPreLaunch(app_model, view_pre_launch)
+    controller_pre_launch.accept_signal.connect(lambda: ui_manager.set_state(UIState.SUBPROCESS))
 
     # NOTE: can subscribe to any app_model event emissions in the dialog constructors
-    ui_manager.register_view(UIState.CONFIG,        view_config)
-    # ui_manager.register_view(UIState.SELECT_MAP,    ) # TODO don't use this, make it public instead of "OpenMapDialog"
-    # ui_manager.register_view(UIState.PRE_LAUNCH,    )
+    ui_manager.register_view(UIState.SELECT_SET,    view_config)
+    ui_manager.register_view(UIState.SELECT_MAP,    view_map_select)
+    ui_manager.register_view(UIState.PRE_LAUNCH,    view_pre_launch)
 
     # force all appmodel signals to emit, which should refresh all UIs
     app_model.update()

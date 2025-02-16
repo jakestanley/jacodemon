@@ -1,17 +1,21 @@
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, QObject, Signal
 
 from jacodemon.model.app import AppModel
 from jacodemon.view.prelaunch import ViewPreLaunch
 
 from jacodemon.options import MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
 
-class ControllerPreLaunch():
+class ControllerPreLaunch(QObject):
+
+    accept_signal = Signal()
+    reject_signal = Signal()
 
     record_demo_enabled_changed = Signal(bool)
     record_demo_checkable_changed = Signal(bool)
 
     # TODO signal on prelaunch
     def __init__(self, app_model: AppModel, view_pre_launch: ViewPreLaunch):
+        super().__init__()
         self.app_model = app_model
         self.view = view_pre_launch
 

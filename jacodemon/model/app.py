@@ -26,7 +26,7 @@ class AppModel(QObject):
     selected_map_updated = Signal()
 
     # mapset changes, we must update map select view
-    selected_mapset_update = Signal()
+    selected_mapset_updated = Signal()
 
     # used for when we add, remove, edit, touch map sets
     mapsets_updated = Signal()
@@ -42,6 +42,7 @@ class AppModel(QObject):
 
         self.maps = {}
 
+        self.mapSet = None
         # do we want to load map sets in the constructor?
         self.mapSets = map_set_service.LoadMapSets(self.config.sets)
 
@@ -51,7 +52,7 @@ class AppModel(QObject):
     def update(self):
         self.mods_updated.emit()
         self.maps_updated.emit()
-        self.selected_mapset_update.emit()
+        self.selected_mapset_updated.emit()
         self.mapsets_updated.emit()
         self.config_updated.emit()
 
@@ -122,6 +123,15 @@ class AppModel(QObject):
     
     def GetLastMap(self) -> FlatMap:
         return GetLastMap()
+    
+    def SetMapSet(self, mapSetId):
+
+        for mapSet in self.mapSets:
+            if mapSet.id == mapSetId:
+                self.mapSet = mapSet
+                break
+
+        self.selected_mapset_updated.emit()
 
 def InitialiseAppModel():
     """Pretty please don't call this more than once. Used for initial setup 

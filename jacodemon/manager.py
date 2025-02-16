@@ -2,7 +2,7 @@ from enum import Enum
 from PySide6.QtWidgets import QStackedWidget, QWidget
 
 class UIState(Enum):
-    CONFIG = 0
+    SELECT_SET = 0
     SELECT_MAP = 1
     PRE_LAUNCH = 2
     SUBPROCESS = 3

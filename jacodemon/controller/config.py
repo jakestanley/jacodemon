@@ -1,3 +1,4 @@
+from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QFileDialog
 
 from jacodemon.model.app import AppModel
@@ -15,8 +16,13 @@ from jacodemon.controller.components.config.mods import ControllerMods
 from jacodemon.controller.components.config.obs import ControllerObs
 from jacodemon.controller.components.config.dsda import ControllerDsda
 
-class ControllerConfig():
+class ControllerConfig(QObject):
+
+    accept_signal = Signal()
+    reject_signal = Signal()
+
     def __init__(self, app_model: AppModel, view_config: ViewConfig):
+        super().__init__()
 
         self.app_model = app_model
         self.view = view_config
@@ -40,6 +46,8 @@ class ControllerConfig():
         self.view.configTabWidget.addTab(modsTab, "Config: Mods")
         self.view.configTabWidget.addTab(obsTab, "Config: OBS")
         self.view.configTabWidget.addTab(dsdaTab, "Config: DSDA")
+
+        self.cSets.accept_signal.connect(self.accept_signal.emit)
 
     # TODO: move this
     def OpenSingleFileDialog(self, types, line):

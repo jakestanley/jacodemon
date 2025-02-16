@@ -1,9 +1,15 @@
+from PySide6.QtCore import QObject, Signal
+
 from jacodemon.model.app import AppModel
 
 from jacodemon.view.components.config.sets import SetsTab
 
-class ControllerSets:
+class ControllerSets(QObject):
+
+    accept_signal = Signal()
+
     def __init__(self, app_model: AppModel, view: SetsTab):
+        super().__init__()
         self.app_model: AppModel = app_model
         self.view: SetsTab = view
 
@@ -29,6 +35,8 @@ class ControllerSets:
 
     def on_open_mapset(self, mapSetId: str):
         print(f"Controller hit! Opening {mapSetId}")
+        self.app_model.SetMapSet(mapSetId)
+        self.accept_signal.emit()
 
     def on_edit_mapset(self, mapSetId: str):
         print(f"Controller hit! Editing {mapSetId}")

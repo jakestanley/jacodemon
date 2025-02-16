@@ -1,11 +1,16 @@
+from PySide6.QtCore import QObject, Signal
+
 from jacodemon.model.app import AppModel
 from jacodemon.view.mapselect import ViewMapSelect
 
-class ControllerMapSelect():
+class ControllerMapSelect(QObject):
 
-    # TODO: mapset change signal
+    accept_signal = Signal()
+    reject_signal = Signal()
 
+    # TODO map select/demo select update, etc
     def __init__(self, app_model: AppModel, view_map_select: ViewMapSelect):
+        super().__init__()
         self.app_model = app_model
         self.view = view_map_select
 
@@ -14,13 +19,45 @@ class ControllerMapSelect():
         # self.view.mapOverviewWidget.play_signal.connect(self._HandlePlay)
         # self.view.mapOverviewWidget.play_demo_signal.connect(self._HandlePlayDemo)
 
-        self.app_model.selected_mapset_update.connect(self.update)
+        self.app_model.selected_mapset_updated.connect(self.on_mapset_updated)
+        self.app_model.selected_map_updated.connect(self.on_map_updated)
 
-        # TODO on view accept (play)
+    def on_mapset_updated(self):
 
-        self.update()
+        # TODO you may wish to reset demo, map, etc etc
+        # if self.app_model.mapSet is None:
+        #     self.view.mapTableWidget.setMaps([])
+        #     return
 
-    def update(self):
+        # self.view.mapTableWidget.set_maps(self.app_model.mapSet.maps)
+        pass
+
+
+
+
+# def OpenSelectMapDialog() -> str:
+#     """Returns MapId of the selected map or None"""
+
+#     # at this point a map set and its maps MUST have been loaded
+#     table_rows = [map.to_dict() for map in GetMapsSelectController().maps]
+#     dialog = ViewMapSelect(table_rows, GetMapsSelectController().mapSet)
+
+#     if dialog.exec() == QDialog.DialogCode.Rejected:
+#         # clear the selected map set
+#         GetMapsSelectController().mapSet = None
+
+#         return None, None
+
+#     if dialog.selectedIndex is None:
+#         return None, None
+#     else:
+#         map = GetMapsSelectController().maps[dialog.selectedIndex]
+#         if dialog.selectedDemo is not None:
+#             return map, dialog.selectedDemo
+#         return map, None
+        pass
+
+    def on_map_updated(self):
         pass
 
 if __name__ == "__main__":
