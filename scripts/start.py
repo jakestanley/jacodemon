@@ -8,7 +8,7 @@ import sys
 from PySide6.QtWidgets import QApplication, QDialog
 from jacodemon.arguments import GetArgs
 from jacodemon.logs import GetLogManager
-from jacodemon.ui.view.config import ViewConfig
+from jacodemon.view.config import ViewConfig
 from jacodemon.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from jacodemon.config import JacodemonConfig, GetConfig
 from jacodemon.last import *

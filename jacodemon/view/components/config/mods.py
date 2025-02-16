@@ -1,4 +1,4 @@
-from jacodemon.ui.components.config.config import ConfigWidget
+from jacodemon.view.components.config.config import ConfigWidget
 
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
     QLabel, QLineEdit, QListWidget, QListWidgetItem, QCheckBox, QFileDialog
@@ -22,13 +22,13 @@ class ModsTab(ConfigWidget):
 
         button_layout: QVBoxLayout = QVBoxLayout()
 
-        btn_add_mods: QPushButton = QPushButton("Add")
+        self.btn_add_mods: QPushButton = QPushButton("Add")
         
-        button_layout.addWidget(btn_add_mods)        
+        button_layout.addWidget(self.btn_add_mods)        
 
-        btn_remove_mods: QPushButton = QPushButton("Remove")
+        self.btn_remove_mods: QPushButton = QPushButton("Remove")
         
-        button_layout.addWidget(btn_remove_mods)
+        button_layout.addWidget(self.btn_remove_mods)
 
         button_layout.addStretch()
 
@@ -51,12 +51,6 @@ class ModsTab(ConfigWidget):
 
     # def revert(self):
     #     self.LoadValuesFromConfig()
-
-    # def AddMod(self, mod: Mod):
-    #     item = QListWidgetItem(self.mods)
-    #     checkbox = QCheckBox(mod.path)
-    #     checkbox.setChecked(mod.enabled)
-    #     self.mods.setItemWidget(item, checkbox)
 
     # def AddMods(self):
 

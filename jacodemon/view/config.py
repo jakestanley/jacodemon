@@ -43,12 +43,6 @@ class ViewConfig(QWidget):
 
         self.configTabWidget = QTabWidget(self)
 
-        self.configTabWidget.addTab(self.selectSetTab, "Sets")
-        self.configTabWidget.addTab(self.generalTab, "Config: General")
-        self.configTabWidget.addTab(self.modsTab, "Config: Mods")
-        self.configTabWidget.addTab(self.obsTab, "Config: OBS")
-        self.configTabWidget.addTab(self.dsdaTab, "Config: DSDA")
-
         layout.addWidget(self.configTabWidget)
         layout.addWidget(self.lastWidget)
         self.setLayout(layout)

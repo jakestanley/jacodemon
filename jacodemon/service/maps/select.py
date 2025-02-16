@@ -6,7 +6,7 @@ from jacodemon.model.maps import MapSet
 
 from jacodemon.model.flatmap import FlatMap, EnrichMaps, GetMapEntriesFromFiles
 from jacodemon.model.demo import GetDemosForMap, AddBadgesToMap
-from jacodemon.controller.maps.cache import LoadMapsFromCache, AddMapsToCache
+from jacodemon.service.maps.cache import LoadMapsFromCache, AddMapsToCache
 
 _SINGLETON = None
 
@@ -25,7 +25,7 @@ def LoadRawMapsFromMapSet(mapSet: MapSet) -> List[FlatMap]:
         
     return maps
 
-class MapsSelectController:
+class MapsSelectService:
 
     def __init__(self) -> None:
         if _SINGLETON is not None:
@@ -67,8 +67,8 @@ class MapsSelectController:
             return True
         return False
 
-def GetMapsSelectController() -> MapsSelectController:
+def GetMapsSelectController() -> MapsSelectService:
     global _SINGLETON
     if _SINGLETON is None:
-        _SINGLETON = MapsSelectController()
+        _SINGLETON = MapsSelectService()
     return _SINGLETON

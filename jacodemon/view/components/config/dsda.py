@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
     QLabel, QLineEdit, QFileDialog
 
-from jacodemon.ui.components.config.config import ConfigWidget
+from jacodemon.view.components.config.config import ConfigWidget
 from PySide6.QtWidgets import QGroupBox
 
 class DsdaTab(ConfigWidget):
