@@ -1,28 +1,37 @@
+import glob
+
+from jacodemon.misc.files import ParseTimestampFromPath
+
+from jacodemon.model.stats import Statistics
+from jacodemon.model.map import Map
+
 class DemoService:
     def __init__(self, demo_dir):
         self.demo_dir = demo_dir
 
-    def GetDemosForMap(self, map: FlatMap):
+    def AddDemoesToMapStats(self, map: Map):
 
-        demos = []
+        demos = {}
 
-        prefix = map.GetMapPrefix()
-        files = glob.glob(demo_dir + f"/{prefix}*")
+        prefix = map.GetPrefix()
+        files = glob.glob(self.demo_dir + f"/{prefix}*.lmp")
 
-        # Sort the filenames list to group similar combinations together
-        files.sort(key=extract_prefix)
+        for file in files:
+            timestamp = ParseTimestampFromPath(file)
+            if not timestamp:
+                continue
 
-        # Group filenames by the common part before the suffixes
-        groups = {key: list(group) for key, group 
-                in groupby(files, key=extract_prefix)}
-        
-        for _, group in groups.items():
-            demo_files = sorted(group, key=lambda x: x.endswith("-STATS.json"))
-            if len(demo_files) > 1:
-                demos.append(Demo(demo_files[0], demo_files[1]))
-            elif len(demo_files) > 0:
-                if demo_files[0].endswith(".lmp"):
-                    demos.append(Demo(demo_files[0]))
+            demos[timestamp] = file
 
-        # TODO: treat incomplete demos as zero
-        return sorted(demos, key=lambda d: d.stats.get_timestamp() or 0, reverse=True)
+        # this adds a demo to existing stats if there are stats for it
+        for stats in map.Statistics:
+            if stats.timestamp in demos:
+                stats.demo = demos[stats.timestamp]
+                demos.pop(stats.timestamp)
+
+        # this creates empty statistics for any demos that don't have stats,
+        #   i.e failed attempts
+        for timestamp in demos:
+            map.Statistics.append(Statistics(timestamp=timestamp, demo=demos[timestamp]))
+
+        return

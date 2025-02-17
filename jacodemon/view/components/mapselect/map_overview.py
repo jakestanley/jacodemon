@@ -12,14 +12,8 @@ class MapOverviewWidget(QWidget):
         layout = QVBoxLayout(self)
 
         self.play_button = QPushButton("Play")
-        
-
         self.demo_table = DemoTableView(self)
-        # TODO signal instead
-        
         self.play_demo_button = QPushButton("Play Demo")
-        
-        
 
         layout.addWidget(self.play_button)
         layout.addWidget(self.demo_table)

@@ -11,6 +11,7 @@ from jacodemon.service.config_service import ConfigService
 from jacodemon.service.map_service import MapService
 from jacodemon.service.map_set_service import MapSetService
 from jacodemon.service.stats_service import StatsService
+from jacodemon.service.demo_service import DemoService
 
 # TODO move Options into model?
 from jacodemon.options import Options
@@ -37,13 +38,14 @@ class AppModel(QObject):
     
     def __init__(self, config_service: ConfigService, map_set_service: MapSetService, 
                  map_service: MapService, stats_service: StatsService, 
-                 options_service: OptionsService):
+                 demo_service: DemoService, options_service: OptionsService):
         super().__init__()
 
         self.config_service = config_service
         self.map_set_service = map_set_service
         self.map_service = map_service
         self.stats_service = stats_service
+        self.demo_service = demo_service
         self.options_service = options_service
 
         self.config = self.config_service.config
@@ -56,6 +58,10 @@ class AppModel(QObject):
         # maps
         self.maps = []
         self.selected_map = None
+
+        # demoes
+        self.demoes = []
+        self.selected_demo = None
 
     def update(self):
         self.mods_updated.emit()
@@ -137,6 +143,10 @@ class AppModel(QObject):
         self.mapSets.remove(mapSet)
         self.mapSets.append(mapSet)
 
+    def _LoadDemoes(self):
+        self.demo_service
+        pass
+
     def SetMap(self, index):
         
         # TODO bounds check
@@ -162,7 +172,8 @@ class AppModel(QObject):
         self.maps = self.map_service.LoadMaps(mapSet)
         for map in self.maps:
             map.MapSet = mapSet
-            self.stats_service.AddBadgesToMap(map)
+            self.stats_service.AddStatsToMap(map)
+            self.demo_service.AddDemoesToMapStats(map)
 
         self.selected_map_updated.emit()
         self.selected_mapset_updated.emit()
@@ -175,6 +186,7 @@ def InitialiseAppModel():
     map_set_service = MapSetService()
     map_service = MapService(config_service.config.maps_dir)
     stats_service = StatsService(config_service.config.stats_dir)
+    demo_service = DemoService(config_service.config.demo_dir)
     options_service = OptionsService()
 
     # model, view, controller setup
@@ -183,4 +195,5 @@ def InitialiseAppModel():
         map_set_service=map_set_service,
         map_service=map_service,
         stats_service=stats_service,
+        demo_service=demo_service,
         options_service=options_service)

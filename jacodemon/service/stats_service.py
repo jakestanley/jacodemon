@@ -1,24 +1,28 @@
 import glob
 import json
 
+from jacodemon.misc.files import ParseTimestampFromPath
+
 from jacodemon.model.map import Map
 from jacodemon.model.stats import Statistics
 
 class StatsService:
     def __init__(self, stats_dir):
         self.stats_dir = stats_dir
-        pass
 
     # TODO rename this to get statistics for map? idk
     def LoadStatistics(self, stats_path) -> Statistics:
 
         # TODO persistence service for this
+        stats = None
         if stats_path:
             with open(stats_path, "r") as stats_file:
                 raw_json = json.load(stats_file)
-                return Statistics.from_dict(raw_json)
+                stats = Statistics.from_dict(raw_json)
+                if stats.timestamp is None:
+                    stats.timestamp = ParseTimestampFromPath(stats_path)
 
-        return None
+        return stats
 
     """
     Badges:
@@ -26,7 +30,7 @@ class StatsService:
     - silver: all kills, 
     - gold: above + all secrets and items
     """
-    def AddBadgesToMap(self, map: Map):
+    def AddStatsToMap(self, map: Map):
         prefix = map.GetPrefix()
         stats_files = glob.glob(self.stats_dir + f"/{prefix}*-STATS.json")
 
@@ -36,8 +40,10 @@ class StatsService:
                 if stats_file.find("test") >= 0:
                     continue
                 stats = self.LoadStatistics(stats_file)
+                if stats:
+                    map.Statistics.append(stats)
 
-
-                new_badge = stats.get_badge()
-                if new_badge > map.Badge:
-                    map.Badge = new_badge
+        for stats in map.Statistics:
+            new_badge = stats.get_badge()
+            if new_badge > map.Badge:
+                map.Badge = new_badge

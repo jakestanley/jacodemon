@@ -8,7 +8,7 @@ _KEY_LEVEL_STATS = 'levelStats'
 
 class Statistics:
 
-    def __init__(self, timestamp=None, comp_level=None, sourcePort=None, command=None):
+    def __init__(self, timestamp=None, comp_level=None, sourcePort=None, command=None, demo=None):
 
         self.timestamp = timestamp
         self.comp_level = comp_level
@@ -18,6 +18,7 @@ class Statistics:
         self.kills = None
         self.items = None
         self.secrets = None
+        self.demo = demo
         
     def get_timestamp(self):
         return self.timestamp

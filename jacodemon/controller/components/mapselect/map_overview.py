@@ -4,6 +4,8 @@ from jacodemon.model.app import AppModel
 
 from jacodemon.view.components.mapselect.map_overview import MapOverviewWidget
 
+from jacodemon.controller.components.mapselect.demo import ControllerDemoTable
+
 class ControllerMapOverview(QObject):
 
     play_signal = Signal()
@@ -14,11 +16,14 @@ class ControllerMapOverview(QObject):
         self.app_model = app_model
         self.view = view
 
+        # i'm sure this was deffo getting GC'd without the assignment.
+        #   perhaps these nested controller declarations might get a little unwieldy? we'll see
+        self._cDemoTable = ControllerDemoTable(self.app_model, self.view.demo_table)
+
         self.view.play_button.setEnabled(False)
         self.view.play_demo_button.setEnabled(False)
 
         self.view.play_button.clicked.connect(self._HandlePlay)
-        self.view.demo_table.demo_selected.connect(self._HandleSelectDemo)
         self.view.play_demo_button.clicked.connect(self._HandlePlayDemo)
 
         self.app_model.selected_map_updated.connect(self.on_map_updated)
@@ -42,13 +47,9 @@ class ControllerMapOverview(QObject):
         self._selected_demo = None
         self.play_signal.emit()
 
-    def _HandleSelectDemo(self, index):
-        if index == -1:
-            self._selected_demo = None
-            self.play_demo_button.setEnabled(False)
-        else:
-            self._selected_demo = index
-            self.play_demo_button.setEnabled(True)
+    def on_demo_updated(self):
+        enabled = self.app_model.selected_demo is not None
+        self.view.play_demo_button.setEnabled(enabled)
 
     def _HandlePlayDemo(self):
         if self._selected_demo is not None:

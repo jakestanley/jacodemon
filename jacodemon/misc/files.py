@@ -1,6 +1,18 @@
+import os
+import re
+
 from PySide6.QtWidgets import QFileDialog
 
 from jacodemon.config import GetConfig, JacodemonConfig
+
+
+def ParseTimestampFromPath(path):
+    basename = os.path.basename(path)
+
+    match = re.search(r"\d{4}-\d{2}-\d{2}T\d{6}", basename)
+    timestamp = match.group(0) if match else None
+
+    return timestamp
 
 def FindIwad() -> str:
 

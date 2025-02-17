@@ -16,6 +16,7 @@ class Map:
         self.NextMapId          = None
         self.NextSecretMapId    = None
         self.Author             = None
+        self.Statistics         = []
         self.Badge              = 0
 
         # TODO: do not persist
