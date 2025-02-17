@@ -7,7 +7,7 @@ from PySide6.QtCore import Qt, QModelIndex, QAbstractTableModel
 from PySide6.QtWidgets import QStyledItemDelegate, QPushButton, QStyleOptionButton, QStyle, QFileDialog
 from PySide6.QtCore import Qt, QEvent
 from jacodemon.config import GetConfig
-from jacodemon.model.maps import MapSet, MapSetPath
+from jacodemon.model.mapset import MapSet, MapSetPath
 from jacodemon.utils.files import FindDoomFiles, FindIwad
 
 # TODO use these constants instead of magic numbers

@@ -142,6 +142,7 @@ class AppModel(QObject):
         self._TouchMapSet(mapSet)
 
         self.maps = self.map_service.LoadMaps(mapSet)
+        # TODO: add badges back in
         self.selected_mapset_updated.emit()
 
 def InitialiseAppModel():

@@ -1,6 +1,6 @@
 from jacodemon.config import JacodemonConfig, GetConfig
 import jacodemon.ui.sets.edit as edit
-from jacodemon.model.maps import MapSet
+from jacodemon.model.mapset import MapSet
 
 from jacodemon.ui.sets.edit import EditSetDialog
 from PySide6.QtWidgets import QDialog

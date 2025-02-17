@@ -2,7 +2,7 @@ import os
 
 from common_py.config import Config
 
-import jacodemon.model.maps as maps
+import jacodemon.model.mapset as mapset
 
 _CONFIG_SINGLETON = None
 
@@ -74,12 +74,12 @@ class JacodemonConfig(Config):
         cfg[_KEY_SETS] = []
         return cfg
 
-    def AddMapSet(self, mapset: maps.MapSet):
+    def AddMapSet(self, mapset: mapset.MapSet):
         self.sets.append(mapset)
 
         self.Save()
 
-    def RemoveMapSet(self, mapset: maps.MapSet):
+    def RemoveMapSet(self, mapset: mapset.MapSet):
         for set in self.sets:
             if set.id == mapset.id:
                 self.sets.remove(set)

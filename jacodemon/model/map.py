@@ -8,68 +8,18 @@ class Map:
     # TODO set CompLevel at mod level, not map level. Why would maps in a WAD have different comp levels? Seems unlikely...
     def __init__(self, MapId):
 
-        self.MapId = MapId
-        self.MapName = None
-        self.ParTime = None
-        self.NextMapId = None
-        self.NextSecretMapId = None
-        self.Author = None
-
-        # # private, required
-        # if isinstance(Files, (list, tuple, set)):
-        #     self._Files = Files
-        # else:
-        #     # hold over from when we used to do CSVs
-        #     self._Files = Files.split('|')
-
-        # # private, optional
-        # self._MapName = MapName
-        # self._Author = Author
-        # self._Merges = Merges.split('|')
-        
-        # self._Notes = Notes
-        self.Badge = 0
+        self.MapId              = MapId
+        self.MapName            = None
+        self.ParTime            = None
+        self.NextMapId          = None
+        self.NextSecretMapId    = None
+        self.Author             = None
+        self.Badge              = 0
 
         # set files - are these used any more?
         self.dehs = []
         self.patches = []
         self.merges = []
-
-    # why?
-    def SetMapId(self, MapId: str):
-        if self.MapId:
-            print(f"Warning: setting MapId: '{MapId}' on a map that already has a MapId ('{self.MapId}')")
-
-        self.MapId = MapId
-
-    def SetMapName(self, MapName: str):
-        self._MapName = MapName
-
-    def SetAuthor(self, Author: str):
-        self._Author = Author
-
-    """
-    Populate DEHs, patches and merges based on the patch directory
-    Jury's still out on whether or not this should be done in the constructor
-    """
-    # def ProcessFiles(self, maps_dir: str):
-
-    #     # build lists of map specific files we need to pass in
-    #     patches = [patch for patch in self._Files if patch]
-    #     for patch in patches:
-    #         ext = os.path.splitext(patch)[1]
-    #         path = os.path.join(maps_dir, patch)
-    #         if ext.lower() == ".deh":
-    #             self.dehs.append(path)
-    #         elif ext.lower() == ".wad":
-    #             self.patches.append(path)
-    #         else:
-    #             print(f"Ignoring unsupported file "'{patch}'"with extension '{ext}'")
-
-    #     # for chocolate doom/vanilla wad merge emulation
-    #     merges = [merge for merge in self._Merges if merge]
-    #     for merge in merges:
-    #         self.merges.append(os.path.join(maps_dir, merge))
 
     """
     Get map prefix (used for naming demos and recordings) based on Files or 
@@ -97,8 +47,8 @@ class Map:
         return self._Files
     
     def GetTitle(self):
-        if self._MapName:
-            return self._MapName
+        if self.MapName:
+            return self.MapName
         return self.MapId
 
     def to_dict(self):
@@ -112,34 +62,13 @@ class Map:
         elif self.Badge == 3:
             dic['Badge'] = '🥇'
 
-        dic['ModName'] = None
         dic['MapId'] = self.MapId
-        dic['MapName'] = self._MapName
-        dic['Author'] = self._Author
-        dic['Files'] = ", ".join(self._Files)
-        dic['Merge'] = ",".join(self._Merges)
-        # dic['Port'] = self.Port
-        dic['Notes'] = self._Notes
+        dic['MapName'] = self.MapName
+        dic['Author'] = self.Author
+        dic['ParTime'] = self.ParTime
+        dic['NextMapId'] = self.NextMapId
+        dic['NextSecretMapId'] = self.NextSecretMapId
+        dic['Author'] = self.Author
+        dic['Badge'] = self.Badge
 
         return dic
-
-def EnrichMaps(raw_maps):
-
-    enriched_maps = []
-    config: JacodemonConfig = GetConfig()
-
-    for map in raw_maps:
-        map.ProcessFiles(config.maps_dir)
-
-        # if there isn't a MapId, we need to look up the maps
-        if not map.MapId:
-            mapentries = GetMapEntriesFromFiles(map.GetFiles(), config.maps_dir)
-            for mapentry in mapentries:
-                enriched_map = copy.deepcopy(map)
-                enriched_map.SetMapId(mapentry["MapId"])
-                enriched_map.SetMapName(mapentry["MapName"])
-                enriched_maps.append(enriched_map)
-        else:
-            enriched_maps.append(map)
-
-    return enriched_maps

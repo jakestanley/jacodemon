@@ -1,4 +1,4 @@
-from jacodemon.model.maps import MapSetPath, MapSet
+from jacodemon.model.mapset import MapSetPath, MapSet
 
 def _LoadMapSet(dict) -> MapSet:
     paths = []

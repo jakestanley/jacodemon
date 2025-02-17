@@ -11,7 +11,7 @@ from PySide6.QtWidgets import QListWidget
 from PySide6.QtWidgets import QWidget
 from PySide6.QtWidgets import QLabel
 
-from jacodemon.model.maps import MapSet
+from jacodemon.model.mapset import MapSet
 
 class MapSetListItem(QWidget):
 

@@ -16,7 +16,7 @@ from jacodemon.launch import LaunchConfig
 from jacodemon.service.obs.obs import ObsController, GetObsController
 from jacodemon.options import Options, InitialiseOptions, GetOptions, MODE_LAST, MODE_REPLAY
 from jacodemon.service.dsda.stats import Statistics, NewStatistics
-from jacodemon.model.maps import MapSet
+from jacodemon.model.mapset import MapSet
 from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelectController
 from jacodemon.ui.view.mapselect import OpenSelectMapDialog
 from jacodemon.ui.view.prelaunch import OpenOptionsDialog

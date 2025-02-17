@@ -11,7 +11,7 @@ Badges:
 - silver: all kills, 
 - gold: above + all secrets and items
 """
-def AddBadgesToMap(self, map: FlatMap):
+def AddBadgesToMap(self, map: Map):
 
     prefix = map.GetMapPrefix()
     stats_files = glob.glob(stats_dir + f"/{prefix}*-STATS.json")

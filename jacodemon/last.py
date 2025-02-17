@@ -5,7 +5,7 @@ from typing import Optional
 import jsonpickle
 
 from jacodemon.model.map import Map
-from jacodemon.model.maps import MapSet
+from jacodemon.model.mapset import MapSet
 
 # constants
 _LAST_JSON = "./last.json"

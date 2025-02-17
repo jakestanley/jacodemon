@@ -3,7 +3,7 @@ import os
 import uuid
 import argparse
 
-from jacodemon.model.maps import MapSet, MapSetPath
+from jacodemon.model.mapset import MapSet, MapSetPath
 import jacodemon.config as config
 
 def _DummyMapSet() -> MapSet:
