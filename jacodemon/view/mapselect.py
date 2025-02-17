@@ -6,7 +6,7 @@ from jacodemon.view.components.maps.demo import DemoTableView
 from PySide6.QtWidgets import QLabel, QGroupBox
 from PySide6.QtGui import QBrush
 
-_COLUMN_ORDER = ['MapId', 'Badge', 'MapName', 'Author', 'Notes']
+_COLUMN_ORDER = ['MapId','Badge','MapName','Author','ParTime','NextMapId','NextSecretMapId']
 
 class MapTableWidget(QTableView):
 

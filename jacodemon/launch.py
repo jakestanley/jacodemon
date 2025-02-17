@@ -142,7 +142,7 @@ class LaunchConfig:
         if self.timestamp is None:
             self.timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
 
-        map_prefix = self._map.GetMapPrefix()
+        map_prefix = self._map.GetPrefix()
         return f"{map_prefix}-{self.timestamp}"
 
     # TODO: consider when we are replaying a demo should we get and tweak the args from the stats file?

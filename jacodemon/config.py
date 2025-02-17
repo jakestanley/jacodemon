@@ -44,6 +44,12 @@ class JacodemonConfig(Config):
         # files/directories
         self.iwad_dir = self.config.get(_KEY_IWAD_DIR)
         self.maps_dir = self.config.get(_KEY_MAPS_DIR)
+
+        # TODO this is being too prescriptive. we want the persistence back end to be flexible
+        #   reusing DEMO_DIR for now
+        #self.stats_dir = self.config.get(_KEY_STATS_DIR)
+        self.stats_dir = self.config.get(_KEY_DEMO_DIR)
+
         self.demo_dir = self.config.get(_KEY_DEMO_DIR)
         self.mods_dir = self.config.get(_KEY_MODS_DIR)
 

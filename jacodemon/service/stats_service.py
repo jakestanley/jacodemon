@@ -1,28 +1,24 @@
 import glob
+import json
 
 from jacodemon.model.map import Map
-from jacodemon.model.statistics import Statistics
-
-def LoadStatistics(demo_name, stats_path) -> Statistics:
-
-    if stats_path:
-        with open(stats_path, "r") as stats_file:
-            raw_json = json.load(stats_file)
-            statistics = Statistics(raw_json.get(_KEY_TIMESTAMP), 
-                                    raw_json.get(_KEY_COMP_LEVEL),
-                                    raw_json.get(_KEY_SOURCE_PORT),
-                                    raw_json.get(_KEY_ARGS),
-                                    demo_name, None, 
-                                    raw_json.get(_KEY_LEVEL_STATS))
-    else:
-        statistics = Statistics(None, None, None, None, demo_name)
-        
-    return statistics
+from jacodemon.model.stats import Statistics
 
 class StatsService:
     def __init__(self, stats_dir):
         self.stats_dir = stats_dir
         pass
+
+    # TODO rename this to get statistics for map? idk
+    def LoadStatistics(self, stats_path) -> Statistics:
+
+        # TODO persistence service for this
+        if stats_path:
+            with open(stats_path, "r") as stats_file:
+                raw_json = json.load(stats_file)
+                return Statistics.from_dict(raw_json)
+
+        return None
 
     """
     Badges:
@@ -31,7 +27,7 @@ class StatsService:
     - gold: above + all secrets and items
     """
     def AddBadgesToMap(self, map: Map):
-        prefix = map.GetMapPrefix()
+        prefix = map.GetPrefix()
         stats_files = glob.glob(self.stats_dir + f"/{prefix}*-STATS.json")
 
         if stats_files:
@@ -39,7 +35,9 @@ class StatsService:
                 # hard coded ignore for demos/stats named test, i have loads
                 if stats_file.find("test") >= 0:
                     continue
-                stats = LoadStatistics(None, stats_file)
+                stats = self.LoadStatistics(stats_file)
+
+
                 new_badge = stats.get_badge()
                 if new_badge > map.Badge:
                     map.Badge = new_badge

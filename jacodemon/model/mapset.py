@@ -45,6 +45,29 @@ class MapSet:
         self.paths = [p for p in self.paths if p.path != path]
         self.notify_change()
 
+    """
+    To identify this map set for statistics when storing, choose the first 
+    alphabetically in order of extension starting with WAD, DEH
+    """
+    def GetMapSetPrefix(self):
+        mod_prefix = None
+
+        paths = sorted([path.path for path in self.paths if path.enabled])
+
+        mod_prefix = next((p for p in paths if p.lower().endswith(".wad")), None)
+        
+        if mod_prefix is None:
+            mod_prefix = next((p for p in paths if p.lower().endswith(".deh")), None)
+
+        mod_prefix = os.path.basename(mod_prefix) if mod_prefix is not None else None
+
+        if mod_prefix is not None:
+            mod_prefix = os.path.splitext(os.path.basename(mod_prefix))[0]
+        else:
+            raise Exception("Error: Could not get a prefix as there were no files!")
+        
+        return mod_prefix
+
     def to_dict(self):
         return {
             # in case UUID is not set, i.e before this code was added, set it
