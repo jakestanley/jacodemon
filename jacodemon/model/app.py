@@ -37,15 +37,16 @@ class AppModel(QObject):
     # most generic signal that isn't covered by the others
     config_updated = Signal()
     
-    def __init__(self, 
-                 config_service: ConfigService, map_set_service: MapSetService, 
-                 map_service: MapService, options_service: OptionsService):
+    def __init__(self, config_service: ConfigService, map_set_service: MapSetService, 
+                 map_service: MapService, stats_service: StatsService, 
+                 options_service: OptionsService):
         super().__init__()
 
         self.config_service = config_service
         self.map_set_service = map_set_service
         self.map_service = map_service
-        self.options_service: OptionsService = options_service
+        self.stats_service = stats_service
+        self.options_service = options_service
 
         self.config = self.config_service.config
         # do we want to load map sets in the constructor?
@@ -160,4 +161,5 @@ def InitialiseAppModel():
         config_service=config_service, 
         map_set_service=map_set_service,
         map_service=map_service,
+        stats_service=stats_service,
         options_service=options_service)

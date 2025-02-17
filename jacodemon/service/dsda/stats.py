@@ -40,6 +40,7 @@ def ParseLevelStats(rawLevelStats):
 
     return levelStats
 
+# TODO separate Jacodemon stats from Dsda stats
 class Statistics:
 
     def __init__(self, timestamp, comp_level, sourcePort, 
@@ -101,23 +102,15 @@ class Statistics:
                 badge += 1
         return badge
 
-    def set_level_stats(self):
-        if os.path.exists(LEVELSTAT_TXT):
-            with(open(LEVELSTAT_TXT)) as raw_level_stats:
-                if not os.path.exists("./tmp"):
-                    os.mkdir("./tmp")
-                self._stats['levelStats'] = ParseLevelStats(raw_level_stats.read())
-                archived_level_stat_txt = f"./tmp/levelstat_{self._demo_name}.txt"
-            raw_level_stats.close()
-            os.rename(LEVELSTAT_TXT, archived_level_stat_txt)
-        else:
-            self._logger.info("No levelstat.txt found. I assume you didn't finish the level or aren't using dsda-doom")
+    def set_level_stats(self):        
+        self.dsda_service.GetLevelStats() # or something
 
     def write_stats(self):
         stats_json_path = os.path.join(self._demo_dir, self._demo_name + "-STATS.json")
         with(open(stats_json_path, 'w')) as j:
             json.dump(self._stats, j)
 
+# TODO bin, make these part of the app model? idk
 def NewStatistics(launch: LaunchConfig, demo_dir: str) -> Statistics:
     
     if os.path.exists(LEVELSTAT_TXT):
@@ -126,20 +119,4 @@ def NewStatistics(launch: LaunchConfig, demo_dir: str) -> Statistics:
                             "dsda-doom", launch.get_command(), 
                             launch.get_demo_name(), demo_dir)
 
-    return statistics
-
-def LoadStatistics(demo_name, stats_path) -> Statistics:
-
-    if stats_path:
-        with open(stats_path, "r") as stats_file:
-            raw_json = json.load(stats_file)
-            statistics = Statistics(raw_json.get(_KEY_TIMESTAMP), 
-                                    raw_json.get(_KEY_COMP_LEVEL),
-                                    raw_json.get(_KEY_SOURCE_PORT),
-                                    raw_json.get(_KEY_ARGS),
-                                    demo_name, None, 
-                                    raw_json.get(_KEY_LEVEL_STATS))
-    else:
-        statistics = Statistics(None, None, None, None, demo_name)
-        
     return statistics
