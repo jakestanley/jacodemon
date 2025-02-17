@@ -1,7 +1,7 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton
 
-from jacodemon.view.components.mapselect.demo import DemoTableView
+from jacodemon.view.components.mapselect.statistics import StatisticsTableView
 
 class MapOverviewWidget(QWidget):
 
@@ -12,7 +12,7 @@ class MapOverviewWidget(QWidget):
         layout = QVBoxLayout(self)
 
         self.play_button = QPushButton("Play")
-        self.demo_table = DemoTableView(self)
+        self.demo_table = StatisticsTableView(self)
         self.play_demo_button = QPushButton("Play Demo")
 
         layout.addWidget(self.play_button)

@@ -8,9 +8,10 @@ _KEY_LEVEL_STATS = 'levelStats'
 
 class Statistics:
 
-    def __init__(self, timestamp=None, comp_level=None, sourcePort=None, command=None, demo=None):
+    def __init__(self, time=None, timestamp=None, comp_level=None, 
+                 sourcePort=None, command=None, demo=None):
 
-        self.timestamp = timestamp
+        self.time = time
         self.comp_level = comp_level
         self.sourcePort = sourcePort
         self.command = command
@@ -64,15 +65,14 @@ class Statistics:
     def to_dict(self):
         dic = {}
 
-        levelStats = {}
-        levelStats['Time'] = "???"
+        dic["Demo"] = "Yes" if self.demo else "No"
+        dic["Time"] = self.time
+        dic["Kills"] = self.kills
+        dic["Items"] = self.items
+        dic["Secrets"] = self.secrets
+        dic["Timestamp"] = self.timestamp
 
-        self._stats[_KEY_SOURCE_PORT]   = self.sourcePort
-        self._stats[_KEY_ARGS]          = self.command
-        self._stats[_KEY_LEVEL_STATS]   = self.levelStats
-        self._stats[_KEY_TIMESTAMP]     = self.timestamp
-
-        dic[_KEY_LEVEL_STATS] = levelStats
+        return dic
 
     # TODO make this work with multiple formats
     @classmethod

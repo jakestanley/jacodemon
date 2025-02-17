@@ -30,6 +30,9 @@ class AppModel(QObject):
     # mapset changes, we must update map select view
     selected_mapset_updated = Signal()
 
+    # when a user selects stats from the list
+    selected_statistics_updated = Signal()
+
     # used for when we add, remove, edit, touch map sets
     mapsets_updated = Signal()
 
@@ -59,9 +62,8 @@ class AppModel(QObject):
         self.maps = []
         self.selected_map = None
 
-        # demoes
-        self.demoes = []
-        self.selected_demo = None
+        # statistics
+        self.selected_statistics = None
 
     def update(self):
         self.mods_updated.emit()
@@ -143,15 +145,17 @@ class AppModel(QObject):
         self.mapSets.remove(mapSet)
         self.mapSets.append(mapSet)
 
-    def _LoadDemoes(self):
-        self.demo_service
-        pass
-
     def SetMap(self, index):
         
         # TODO bounds check
         self.selected_map = self.maps[index]
         self.selected_map_updated.emit()
+
+    def SetStatistics(self, index):
+
+        # TODO another bounds check
+        self.selected_statistics = self.selected_map.Statistics[index]
+        self.selected_statistics_updated.emit()
 
     def SetMapSet(self, mapSetId):
 

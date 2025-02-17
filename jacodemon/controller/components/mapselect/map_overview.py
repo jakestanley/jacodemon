@@ -4,7 +4,7 @@ from jacodemon.model.app import AppModel
 
 from jacodemon.view.components.mapselect.map_overview import MapOverviewWidget
 
-from jacodemon.controller.components.mapselect.demo import ControllerDemoTable
+from jacodemon.controller.components.mapselect.statistics import ControllerStatisticsTable
 
 class ControllerMapOverview(QObject):
 
@@ -18,7 +18,7 @@ class ControllerMapOverview(QObject):
 
         # i'm sure this was deffo getting GC'd without the assignment.
         #   perhaps these nested controller declarations might get a little unwieldy? we'll see
-        self._cDemoTable = ControllerDemoTable(self.app_model, self.view.demo_table)
+        self._cDemoTable = ControllerStatisticsTable(self.app_model, self.view.demo_table)
 
         self.view.play_button.setEnabled(False)
         self.view.play_demo_button.setEnabled(False)
@@ -27,21 +27,19 @@ class ControllerMapOverview(QObject):
         self.view.play_demo_button.clicked.connect(self._HandlePlayDemo)
 
         self.app_model.selected_map_updated.connect(self.on_map_updated)
+        self.app_model.selected_statistics_updated.connect(self.on_statistics_updated)
 
     def on_map_updated(self):
 
+        self.view.play_demo_button.setEnabled(False)
         if self.app_model.selected_map is not None:
             self.view.play_button.setEnabled(True)
-            # self.view.demo_table.Update(self.app_model.selected_map)
-        # TODO refresh
-        # self.view._Update(self.app_model.GetLastMap())
-        # self.view.play_button.setEnabled(True)
-        # if map:
-        #     self.play_button.setEnabled(True)
-        #     self.demo_table.Update(map)
-        # self.play_demo_button.setEnabled(False)
-        # self._selected_demo = None
 
+    def on_statistics_updated(self):
+        if self.app_model.selected_statistics.demo:
+            self.view.play_demo_button.setEnabled(True)
+        else:
+            self.view.play_demo_button.setEnabled(False)
 
     def _HandlePlay(self):
         self._selected_demo = None
