@@ -10,6 +10,7 @@
 - Add FINISHED to auto-records output file rename
 - Option to delete recording instead of saving
 - 3.0.0 release which will be free of bugs and the code will be decent (lmao)
+- Tag/rate maps. Tags like "awesome-music", "challenging", etc. Memento Mori's "Galaxy" is great!
 
 # Done
 - Replay buffer naming

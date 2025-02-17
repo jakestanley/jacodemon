@@ -1,7 +1,7 @@
 from typing import List
 from PySide6.QtCore import QObject, Signal
 
-from jacodemon.model.flatmap import FlatMap
+from jacodemon.model.map import Map
 
 # TODO consider last map service? :D
 # TODO move this into map service?
@@ -10,6 +10,7 @@ from jacodemon.model.mod import Mod
 from jacodemon.service.config_service import ConfigService
 from jacodemon.service.map_service import MapService
 from jacodemon.service.map_set_service import MapSetService
+from jacodemon.service.stats_service import StatsService
 
 # TODO move Options into model?
 from jacodemon.options import Options
@@ -124,7 +125,7 @@ class AppModel(QObject):
     def GetMode(self) -> int:
         return self.options.mode
     
-    def GetLastMap(self) -> FlatMap:
+    def GetLastMap(self) -> Map:
         return GetLastMap()
     
     def _TouchMapSet(self, mapSet):
@@ -150,6 +151,7 @@ def InitialiseAppModel():
     config_service = ConfigService()
     map_set_service = MapSetService()
     map_service = MapService()
+    stats_service = StatsService()
     options_service = OptionsService()
 
     # model, view, controller setup

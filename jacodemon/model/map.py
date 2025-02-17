@@ -2,41 +2,40 @@ import os
 import sys
 import copy
 from typing import List
-from jacodemon.service.wads.wad import GetMapEntriesFromFiles
-from jacodemon.config import JacodemonConfig, GetConfig
 
-class FlatMap:
-    def __init__(self, ModName, Files, MapId=None, MapName=None, Author=None, 
-                 CompLevel=None, Merges: str = "", 
-                 Notes=None, MapSetId: str = None):
+class Map:
 
-        # public, required
-        self.ModName = ModName
+    # TODO set CompLevel at mod level, not map level. Why would maps in a WAD have different comp levels? Seems unlikely...
+    def __init__(self, MapId):
 
-        # public, optional
         self.MapId = MapId
-        self.CompLevel = CompLevel
-        self.MapSetId = MapSetId
+        self.MapName = None
+        self.ParTime = None
+        self.NextMapId = None
+        self.NextSecretMapId = None
+        self.Author = None
 
-        # private, required
-        if isinstance(Files, (list, tuple, set)):
-            self._Files = Files
-        else:
-            self._Files = Files.split('|')
+        # # private, required
+        # if isinstance(Files, (list, tuple, set)):
+        #     self._Files = Files
+        # else:
+        #     # hold over from when we used to do CSVs
+        #     self._Files = Files.split('|')
 
-        # private, optional
-        self._MapName = MapName
-        self._Author = Author
-        self._Merges = Merges.split('|')
+        # # private, optional
+        # self._MapName = MapName
+        # self._Author = Author
+        # self._Merges = Merges.split('|')
         
-        self._Notes = Notes
+        # self._Notes = Notes
         self.Badge = 0
 
-        # set files
+        # set files - are these used any more?
         self.dehs = []
         self.patches = []
         self.merges = []
 
+    # why?
     def SetMapId(self, MapId: str):
         if self.MapId:
             print(f"Warning: setting MapId: '{MapId}' on a map that already has a MapId ('{self.MapId}')")
@@ -53,24 +52,24 @@ class FlatMap:
     Populate DEHs, patches and merges based on the patch directory
     Jury's still out on whether or not this should be done in the constructor
     """
-    def ProcessFiles(self, maps_dir: str):
+    # def ProcessFiles(self, maps_dir: str):
 
-        # build lists of map specific files we need to pass in
-        patches = [patch for patch in self._Files if patch]
-        for patch in patches:
-            ext = os.path.splitext(patch)[1]
-            path = os.path.join(maps_dir, patch)
-            if ext.lower() == ".deh":
-                self.dehs.append(path)
-            elif ext.lower() == ".wad":
-                self.patches.append(path)
-            else:
-                print(f"Ignoring unsupported file "'{patch}'"with extension '{ext}'")
+    #     # build lists of map specific files we need to pass in
+    #     patches = [patch for patch in self._Files if patch]
+    #     for patch in patches:
+    #         ext = os.path.splitext(patch)[1]
+    #         path = os.path.join(maps_dir, patch)
+    #         if ext.lower() == ".deh":
+    #             self.dehs.append(path)
+    #         elif ext.lower() == ".wad":
+    #             self.patches.append(path)
+    #         else:
+    #             print(f"Ignoring unsupported file "'{patch}'"with extension '{ext}'")
 
-        # for chocolate doom/vanilla wad merge emulation
-        merges = [merge for merge in self._Merges if merge]
-        for merge in merges:
-            self.merges.append(os.path.join(maps_dir, merge))
+    #     # for chocolate doom/vanilla wad merge emulation
+    #     merges = [merge for merge in self._Merges if merge]
+    #     for merge in merges:
+    #         self.merges.append(os.path.join(maps_dir, merge))
 
     """
     Get map prefix (used for naming demos and recordings) based on Files or 
@@ -113,11 +112,10 @@ class FlatMap:
         elif self.Badge == 3:
             dic['Badge'] = '🥇'
 
-        dic['ModName'] = self.ModName
+        dic['ModName'] = None
         dic['MapId'] = self.MapId
         dic['MapName'] = self._MapName
         dic['Author'] = self._Author
-        dic['CompLevel'] = self.CompLevel
         dic['Files'] = ", ".join(self._Files)
         dic['Merge'] = ",".join(self._Merges)
         # dic['Port'] = self.Port

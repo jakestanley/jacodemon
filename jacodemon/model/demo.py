@@ -6,7 +6,7 @@ from itertools import groupby
 
 import jacodemon.model.demo_constants as DemoConstants
 
-from jacodemon.model.flatmap import FlatMap
+from jacodemon.model.map import Map
 from jacodemon.service.dsda.stats import Statistics, LoadStatistics
 
 class Demo:

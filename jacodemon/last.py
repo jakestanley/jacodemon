@@ -4,14 +4,14 @@ from typing import Optional
 
 import jsonpickle
 
-from jacodemon.model.flatmap import FlatMap
+from jacodemon.model.map import Map
 from jacodemon.model.maps import MapSet
 
 # constants
 _LAST_JSON = "./last.json"
 
 
-def GetLastMap() -> Optional[FlatMap]:
+def GetLastMap() -> Optional[Map]:
     if os.path.exists(_LAST_JSON):
         with(open(_LAST_JSON)) as f:
             return jsonpickle.decode(json.load(f))
@@ -22,7 +22,7 @@ Cannot select last map as '{LAST_JSON}' was not found
         return None
 
 
-def SaveSelectedMap(map: FlatMap, mapSetId: str):
+def SaveSelectedMap(map: Map, mapSetId: str):
     # saves selected map for last
     map.MapSetId = mapSetId
     with open(_LAST_JSON, 'w') as f:

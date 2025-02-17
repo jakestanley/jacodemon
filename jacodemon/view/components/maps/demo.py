@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QApplication, QVBoxLayout, QTableView, QWidget, QS
 from PySide6.QtCore import Qt, QModelIndex, QAbstractTableModel, Signal
 
 from jacodemon.config import JacodemonConfig, GetConfig
-from jacodemon.model.demo import GetDemosForMap
+# from jacodemon.model.demo import GetDemosForMap
 
 import jacodemon.model.demo_constants as DemoConstants
 

@@ -7,7 +7,7 @@ import jacodemon.arguments as args
 import jacodemon.logs as logs
 from jacodemon.options import Options
 from jacodemon.config import JacodemonConfig, GetConfig
-from jacodemon.model.flatmap import FlatMap, EnrichMaps
+from jacodemon.model.map import Map, EnrichMaps
 from jacodemon.csv import load_raw_maps
 from jacodemon.model.demo import Demo, GetDemosForMap, AddBadgesToMap
 
@@ -39,7 +39,7 @@ class Badge:
         return dic
 
 class MapReport:
-    def __init__(self, map: FlatMap) -> None:
+    def __init__(self, map: Map) -> None:
         self.map = map
         self.best_badge = None
         self.badges: List[Badge] = []
