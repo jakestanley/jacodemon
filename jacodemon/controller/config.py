@@ -4,12 +4,6 @@ from PySide6.QtWidgets import QFileDialog
 from jacodemon.model.app import AppModel
 from jacodemon.view.config import ViewConfig
 
-from jacodemon.view.components.config.sets import SetsTab
-from jacodemon.view.components.config.general import GeneralTab
-from jacodemon.view.components.config.mods import ModsTab
-from jacodemon.view.components.config.obs import ObsTab
-from jacodemon.view.components.config.dsda import DsdaTab
-
 from jacodemon.controller.components.config.sets import ControllerSets
 from jacodemon.controller.components.config.general import ControllerGeneral
 from jacodemon.controller.components.config.mods import ControllerMods
@@ -28,24 +22,11 @@ class ControllerConfig(QObject):
         self.view = view_config
 
         # create views and controllers for tabs
-        selectSetTab = SetsTab()
-        generalTab = GeneralTab()
-        modsTab = ModsTab()
-        obsTab = ObsTab()
-        dsdaTab = DsdaTab()
-
-        # assigning these for the purpose of preventing them getting removed by gc
-        self.cSets = ControllerSets(app_model, selectSetTab)
-        self.cGeneral = ControllerGeneral(app_model, generalTab)
-        self.cMods = ControllerMods(app_model, modsTab)
-        self.cObs = ControllerObs(app_model, obsTab)
-        self.cDsda = ControllerDsda(app_model, dsdaTab)
-
-        self.view.configTabWidget.addTab(selectSetTab, "Sets")
-        self.view.configTabWidget.addTab(generalTab, "Config: General")
-        self.view.configTabWidget.addTab(modsTab, "Config: Mods")
-        self.view.configTabWidget.addTab(obsTab, "Config: OBS")
-        self.view.configTabWidget.addTab(dsdaTab, "Config: DSDA")
+        self.cSets = ControllerSets(app_model, self.view.selectSetTab)
+        self.cGeneral = ControllerGeneral(app_model, self.view.generalTab)
+        self.cMods = ControllerMods(app_model, self.view.modsTab)
+        self.cObs = ControllerObs(app_model, self.view.obsTab)
+        self.cDsda = ControllerDsda(app_model, self.view.dsdaTab)
 
         self.cSets.accept_signal.connect(self.accept_signal.emit)
 

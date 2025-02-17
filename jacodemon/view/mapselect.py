@@ -2,15 +2,16 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QDialog, QWidget, QHBoxLayout, QVBoxLayout, QTableView, QPushButton
 
-from jacodemon.view.components.maps.demo import DemoTableView
 from PySide6.QtWidgets import QLabel, QGroupBox
 from PySide6.QtGui import QBrush
+
+from jacodemon.view.components.mapselect.map_overview import MapOverviewWidget
 
 _COLUMN_ORDER = ['MapId','Badge','MapName','Author','ParTime','NextMapId','NextSecretMapId']
 
 class MapTableWidget(QTableView):
 
-    index_selected = Signal(int)
+    row_selected = Signal(int)
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -33,16 +34,17 @@ class MapTableWidget(QTableView):
             for item in row_items:
                 item.setEditable(False)  # Set the item as uneditable
             self.model.appendRow(row_items)
+        self.resizeColumnsToContents()
 
     def _HandleSelection(self, selected, deselected):
         if len(selected.indexes()) == 0:
-            self.index_selected.emit(-1)
+            self.row_selected.emit(-1)
             return
         for index in selected.indexes():
             # Only process the first column to avoid processing multiple columns per row click
             if index.column() == 0:
                 row = index.row()
-                self.index_selected.emit(row)
+                self.row_selected.emit(row)
 
 class PathsTableWidget(QTableView):
 
@@ -71,58 +73,6 @@ class PathsTableWidget(QTableView):
             if not path.enabled:
                 item.setForeground(QBrush(Qt.gray))
             self.model.appendRow(item)
-
-class MapOverviewWidget(QWidget):
-
-    play_signal = Signal()
-    play_demo_signal = Signal()
-
-    def __init__(self, parent):
-        super().__init__(parent)
-
-        self._selected_demo = None
-        layout = QVBoxLayout(self)
-
-        self.play_button = QPushButton("Play")
-        self.play_button.setEnabled(False)
-        self.play_button.clicked.connect(self._HandlePlay)
-
-        self.demo_table = DemoTableView(self)
-        self.demo_table.demo_selected.connect(self._HandleSelectDemo)
-        self.play_demo_button = QPushButton("Play Demo")
-        self.play_demo_button.clicked.connect(self._HandlePlayDemo)
-        self.play_demo_button.setEnabled(False)
-
-        layout.addWidget(self.play_button)
-        layout.addWidget(self.demo_table)
-        layout.addWidget(self.play_demo_button)
-
-        layout.addStretch()
-        self.setLayout(layout)
-
-    def _Update(self, index):
-        map = GetMapsSelectController().maps[index]
-        if map:
-            self.play_button.setEnabled(True)
-            self.demo_table.Update(map)
-        self.play_demo_button.setEnabled(False)
-        self._selected_demo = None
-    
-    def _HandlePlay(self):
-        self._selected_demo = None
-        self.play_signal.emit()
-
-    def _HandleSelectDemo(self, index):
-        if index == -1:
-            self._selected_demo = None
-            self.play_demo_button.setEnabled(False)
-        else:
-            self._selected_demo = index
-            self.play_demo_button.setEnabled(True)
-
-    def _HandlePlayDemo(self):
-        if self._selected_demo is not None:
-            self.play_demo_signal.emit()
             
 class SetOverviewWidget(QWidget):
     

@@ -3,6 +3,8 @@ from PySide6.QtCore import QObject, Signal
 from jacodemon.model.app import AppModel
 from jacodemon.view.mapselect import ViewMapSelect
 
+from jacodemon.controller.components.mapselect.map_overview import ControllerMapOverview
+
 class ControllerMapSelect(QObject):
 
     accept_signal = Signal()
@@ -14,7 +16,10 @@ class ControllerMapSelect(QObject):
         self.app_model = app_model
         self.view = view_map_select
 
-        # self.view.mapTableWidget.index_selected.connect(self._HandleSelection)
+        # i'm sure this was deffo getting GC'd without the assignment
+        self._cMapOverview = ControllerMapOverview(self.app_model, self.view.mapOverviewWidget)
+
+        self.view.mapTableWidget.row_selected.connect(self._HandleSelection)
 
         # self.view.mapOverviewWidget.play_signal.connect(self._HandlePlay)
         # self.view.mapOverviewWidget.play_demo_signal.connect(self._HandlePlayDemo)
@@ -27,6 +32,9 @@ class ControllerMapSelect(QObject):
         # TODO you may wish to reset demo, map, etc etc
         maps = [map.to_dict() for map in self.app_model.maps]
         self.view.mapTableWidget.populate(maps)
+
+    def _HandleSelection(self, index):
+        self.app_model.SetMap(index)
 
 # def OpenSelectMapDialog() -> str:
 #     """Returns MapId of the selected map or None"""

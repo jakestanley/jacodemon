@@ -1,6 +1,12 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QTabWidget, QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 
+from jacodemon.view.components.config.sets import SetsTab
+from jacodemon.view.components.config.general import GeneralTab
+from jacodemon.view.components.config.mods import ModsTab
+from jacodemon.view.components.config.obs import ObsTab
+from jacodemon.view.components.config.dsda import DsdaTab
+
 class _LastWidget(QWidget):
 
     last_signal = Signal()
@@ -42,6 +48,18 @@ class ViewConfig(QWidget):
         self.lastWidget = _LastWidget(self)
 
         self.configTabWidget = QTabWidget(self)
+
+        self.selectSetTab = SetsTab()
+        self.generalTab = GeneralTab()
+        self.modsTab = ModsTab()
+        self.obsTab = ObsTab()
+        self.dsdaTab = DsdaTab()
+
+        self.configTabWidget.addTab(self.selectSetTab, "Sets")
+        self.configTabWidget.addTab(self.generalTab, "Config: General")
+        self.configTabWidget.addTab(self.modsTab, "Config: Mods")
+        self.configTabWidget.addTab(self.obsTab, "Config: OBS")
+        self.configTabWidget.addTab(self.dsdaTab, "Config: DSDA")
 
         layout.addWidget(self.configTabWidget)
         layout.addWidget(self.lastWidget)

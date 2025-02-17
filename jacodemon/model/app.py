@@ -24,8 +24,6 @@ class AppModel(QObject):
     maps_updated = Signal()
 
     # map changes, we must update demos, stats, etc on map select view.
-    # starting to think this is a good reason for demo select to have its 
-    #   own controller for this
     selected_map_updated = Signal()
 
     # mapset changes, we must update map select view
@@ -49,14 +47,20 @@ class AppModel(QObject):
         self.options_service = options_service
 
         self.config = self.config_service.config
-        # do we want to load map sets in the constructor?
-        self.mapSets = self.map_set_service.LoadMapSets(self.config.sets)
-        self.maps = []
         self.options: Options = self.options_service.GetOptions()
+
+        # map sets (CONSIDER: do we want to load map sets in the constructor?)
+        self.mapSets = self.map_set_service.LoadMapSets(self.config.sets)
+        self.selected_map_set = None
+
+        # maps
+        self.maps = []
+        self.selected_map = None
 
     def update(self):
         self.mods_updated.emit()
         self.maps_updated.emit()
+        self.selected_map_updated.emit()
         self.selected_mapset_updated.emit()
         self.mapsets_updated.emit()
         self.config_updated.emit()
@@ -133,11 +137,24 @@ class AppModel(QObject):
         self.mapSets.remove(mapSet)
         self.mapSets.append(mapSet)
 
+    def SetMap(self, index):
+        
+        # TODO bounds check
+        self.selected_map = self.maps[index]
+        self.selected_map_updated.emit()
+
     def SetMapSet(self, mapSetId):
+
+        # don't do anything if mapset hasn't changed
+        if self.selected_map_set is not None and self.selected_map_set.id == mapSetId:
+            return
+        
+        # clear the selected map
+        self.selected_map = None
 
         for mapSet in self.mapSets:
             if mapSet.id == mapSetId:
-                self.mapSet = mapSet
+                self.selected_map_set = mapSet
                 break
 
         self._TouchMapSet(mapSet)
@@ -147,6 +164,7 @@ class AppModel(QObject):
             map.MapSet = mapSet
             self.stats_service.AddBadgesToMap(map)
 
+        self.selected_map_updated.emit()
         self.selected_mapset_updated.emit()
 
 def InitialiseAppModel():
