@@ -27,6 +27,20 @@ class ControllerMapSelect(QObject):
         self.app_model.selected_mapset_updated.connect(self.on_mapset_updated)
         self.app_model.selected_map_updated.connect(self.on_map_updated)
 
+        self._cMapOverview.play_signal.connect(self.play)
+        self._cMapOverview.play_demo_signal.connect(self.play_demo)
+
+        self.view.button_box.accepted.connect(self.play)
+        self.view.button_box.rejected.connect(self.reject_signal.emit)
+
+    def play(self):
+        self.app_model.SetPlayMode()
+        self.accept_signal.emit()
+
+    def play_demo(self):
+        self.app_model.SetDemoMode()
+        self.accept_signal.emit()
+
     def on_mapset_updated(self):
 
         # TODO you may wish to reset demo, map, etc etc

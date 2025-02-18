@@ -20,15 +20,20 @@ _KEY_WAIT_SCENE = 'wait_scene'
 _KEY_BROWSER_SCENE = 'browser_scene'
 _KEY_TITLE_SOURCE = 'title_source'
 _KEY_SETS = 'sets'
+_KEY_SKILL = 'skill'
 
 # TODO move this into app model etc
 class JacodemonConfig(Config):
 
+    # TODO this needs a rewrite it's a reyt mess
     def __init__(self) -> None:
         super().__init__("jacodemon")
 
         # general
         self.default_complevel = self.config.get(_KEY_DEFAULT_COMPLEVEL)
+
+        # TODO UI should have a dropdown
+        self.skill = self.config.get(_KEY_SKILL, 4)
 
         # dsda doom
         self.dsda_path = self.config.get(_KEY_DSDA_PATH)
@@ -53,9 +58,11 @@ class JacodemonConfig(Config):
         self.demo_dir = self.config.get(_KEY_DEMO_DIR)
         self.mods_dir = self.config.get(_KEY_MODS_DIR)
 
+        # TODO from cls blah blah
         self.mods = self.config.get(_KEY_MODS, [])
         # self.sets = [maps.LoadMapSet(ms) for ms in self.config.get(_KEY_SETS, [])]
         self.sets = self.config.get(_KEY_SETS, [])
+        # TODO where tf is default skill level?
 
     def _PrepareSave(self):
 
@@ -73,6 +80,7 @@ class JacodemonConfig(Config):
         self.config[_KEY_BROWSER_SCENE] = self.browser_scene
         self.config[_KEY_TITLE_SOURCE] = self.title_source
         self.config[_KEY_SETS] = [set.to_dict() for set in self.sets]
+        self.config[_KEY_SKILL] = self.skill
 
     def _DefaultConfig(self):
         cfg: dict = {}

@@ -19,8 +19,10 @@ class ControllerPreLaunch(QObject):
         self.app_model = app_model
         self.view = view_pre_launch
 
-        self.view.button_box.accepted.connect(self._accept)
-        self.view.button_box.rejected.connect(self._reject)
+        self.view.button_box.accepted.connect(self.accept_signal.emit)
+        self.view.button_box.rejected.connect(self.reject_signal.emit)
+
+        self.app_model.mode_changed.connect(self.refresh)
 
         # self.view.checkbox_record_demo.stateChanged.connect(self.on_checkbox_toggled)
         # self.view.checkbox_obs.stateChanged.connect(self.on_checkbox_toggled)
@@ -34,6 +36,7 @@ class ControllerPreLaunch(QObject):
         self.view.checkbox_record_demo.setChecked(self.app_model.IsRecordDemoEnabled())
         self.view.checkbox_record_demo.setEnabled(self.app_model.CanRecordDemo())
 
+        self.view.checkbox_obs.setEnabled(self.app_model.CanControlObs())
         self.view.checkbox_obs.setChecked(self.app_model.IsObsEnabled())
 
         self.view.checkbox_auto_record.setChecked(self.app_model.IsAutoRecordEnabled())
@@ -79,15 +82,6 @@ class ControllerPreLaunch(QObject):
             self.view.checkbox_record_demo.setChecked(False)
 
         self.view.checkbox_record_demo.setEnabled(not self.view.radio_replay.isChecked())
-
-    def _accept(self):
-        pass
-
-    def _reject(self):
-        pass
-
-    def handle_user_action(self, action, data=None):
-        pass
 
 if __name__ == "__main__":
 

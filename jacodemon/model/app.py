@@ -6,12 +6,17 @@ from jacodemon.model.map import Map
 # TODO consider last map service? :D
 # TODO move this into map service?
 from jacodemon.last import GetLastMap
+
+from jacodemon.config import JacodemonConfig
 from jacodemon.model.mod import Mod
+from jacodemon.model.launch import LaunchConfig
+
 from jacodemon.service.config_service import ConfigService
 from jacodemon.service.map_service import MapService
 from jacodemon.service.map_set_service import MapSetService
 from jacodemon.service.stats_service import StatsService
 from jacodemon.service.demo_service import DemoService
+from jacodemon.service.launch_service import LaunchService
 
 # TODO move Options into model?
 from jacodemon.options import Options
@@ -36,12 +41,16 @@ class AppModel(QObject):
     # used for when we add, remove, edit, touch map sets
     mapsets_updated = Signal()
 
+    # used for when we switch to prelaunch
+    mode_changed = Signal()
+
     # most generic signal that isn't covered by the others
     config_updated = Signal()
     
     def __init__(self, config_service: ConfigService, map_set_service: MapSetService, 
                  map_service: MapService, stats_service: StatsService, 
-                 demo_service: DemoService, options_service: OptionsService):
+                 demo_service: DemoService, launch_service: LaunchService,
+                 options_service: OptionsService):
         super().__init__()
 
         self.config_service = config_service
@@ -49,6 +58,7 @@ class AppModel(QObject):
         self.map_service = map_service
         self.stats_service = stats_service
         self.demo_service = demo_service
+        self.launch_service = launch_service
         self.options_service = options_service
 
         self.config = self.config_service.config
@@ -126,6 +136,10 @@ class AppModel(QObject):
     def CanAutoRecord(self) -> bool:
         return self.options.obs
     
+    def CanControlObs(self) -> bool:
+        # TODO: restore this functionality by re-implementing OBS service
+        return False
+    
     def IsModsEnabled(self) -> bool:
         return self.options.mods
     
@@ -182,7 +196,28 @@ class AppModel(QObject):
         self.selected_map_updated.emit()
         self.selected_mapset_updated.emit()
 
+    def SetPlayMode(self):
+        self.options.mode = MODE_NORMAL
+        self.mode_changed.emit()
+
+    def SetDemoMode(self):
+        self.options.mode = MODE_REPLAY
+        self.mode_changed.emit()
+
+    def Launch(self):
+        launch_config: LaunchConfig = LaunchConfig(
+            config=self.config_service.config,
+            options=self.options,
+            map=self.selected_map,
+            # TODO fix demo indexing
+            demo_index=None)
+
+        self.launch_service.Launch(launch_config, self.config)
+
 def InitialiseAppModel():
+
+    from jacodemon.service.dsda_service import DsdaService
+
     """Pretty please don't call this more than once. Used for initial setup 
     and individual components testing"""
 
@@ -191,6 +226,7 @@ def InitialiseAppModel():
     map_service = MapService(config_service.config.maps_dir)
     stats_service = StatsService(config_service.config.stats_dir)
     demo_service = DemoService(config_service.config.demo_dir)
+    launch_service = DsdaService()
     options_service = OptionsService()
 
     # model, view, controller setup
@@ -200,4 +236,5 @@ def InitialiseAppModel():
         map_service=map_service,
         stats_service=stats_service,
         demo_service=demo_service,
+        launch_service=launch_service,
         options_service=options_service)

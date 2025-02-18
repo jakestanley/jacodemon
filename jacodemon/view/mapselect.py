@@ -2,7 +2,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QDialog, QWidget, QHBoxLayout, QVBoxLayout, QTableView, QPushButton
 
-from PySide6.QtWidgets import QLabel, QGroupBox
+from PySide6.QtWidgets import QLabel, QGroupBox, QDialogButtonBox
 from PySide6.QtGui import QBrush
 
 from jacodemon.view.components.mapselect.map_overview import MapOverviewWidget
@@ -28,6 +28,8 @@ class MapTableWidget(QTableView):
         self.resizeColumnsToContents()
 
     def populate(self, data):
+        self.model.removeRows(0, self.model.rowCount())
+
         # TODO should replace, not append
         for row_dict in data:
             row_items = [QStandardItem(str(row_dict[key])) for key in _COLUMN_ORDER]
@@ -114,6 +116,10 @@ class ViewMapSelect(QDialog):
         
         layout.addWidget(maps_groupbox)
         layout.addWidget(set_groupbox)
+
+        # confirm or close
+        self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        layout.addWidget(self.button_box)
         
         self.setLayout(layout)
 

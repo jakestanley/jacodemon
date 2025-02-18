@@ -1,7 +1,7 @@
-from jacodemon.config import GetConfig
+from jacodemon.config import Config, GetConfig
 
 class ConfigService:
 
-    def __init__(self):
+    def __init__(self) -> Config:
         self.config = GetConfig()
 

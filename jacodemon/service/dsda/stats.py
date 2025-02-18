@@ -2,7 +2,7 @@ import json
 import os
 import re
 
-from jacodemon.launch import LaunchConfig
+from jacodemon.model.launch import LaunchConfig
 from jacodemon.logs import GetLogManager
 
 LEVELSTAT_TXT = "./levelstat.txt"

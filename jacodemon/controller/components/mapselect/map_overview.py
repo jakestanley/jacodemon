@@ -42,7 +42,6 @@ class ControllerMapOverview(QObject):
             self.view.play_demo_button.setEnabled(False)
 
     def _HandlePlay(self):
-        self._selected_demo = None
         self.play_signal.emit()
 
     def on_demo_updated(self):
@@ -50,8 +49,7 @@ class ControllerMapOverview(QObject):
         self.view.play_demo_button.setEnabled(enabled)
 
     def _HandlePlayDemo(self):
-        if self._selected_demo is not None:
-            self.play_demo_signal.emit()
+        self.play_demo_signal.emit()
 
 if __name__ == "__main__":
 
