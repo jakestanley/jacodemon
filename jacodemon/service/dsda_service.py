@@ -14,32 +14,23 @@ from jacodemon.config import JacodemonConfig
 
 _LEVELSTAT_TXT = "./levelstat.txt"
 
-def _ParseLevelStats(rawLevelStats):
-
-    levelStats = {}
-    levelStats['Time'] = "???"
-    levelStats['Kills'] = "???"
-    levelStats['Secrets'] = "???"
-    levelStats['Items'] = "???"
+def _AddParsedLevelStats(rawLevelStats, stats: Statistics):
 
     regex_time = '(\d+:\d+\.\d+)'
-    mtch = re.search(regex_time, rawLevelStats)
     if re.search(regex_time, rawLevelStats):
-        levelStats['Time'] = re.search(regex_time, rawLevelStats).group(1)
+        stats.time = re.search(regex_time, rawLevelStats).group(1)
 
     regex_kills = 'K: (\d+\/\d+)'
     if re.search(regex_kills, rawLevelStats):
-        levelStats["Kills"] = re.search(regex_kills, rawLevelStats).group(1)
+        stats.kills = re.search(regex_kills, rawLevelStats).group(1)
 
     regex_secrets = 'S: (\d+\/\d+)'
     if re.search(regex_secrets, rawLevelStats):
-        levelStats["Secrets"] = re.search(regex_secrets, rawLevelStats).group(1)
+        stats.secrets = re.search(regex_secrets, rawLevelStats).group(1)
 
     regex_items = 'I: (\d+\/\d+)'
     if re.search(regex_items, rawLevelStats):
-        levelStats["Items"] = re.search(regex_items, rawLevelStats).group(1)
-
-    return levelStats
+        stats.items = re.search(regex_items, rawLevelStats).group(1)
 
 class DsdaService(LaunchService):
 
@@ -54,22 +45,11 @@ class DsdaService(LaunchService):
         else:
             return str(comp_level)
 
-    def _GetLevelStats(self):
+    def PreLaunch(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig):
 
-        stats = {}
-
+        # remove any old levelstat.txt in case it wasn't removed by a previous execution
         if os.path.exists(_LEVELSTAT_TXT):
-            with(open(_LEVELSTAT_TXT)) as raw_level_stats:
-                if not os.path.exists("./tmp"):
-                    os.mkdir("./tmp")
-                stats = _ParseLevelStats(raw_level_stats.read())
-                archived_level_stat_txt = f"./tmp/levelstat_{self._demo_name}.txt"
-            raw_level_stats.close()
-            os.rename(_LEVELSTAT_TXT, archived_level_stat_txt)
-        else:
-            self._logger.info("No levelstat.txt found. I assume you didn't finish the level or aren't using dsda-doom")
-
-        return stats
+            os.remove(_LEVELSTAT_TXT)
 
     def GetLaunchCommand(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig):
 
@@ -93,7 +73,20 @@ class DsdaService(LaunchService):
         command.extend(args)
 
         return command
+    
+    def EnhanceStatistics(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig, statistics: Statistics):
+        if not os.path.exists("./tmp"):
+            os.mkdir("./tmp")
 
-    def PostLaunch(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig) -> Statistics:
-        # TODO capture stats
+        archived_levelstat_txt = f"./tmp/{launch_config.map.GetPrefix()}-{launch_config.timestamp}.txt"
+
+        if os.path.exists(_LEVELSTAT_TXT):
+            with(open(_LEVELSTAT_TXT)) as raw_level_stats:
+                _AddParsedLevelStats(raw_level_stats.read(), statistics)
+            raw_level_stats.close()
+            os.rename(_LEVELSTAT_TXT, archived_levelstat_txt)
+        else:
+            self._logger.info("No levelstat.txt found. I assume you didn't finish the level or aren't using dsda-doom")
+
+    def PostLaunch(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig):
         pass

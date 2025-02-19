@@ -24,6 +24,7 @@ class ControllerPreLaunch(QObject):
 
         self.app_model.mode_changed.connect(self.refresh)
 
+        # TODO: restore these, they currently do nothing
         # self.view.checkbox_record_demo.stateChanged.connect(self.on_checkbox_toggled)
         # self.view.checkbox_obs.stateChanged.connect(self.on_checkbox_toggled)
         # self.view.checkbox_auto_record.stateChanged.connect(self.on_checkbox_toggled)

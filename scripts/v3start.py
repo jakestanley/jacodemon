@@ -20,7 +20,6 @@ from jacodemon.view.prelaunch import ViewPreLaunch
 def run(app_model: AppModel, ui_manager: UIManager):
     app_model.Launch()
     # TODO ensure demos, badges and stats are refreshed
-    app_model.update()
     ui_manager.set_state(UIState.SELECT_MAP)
 
 def start():

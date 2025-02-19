@@ -1,7 +1,12 @@
-_KEY_TIMESTAMP = 'timestamp'
-_KEY_COMP_LEVEL = 'compLevel'
-_KEY_SOURCE_PORT = 'sourcePort'
+_KEY_TIMESTAMP = 'Timestamp'
+_KEY_COMP_LEVEL = 'CompLevel'
+_KEY_SOURCE_PORT = 'SourcePort'
 _KEY_ARGS = 'args'
+_KEY_SKILL = 'Skill'
+_KEY_KILLS = 'Kills'
+_KEY_ITEMS = 'Items'
+_KEY_SECRETS = 'Secrets'
+_KEY_TIME = 'Time'
 
 # deprecated
 _KEY_LEVEL_STATS = 'levelStats'
@@ -17,6 +22,7 @@ class Statistics:
         self.command = command
         self.timestamp = timestamp
         self.kills = None
+        self.skill = None
         self.items = None
         self.secrets = None
         self.demo = demo
@@ -56,21 +62,19 @@ class Statistics:
     def set_level_stats(self):        
         self.dsda_service.GetLevelStats() # or something
 
-    # TODO statistics service should do this
-    # def write_stats(self):
-    #     stats_json_path = os.path.join(self._demo_dir, self._demo_name + "-STATS.json")
-    #     with(open(stats_json_path, 'w')) as j:
-    #         json.dump(self._stats, j)
-
+    # TODO separate to_dict for saving and for the table
     def to_dict(self):
         dic = {}
 
         dic["Demo"] = "Yes" if self.demo else "No"
-        dic["Time"] = self.time
-        dic["Kills"] = self.kills
-        dic["Items"] = self.items
-        dic["Secrets"] = self.secrets
-        dic["Timestamp"] = self.timestamp
+        dic[_KEY_SKILL] = self.skill
+        dic[_KEY_SOURCE_PORT] = self.sourcePort
+        dic[_KEY_TIME] = self.time
+        dic[_KEY_KILLS] = self.kills
+        dic[_KEY_ITEMS] = self.items
+        dic[_KEY_SECRETS] = self.secrets
+        dic[_KEY_TIMESTAMP] = self.timestamp
+        dic[_KEY_COMP_LEVEL] = self.comp_level
 
         return dic
 
@@ -79,22 +83,25 @@ class Statistics:
     def from_dict(cls, data):
         instance = cls()
 
-        instance.timestamp = data.get(_KEY_TIMESTAMP, None)
-        instance.comp_level = data.get(_KEY_COMP_LEVEL, None)
-        instance.sourcePort = data.get(_KEY_SOURCE_PORT, None)
+        # fallbacks are old keys
+        instance.timestamp = data.get(_KEY_TIMESTAMP, data.get("timestamp", None))
+        instance.comp_level = data.get(_KEY_COMP_LEVEL, data.get("compLevel", None))
+        instance.sourcePort = data.get(_KEY_SOURCE_PORT, data.get("sourcePort", None))
         instance.command = data.get(_KEY_ARGS, None)
+        instance.skill = data.get(_KEY_SKILL, None)
 
         # old style level stats
         levelStats = data.get(_KEY_LEVEL_STATS, None)
         if levelStats:
-            instance.kills = levelStats.get('Kills', None)
-            instance.items = levelStats.get('Items', None)
-            instance.secrets = levelStats.get('Secrets', None)
-            instance.time = levelStats.get('Time', None)
+            instance.kills = levelStats.get(_KEY_KILLS, None)
+            instance.items = levelStats.get(_KEY_ITEMS, None)
+            instance.secrets = levelStats.get(_KEY_SECRETS, None)
+            instance.time = levelStats.get(_KEY_TIME, None)
         else:
-            instance.kills = data.get('Kills', None)
-            instance.items = data.get('Items', None)
-            instance.secrets = data.get('Secrets', None)
-            instance.time = data.get('Time', None)
+            # new style level stats
+            instance.kills = data.get(_KEY_KILLS, None)
+            instance.items = data.get(_KEY_ITEMS, None)
+            instance.secrets = data.get(_KEY_SECRETS, None)
+            instance.time = data.get(_KEY_TIME, None)
 
         return instance

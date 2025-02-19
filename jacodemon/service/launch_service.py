@@ -23,26 +23,47 @@ class LaunchService(ABC):
         super().__init__()
 
     # TODO use/call OBS Service in this super class in/around Execute/PostLaunch
-    def Launch(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig):
+    def Launch(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig) -> Statistics:
         
         timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
         launch_config.timestamp = timestamp
 
+        self.PreLaunch(launch_config, jacodemon_config)
+
         command = self.GetLaunchCommand(launch_config, jacodemon_config)
+
         subprocess_thread = threading.Thread(target=lambda: subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE))
         subprocess_thread.start()
         while subprocess_thread.is_alive():
             time.sleep(2)
 
+        statistics = Statistics()
+        statistics.skill = launch_config.skill
+        statistics.command = command
+        statistics.comp_level = launch_config.comp_level
+        statistics.timestamp = timestamp
+        statistics.sourcePort = "dsdadoom"
+
+        self.EnhanceStatistics(launch_config, jacodemon_config, statistics)
         self.PostLaunch(launch_config, jacodemon_config)
+
+        return statistics
+
+    @abstractmethod
+    def PreLaunch(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig):
+        print("PreLaunch is not implemented by this LaunchService instance")
 
     @abstractmethod
     def GetLaunchCommand(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig):
         raise("Not implemented")
 
     @abstractmethod
-    def PostLaunch(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig) -> Statistics:
-        raise("Not implemented")
+    def EnhanceStatistics(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig, statistics: Statistics):
+        print("EnhanceStatistics is not implemented by this LaunchService instance")
+
+    @abstractmethod
+    def PostLaunch(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig):
+        print("PostLaunch is not implemented by this LaunchService instance")
 
     def GetDehackedPatches(self, mapSet: MapSet):
         patches = []
@@ -73,15 +94,18 @@ class LaunchService(ABC):
             doom_args.append("-deh")
             doom_args.extend(dehs)
 
+        files = []
         if len(wads) > 0:
-            doom_args.append("-wad")
-            doom_args.extend(wads)
+            files.extend(wads)
 
         if launch_config.mods:
             enabled_mods = [mod for mod in jacodemon_config.mods if mod['enabled']]
             if len(enabled_mods) > 0:
-                doom_args.append("-file")
-                doom_args.extend(mod['path'] for mod in enabled_mods)
+                files.extend(mod['path'] for mod in enabled_mods)
+
+        if len(files) > 0:
+            doom_args.append("-file")
+            doom_args.extend(files)
 
         doom_args.extend(['-warp'])
         doom_args.extend(get_warp(launch_config.map.MapId))
@@ -90,7 +114,8 @@ class LaunchService(ABC):
         if not iwad:
             iwad = get_inferred_iwad(launch_config.map.MapId)
 
-        doom_args.extend(['-iwad', os.path.join(jacodemon_config.iwad_dir, launch_config.map.MapSet.iwad)])
+        iwad_path = os.path.join(jacodemon_config.iwad_dir, iwad)
+        doom_args.extend(['-iwad', iwad_path])
 
         if False: # TODO this should be fixed to play demos back
             doom_args.append("-playdemo")

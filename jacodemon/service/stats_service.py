@@ -4,7 +4,9 @@ import json
 from jacodemon.misc.files import ParseTimestampFromPath
 
 from jacodemon.model.map import Map
+from jacodemon.model.launch import LaunchConfig
 from jacodemon.model.stats import Statistics
+import os
 
 class StatsService:
     def __init__(self, stats_dir):
@@ -47,3 +49,9 @@ class StatsService:
             new_badge = stats.get_badge()
             if new_badge > map.Badge:
                 map.Badge = new_badge
+
+    def Save(self, statistics: Statistics, launch_config: LaunchConfig):
+        
+        stats_path = f"{self.stats_dir}/{launch_config.map.GetPrefix()}-{launch_config.timestamp}-STATS.json"
+        with open(stats_path, "w") as stats_file:
+            stats_file.write(json.dumps(statistics.to_dict(), indent=2))

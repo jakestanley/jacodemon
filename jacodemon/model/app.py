@@ -212,7 +212,9 @@ class AppModel(QObject):
             # TODO fix demo indexing
             demo_index=None)
 
-        self.launch_service.Launch(launch_config, self.config)
+        stats = self.launch_service.Launch(launch_config, self.config)
+        self.stats_service.Save(stats, launch_config)
+        self.selected_mapset_updated.emit()
 
 def InitialiseAppModel():
 
