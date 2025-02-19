@@ -36,9 +36,6 @@ class DummyConfig(config.JacodemonConfig):
         self._PrepareSave()
         print("Save called on inert DummyConfig")
 
-    def GetMapSetById(self, mapSetId):
-        return self.sets[0]
-
 def DummyArgs():
     args = argparse.Namespace()
     args.no_gui = False

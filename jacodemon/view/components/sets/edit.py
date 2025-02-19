@@ -1,8 +1,7 @@
 from PySide6.QtWidgets import QApplication, QVBoxLayout, QPushButton, \
-    QDialog, QWidget, QHBoxLayout, QLabel, QTableView, QCheckBox, \
-    QDialogButtonBox, QHeaderView, QLineEdit
+    QDialog, QHBoxLayout, QLabel, QTableView, \
+    QDialogButtonBox, QLineEdit
 
-from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt, QModelIndex, QAbstractTableModel
 from PySide6.QtWidgets import QStyledItemDelegate, QPushButton, QStyleOptionButton, QStyle, QFileDialog
 from PySide6.QtCore import Qt, QEvent
@@ -235,12 +234,12 @@ class EditSetView(QDialog):
     def SetIwad(self):
         self.iwad_line_edit.setText(FindIwad())
 
-def OpenEditDialog(mapSet: MapSet):
-    dialog = EditSetView(parent=None, mapSet=mapSet)
-    if dialog.exec() == QDialog.DialogCode.Accepted:
-        return dialog.GetPaths()
-    else:
-        return []
+# def OpenEditDialog(mapSet: MapSet):
+#     dialog = EditSetView(parent=None, mapSet=mapSet)
+#     if dialog.exec() == QDialog.DialogCode.Accepted:
+#         return dialog.GetPaths()
+#     else:
+#         return []
 
 
 if __name__ == "__main__":

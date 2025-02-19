@@ -58,7 +58,6 @@ class AppModel(QObject):
         self.options: Options = self.options_service.GetOptions()
 
         # map sets (CONSIDER: do we want to load map sets in the constructor?)
-        self.mapSets = self.map_set_service.LoadMapSets(self.config.sets)
         self.selected_map_set = None
 
         # maps
@@ -66,7 +65,7 @@ class AppModel(QObject):
         self.selected_map = None
         self.last_map = map_service.LoadLastMap()
         if self.last_map is not None:
-            self.last_map.MapSet = next((ms for ms in self.mapSets if ms.id.lower() == self.last_map.MapSetId), None)
+            self.last_map.MapSet = next((ms for ms in self.map_set_service.mapSets if ms.id.lower() == self.last_map.MapSetId), None)
 
         # statistics
         self.selected_statistics = None
@@ -147,10 +146,13 @@ class AppModel(QObject):
     
     def GetMode(self) -> int:
         return self.options.mode
-    
-    def _TouchMapSet(self, mapSet):
-        self.mapSets.remove(mapSet)
-        self.mapSets.append(mapSet)
+
+    def GetMapSets(self):
+        return self.map_set_service.mapSets
+
+    def CreateMapSet(self):
+        self.map_set_service.CreateMapSet()
+        self.mapsets_updated.emit()
 
     def SetMapByMapId(self, mapId):
         for map in self.maps:
@@ -180,12 +182,13 @@ class AppModel(QObject):
         # clear the selected map
         self.selected_map = None
 
-        for mapSet in self.mapSets:
+        for mapSet in self.map_set_service.mapSets:
             if mapSet.id == mapSetId:
                 self.selected_map_set = mapSet
                 break
 
-        self._TouchMapSet(mapSet)
+        # TODO fix that map sets are in many places, here, map set service and jacodemon config
+        self.map_service.TouchMapSet(mapSet)
 
         self.maps = self.map_service.LoadMaps(mapSet)
         for map in self.maps:
@@ -226,7 +229,7 @@ def InitialiseAppModel():
     and individual components testing"""
 
     config_service = ConfigService()
-    map_set_service = MapSetService()
+    map_set_service = MapSetService(config_service.config)
     map_service = MapService(config_service.config.maps_dir)
     stats_service = StatsService(config_service.config.stats_dir)
     demo_service = DemoService(config_service.config.demo_dir)

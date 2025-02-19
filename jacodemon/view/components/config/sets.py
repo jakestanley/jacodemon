@@ -12,11 +12,11 @@ class SetsTab(QWidget):
 
         self.layout = QVBoxLayout()
 
-        self.add_button = QPushButton("New map set")
+        self.new_button = QPushButton("New map set")
         self.setLayout(self.layout)
 
         self.mapSetList = MapSetList()
-        self.layout.addWidget(self.add_button)
+        self.layout.addWidget(self.new_button)
         self.layout.addWidget(self.mapSetList)
 
 if __name__ == "__main__":

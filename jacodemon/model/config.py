@@ -1,8 +1,9 @@
 import os
 
+from typing import List
 from common_py.config import Config
 
-import jacodemon.model.mapset as mapset
+from jacodemon.model.mapset import MapSet
 
 _CONFIG_SINGLETON = None
 
@@ -70,7 +71,7 @@ class JacodemonConfig(Config):
         self.config[_KEY_MAPS_DIR] = self.maps_dir
         self.config[_KEY_DEMO_DIR] = self.demo_dir
         self.config[_KEY_MODS_DIR] = self.mods_dir
-        self.config[_KEY_MODS] = [mod.to_dict() for mod in self.mods]
+        self.config[_KEY_MODS] = self.mods
         self.config[_KEY_DEFAULT_COMPLEVEL] = self.default_complevel
         self.config[_KEY_DSDA_PATH] = self.dsda_path
         self.config[_KEY_DSDA_CFG] = self.dsda_cfg
@@ -88,31 +89,6 @@ class JacodemonConfig(Config):
         cfg[_KEY_SETS] = []
         return cfg
 
-    def AddMapSet(self, mapset: mapset.MapSet):
-        self.sets.append(mapset)
-
-        self.Save()
-
-    def RemoveMapSet(self, mapset: mapset.MapSet):
-        for set in self.sets:
-            if set.id == mapset.id:
-                self.sets.remove(set)
-
-        self.Save()
-
-    def TouchMapSet(self, mapSetId):
-        set = self.GetMapSetById(mapSetId)
-        self.sets.remove(set)
-        self.sets.append(set)
-
-        self.Save()
-
-    def GetMapSetById(self, mapSetId):
-        for set in self.sets:
-            if set.id == mapSetId:
-                return set
-        raise Exception(f"Map set with id {mapSetId} not found")
-
     def set_dsda_path(self, path):
         if os.path.isfile(path):
             self.dsda_path = path
@@ -121,6 +97,10 @@ class JacodemonConfig(Config):
         else:
             print(f"Error: could not set dsda_path to '{path}'")
 
+    def UpdateMapSets(self, mapSets: List[MapSet]):
+        self.sets = mapSets
+        self.Save()
+
 """
 If dummy is true, returns a DummyConfig instead of a JacodemonConfig
 """
@@ -128,7 +108,7 @@ def GetConfig(dummy=False):
     global _CONFIG_SINGLETON
     if _CONFIG_SINGLETON is None:
         if dummy:
-            from jacodemon.utils.dummy import DummyConfig
+            from jacodemon.misc.dummy import DummyConfig
             _CONFIG_SINGLETON = DummyConfig()
         else:
             _CONFIG_SINGLETON = JacodemonConfig()

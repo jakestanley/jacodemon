@@ -18,7 +18,7 @@ class ControllerSets(QObject):
 
         # do stuff if handle add is clicked, probably call the model, etc. 
         #   unsure about file dialog/ui in between yet
-        self.view.add_button.clicked.connect(self.on_add_mapset)
+        self.view.new_button.clicked.connect(self.on_new_mapset)
 
         # do initial update
         self.on_mapsets_updated()
@@ -30,8 +30,8 @@ class ControllerSets(QObject):
     
         print("Right, I've definitely just set up those connections")
 
-    def on_add_mapset(self):
-        print( "Adding mapset")
+    def on_new_mapset(self):
+        self.app_model.CreateMapSet()
 
     def on_open_mapset(self, mapSetId: str):
         print(f"Controller hit! Opening {mapSetId}")
@@ -48,4 +48,4 @@ class ControllerSets(QObject):
 
         # TODO: we always want to show the end of the list at the top cos 
         #   of how i do the crappy list thing i'm tired i should probbly slep
-        self.view.mapSetList.populate(reversed(self.app_model.mapSets))
+        self.view.mapSetList.populate(reversed(self.app_model.GetMapSets()))
