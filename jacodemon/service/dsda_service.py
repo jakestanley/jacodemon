@@ -9,7 +9,7 @@ from jacodemon.model.map import Map
 from jacodemon.model.stats import Statistics
 
 from jacodemon.service.launch_service import LaunchService
-from jacodemon.config import JacodemonConfig
+from jacodemon.model.config import JacodemonConfig
 
 
 _LEVELSTAT_TXT = "./levelstat.txt"

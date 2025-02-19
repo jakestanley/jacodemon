@@ -32,7 +32,7 @@ if __name__ == "__main__":
     from PySide6.QtWidgets import QApplication
 
     from jacodemon.misc.dummy import DummyArgs
-    from jacodemon.options import InitialiseOptions
+    from jacodemon.model.options import InitialiseOptions
     from jacodemon.model.app import InitialiseAppModel
 
     app = QApplication([])

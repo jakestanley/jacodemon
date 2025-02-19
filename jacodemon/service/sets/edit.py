@@ -1,4 +1,4 @@
-from jacodemon.config import JacodemonConfig, GetConfig
+from jacodemon.model.config import JacodemonConfig, GetConfig
 import jacodemon.ui.sets.edit as edit
 from jacodemon.model.mapset import MapSet
 

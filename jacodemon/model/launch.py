@@ -2,10 +2,10 @@ import platform
 import os
 from datetime import datetime
 
-from jacodemon.config import JacodemonConfig
+from jacodemon.model.config import JacodemonConfig
 from jacodemon.model.map import Map
 from jacodemon.misc.map_utils import *
-from jacodemon.options import Options
+from jacodemon.model.options import Options
 
 ULTRA_VIOLENCE = 4
 DEFAULT_SKILL = ULTRA_VIOLENCE

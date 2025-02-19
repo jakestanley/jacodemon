@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from jacodemon.options import Options, GetOptions
+from jacodemon.model.options import Options, GetOptions
 
 _SINGLETON = None
 

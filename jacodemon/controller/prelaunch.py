@@ -3,7 +3,7 @@ from PySide6.QtCore import Qt, QObject, Signal
 from jacodemon.model.app import AppModel
 from jacodemon.view.prelaunch import ViewPreLaunch
 
-from jacodemon.options import MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
+from jacodemon.model.options import MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
 
 class ControllerPreLaunch(QObject):
 
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     from PySide6.QtWidgets import QApplication
 
     from jacodemon.arguments import DummyArgs
-    from jacodemon.options import InitialiseOptions
+    from jacodemon.model.options import InitialiseOptions
     from jacodemon.model.app import InitialiseAppModel
 
     app = QApplication([])

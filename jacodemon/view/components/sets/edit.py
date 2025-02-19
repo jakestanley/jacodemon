@@ -6,19 +6,16 @@ from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt, QModelIndex, QAbstractTableModel
 from PySide6.QtWidgets import QStyledItemDelegate, QPushButton, QStyleOptionButton, QStyle, QFileDialog
 from PySide6.QtCore import Qt, QEvent
-from jacodemon.config import GetConfig
+from jacodemon.model.config import GetConfig
 from jacodemon.model.mapset import MapSet, MapSetPath
-from jacodemon.utils.files import FindDoomFiles, FindIwad
+from jacodemon.misc.files import FindDoomFiles, FindIwad
 
-# TODO use these constants instead of magic numbers
 _COL_INDEX_ENABLED = 0
 _COL_INDEX_PATH = 1
 _COL_INDEX_MOVE_UP = 2
 _COL_INDEX_MOVE_DOWN = 3
 _COL_INDEX_LOCATE = 4
 _COL_INDEX_REMOVE = 5
-
-
 
 class ButtonDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):
@@ -150,7 +147,7 @@ class MapSetPathItemTableModel(QAbstractTableModel):
         self.items.insert(destinationRow, self.items.pop(sourceRow))
         self.endMoveRows()
 
-class EditSetDialog(QDialog):
+class EditSetView(QDialog):
 
     def __init__(self, parent, mapSet: MapSet) -> None:
         # TODO: read COMPLVL from text lump if available
@@ -239,15 +236,18 @@ class EditSetDialog(QDialog):
         self.iwad_line_edit.setText(FindIwad())
 
 def OpenEditDialog(mapSet: MapSet):
-    dialog = EditSetDialog(parent=None, mapSet=mapSet)
+    dialog = EditSetView(parent=None, mapSet=mapSet)
     if dialog.exec() == QDialog.DialogCode.Accepted:
         return dialog.GetPaths()
     else:
         return []
 
+
 if __name__ == "__main__":
 
+    from PySide6.QtWidgets import QApplication
     import sys
+
     app = QApplication([])
-    result = OpenEditDialog(GetConfig(True).sets[0])
-    sys.exit(0)
+    dialog = EditSetView(None, None)
+    sys.exit(dialog.exec())

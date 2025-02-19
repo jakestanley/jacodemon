@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 
 from jacodemon.misc.map_utils import get_warp, get_inferred_iwad
 
-from jacodemon.config import JacodemonConfig
+from jacodemon.model.config import JacodemonConfig
 from jacodemon.model.launch import LaunchConfig
 from jacodemon.model.stats import Statistics
 

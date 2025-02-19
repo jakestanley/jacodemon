@@ -7,8 +7,8 @@ from jacodemon.misc.io import IO
 from jacodemon.logs import GetLogManager
 
 import obsws_python as obs
-from jacodemon.config import JacodemonConfig, GetConfig
-from jacodemon.options import Options, GetOptions
+from jacodemon.model.config import JacodemonConfig, GetConfig
+from jacodemon.model.options import Options, GetOptions
 from jacodemon.notifications import Notifications, GetNotifications
 from jacodemon.misc.io import IO, GetIo
 from jacodemon.exceptions import ObsControllerException

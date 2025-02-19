@@ -3,7 +3,7 @@ import re
 
 from PySide6.QtWidgets import QFileDialog
 
-from jacodemon.config import GetConfig, JacodemonConfig
+from jacodemon.model.config import GetConfig, JacodemonConfig
 
 
 def ParseTimestampFromPath(path):

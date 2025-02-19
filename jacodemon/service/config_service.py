@@ -1,4 +1,4 @@
-from jacodemon.config import Config, GetConfig
+from jacodemon.model.config import Config, GetConfig
 
 class ConfigService:
 

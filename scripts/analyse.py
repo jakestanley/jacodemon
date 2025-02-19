@@ -5,8 +5,8 @@ import glob
 from typing import List
 import jacodemon.arguments as args
 import jacodemon.logs as logs
-from jacodemon.options import Options
-from jacodemon.config import JacodemonConfig, GetConfig
+from jacodemon.model.options import Options
+from jacodemon.model.config import JacodemonConfig, GetConfig
 from jacodemon.model.map import Map, EnrichMaps
 from jacodemon.csv import load_raw_maps
 from jacodemon.model.demo import Demo, GetDemosForMap, AddBadgesToMap

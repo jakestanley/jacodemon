@@ -14,6 +14,7 @@ class ControllerConfig(QObject):
 
     accept_signal = Signal()
     reject_signal = Signal()
+    last_signal = Signal()
 
     def __init__(self, app_model: AppModel, view_config: ViewConfig):
         super().__init__()
@@ -29,6 +30,20 @@ class ControllerConfig(QObject):
         self.cDsda = ControllerDsda(app_model, self.view.dsdaTab)
 
         self.cSets.accept_signal.connect(self.accept_signal.emit)
+        self.view.lastWidget.last_signal.connect(self.on_play_last)
+
+        if self.app_model.last_map is not None:
+            self.view.lastWidget.last_map_set_name.setText(f"Mod: {self.app_model.last_map.MapSet.name}")
+            self.view.lastWidget.last_map_map_id.setText(f"Map: {self.app_model.last_map.MapId}")
+            self.view.lastWidget.play_last_button.setEnabled(True)
+        else:
+            self.view.lastWidget.play_last_button.setEnabled(False)
+
+    def on_play_last(self):
+        self.app_model.SetMapSet(self.app_model.last_map.MapSet.id)
+        self.app_model.SetMapByMapId(self.app_model.last_map.MapId)
+        self.app_model.SetPlayMode()
+        self.last_signal.emit()
 
     # TODO: move this
     def OpenSingleFileDialog(self, types, line):
@@ -52,7 +67,7 @@ if __name__ == "__main__":
     from PySide6.QtWidgets import QApplication
 
     from jacodemon.misc.dummy import DummyArgs
-    from jacodemon.options import InitialiseOptions
+    from jacodemon.model.options import InitialiseOptions
     from jacodemon.model.app import InitialiseAppModel
 
     gc.disable()

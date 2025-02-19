@@ -1,7 +1,0 @@
-KEY_LUMP="Lump"
-KEY_TIME="Time"
-KEY_KILLS="Kills"
-KEY_ITEMS="Items"
-KEY_SECRETS="Secrets"
-KEY_REPLAY="Replay"
-KEY_TIMESTAMP="Timestamp"

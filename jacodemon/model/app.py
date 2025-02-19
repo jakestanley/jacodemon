@@ -1,13 +1,6 @@
 from typing import List
 from PySide6.QtCore import QObject, Signal
 
-from jacodemon.model.map import Map
-
-# TODO consider last map service? :D
-# TODO move this into map service?
-from jacodemon.last import GetLastMap
-
-from jacodemon.config import JacodemonConfig
 from jacodemon.model.mod import Mod
 from jacodemon.model.launch import LaunchConfig
 
@@ -19,10 +12,10 @@ from jacodemon.service.demo_service import DemoService
 from jacodemon.service.launch_service import LaunchService
 
 # TODO move Options into model?
-from jacodemon.options import Options
+from jacodemon.model.options import Options
 from jacodemon.service.options_service import OptionsService
 
-from jacodemon.options import MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
+from jacodemon.model.options import MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
 
 class AppModel(QObject):
 
@@ -71,6 +64,9 @@ class AppModel(QObject):
         # maps
         self.maps = []
         self.selected_map = None
+        self.last_map = map_service.LoadLastMap()
+        if self.last_map is not None:
+            self.last_map.MapSet = next((ms for ms in self.mapSets if ms.id.lower() == self.last_map.MapSetId), None)
 
         # statistics
         self.selected_statistics = None
@@ -152,12 +148,16 @@ class AppModel(QObject):
     def GetMode(self) -> int:
         return self.options.mode
     
-    def GetLastMap(self) -> Map:
-        return GetLastMap()
-    
     def _TouchMapSet(self, mapSet):
         self.mapSets.remove(mapSet)
         self.mapSets.append(mapSet)
+
+    def SetMapByMapId(self, mapId):
+        for map in self.maps:
+            if map.MapId == mapId:
+                self.selected_map = map
+                break
+        self.selected_map_updated.emit()
 
     def SetMap(self, index):
         
@@ -189,7 +189,7 @@ class AppModel(QObject):
 
         self.maps = self.map_service.LoadMaps(mapSet)
         for map in self.maps:
-            map.MapSet = mapSet
+            map.SetMapSet(mapSet)
             self.stats_service.AddStatsToMap(map)
             self.demo_service.AddDemoesToMapStats(map)
 
@@ -212,7 +212,9 @@ class AppModel(QObject):
             # TODO fix demo indexing
             demo_index=None)
 
+        self.map_service.SaveLastMap(self.selected_map)
         stats = self.launch_service.Launch(launch_config, self.config)
+
         self.stats_service.Save(stats, launch_config)
         self.selected_mapset_updated.emit()
 

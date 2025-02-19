@@ -18,6 +18,7 @@ class Map:
         self.Author             = None
         self.Statistics         = []
         self.Badge              = 0
+        self.MapSetId           = None
 
         # TODO: do not persist
         self.MapSet: MapSet     = None
@@ -45,7 +46,14 @@ class Map:
         if self.MapName:
             return self.MapName
         return self.MapId
+    
+    def SetMapSet(self, mapSet: MapSet):
 
+        # if we save last map, we'll want to save the mapset id for reference
+        self.MapSetId = mapSet.id
+        self.MapSet = mapSet
+
+    # TODO put this in the controller
     def to_dict(self):
         dic = {}
 

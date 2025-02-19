@@ -1,6 +1,6 @@
 from jacodemon.service.obs.obs import ObsController
 from jacodemon.ui.components.web import OpenDoomWiki
-from jacodemon.config import JacodemonConfig, GetConfig
+from jacodemon.model.config import JacodemonConfig, GetConfig
 
 """For when you want to do a bit more complex stuff with an OBS scene"""
 class SceneManager():

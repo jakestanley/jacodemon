@@ -2,7 +2,7 @@ import os
 
 from typing import List
 
-from jacodemon.config import JacodemonConfig, GetConfig
+from jacodemon.model.config import JacodemonConfig, GetConfig
 from jacodemon.model.mapset import MapSet, MapSetPath
 
 from jacodemon.wads.wad import GetMapEntriesFromFiles

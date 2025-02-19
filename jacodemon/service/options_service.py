@@ -1,4 +1,4 @@
-from jacodemon.options import GetOptions, Options
+from jacodemon.model.options import GetOptions, Options
 
 class OptionsService:
     def __init__(self):

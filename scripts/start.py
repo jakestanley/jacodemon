@@ -10,11 +10,11 @@ from jacodemon.arguments import GetArgs
 from jacodemon.logs import GetLogManager
 from jacodemon.view.config import ViewConfig
 from jacodemon.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
-from jacodemon.config import JacodemonConfig, GetConfig
+from jacodemon.model.config import JacodemonConfig, GetConfig
 from jacodemon.last import *
 from jacodemon.model.launch import LaunchConfig
 from jacodemon.service.obs.obs import ObsController, GetObsController
-from jacodemon.options import Options, InitialiseOptions, GetOptions, MODE_LAST, MODE_REPLAY
+from jacodemon.model.options import Options, InitialiseOptions, GetOptions, MODE_LAST, MODE_REPLAY
 from jacodemon.service.dsda.stats import Statistics, NewStatistics
 from jacodemon.model.mapset import MapSet
 from jacodemon.controller.maps.select import MapsSelectController, GetMapsSelectController

@@ -15,13 +15,13 @@ class _LastWidget(QWidget):
         super().__init__(parent)
 
         layout = QHBoxLayout(self)
-        button = QPushButton("Play last", self)
-        button.clicked.connect(self.last_signal.emit)
-        layout.addWidget(button)
+        self.play_last_button = QPushButton("Play last", self)
+        self.play_last_button.clicked.connect(self.last_signal.emit)
+        layout.addWidget(self.play_last_button)
 
         vlayout = QVBoxLayout()
-        self.last_map_mod_name = QLabel(f"Mod: None")
-        vlayout.addWidget(self.last_map_mod_name)
+        self.last_map_set_name = QLabel(f"Mod: None")
+        vlayout.addWidget(self.last_map_set_name)
         self.last_map_map_id = QLabel(f"Map: None")
         vlayout.addWidget(self.last_map_map_id)
         layout.addLayout(vlayout)
@@ -64,17 +64,6 @@ class ViewConfig(QWidget):
         layout.addWidget(self.configTabWidget)
         layout.addWidget(self.lastWidget)
         self.setLayout(layout)
-
-        self.close_dialog.connect(self._HandleClose)
-        self.lastWidget.last_signal.connect(self._HandleLast)
-
-    def _HandleClose(self, action):
-        if action == QDialog.DialogCode.Accepted:
-            self.accept()
-
-    def _HandleLast(self):
-        self.last = True
-        self.accept()
 
 if __name__ == "__main__":
 

@@ -1,7 +1,7 @@
 import os
 import pickle
 
-from jacodemon.config import JacodemonConfig, GetConfig
+from jacodemon.model.config import JacodemonConfig, GetConfig
 
 def LoadMapsFromCache(mapSetId):
     temp_folder = GetConfig().GetTemporaryFolder()

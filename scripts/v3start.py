@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QApplication
 
 from jacodemon.arguments import GetArgs
-from jacodemon.options import InitialiseOptions
+from jacodemon.model.options import InitialiseOptions
 
 from jacodemon.manager import UIManager, UIState
 
@@ -37,6 +37,7 @@ def start():
 
     controller_config = ControllerConfig(app_model, view_config)
     controller_config.accept_signal.connect(lambda: ui_manager.set_state(UIState.SELECT_MAP))
+    controller_config.last_signal.connect(lambda: ui_manager.set_state(UIState.PRE_LAUNCH))
 
     controller_map_select = ControllerMapSelect(app_model, view_map_select)
     controller_map_select.accept_signal.connect(lambda: ui_manager.set_state(UIState.PRE_LAUNCH))

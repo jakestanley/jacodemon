@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
 from jacodemon.model.mod import Mod
 from jacodemon.model.app import AppModel
 
-from jacodemon.config import JacodemonConfig, GetConfig
+from jacodemon.model.config import JacodemonConfig, GetConfig
 from jacodemon.misc.files import FindDoomFiles
 
 class ModsTab(ConfigWidget):
