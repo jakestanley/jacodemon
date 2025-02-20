@@ -84,6 +84,7 @@ class AppModel(QObject):
     
     def SetDemoDir(self, dir):
         self.config.demo_dir = dir
+        self.config.Save()
         self.config_updated.emit()
     
     def GetIwadDir(self):
@@ -91,6 +92,7 @@ class AppModel(QObject):
     
     def SetIwadDir(self, dir):
         self.config.iwad_dir = dir
+        self.config.Save()
         self.config_updated.emit()
     
     def GetMapsDir(self):
@@ -98,6 +100,7 @@ class AppModel(QObject):
     
     def SetMapsDir(self, dir):
         self.config.map_dir = dir
+        self.config.Save()
         self.config_updated.emit()
     
     def GetModsDir(self):
@@ -105,6 +108,7 @@ class AppModel(QObject):
     
     def SetModsDir(self, dir):
         self.config.mods_dir = dir
+        self.config.Save()
         self.config_updated.emit()
     
     def GetDefaultCompLevel(self):
@@ -113,6 +117,7 @@ class AppModel(QObject):
     # TODO where does the save go? :D
     def SetDefaultCompLevel(self, level):
         self.config.default_complevel = level
+        self.config.Save()
         self.config_updated.emit()
 
     def GetMods(self) -> List[Mod]:

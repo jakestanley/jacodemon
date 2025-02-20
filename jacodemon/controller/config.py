@@ -45,21 +45,6 @@ class ControllerConfig(QObject):
         self.app_model.SetPlayMode()
         self.last_signal.emit()
 
-    # TODO: move this
-    def OpenSingleFileDialog(self, types, line):
-        file, _ = QFileDialog.getOpenFileName(self, "Open File", "", types)
-
-        if file:
-            line.setText(file)
-
-    # TODO: move this also
-    def OpenDirectoryDialog(self, what, line):
-        options = QFileDialog.Option.ShowDirsOnly
-        directory = QFileDialog.getExistingDirectory(self, f"Select {what} directory", "", options=options)
-
-        if directory:
-            line.setText(directory)
-
 if __name__ == "__main__":
 
     import gc

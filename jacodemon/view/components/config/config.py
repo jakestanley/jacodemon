@@ -11,13 +11,16 @@ class ConfigWidget(QWidget, metaclass=Meta):
 
     def AddButtons(self, layout):
         button_layout = QHBoxLayout()
-        save_button = self.FixedQPushButton("Save")
-        save_button.setDefault(True)
-        revert_button = self.FixedQPushButton("Revert")
+        self.save_button = self.FixedQPushButton("Save")
+        self.save_button.setDefault(True)
+        self.revert_button = self.FixedQPushButton("Revert")
+
+        self.save_button.setEnabled(False)
+        self.revert_button.setEnabled(False)
 
         button_layout.addStretch()
-        button_layout.addWidget(save_button)
-        button_layout.addWidget(revert_button)
+        button_layout.addWidget(self.save_button)
+        button_layout.addWidget(self.revert_button)
         
         layout.addLayout(button_layout)
 

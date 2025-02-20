@@ -14,6 +14,20 @@ def ParseTimestampFromPath(path):
 
     return timestamp
 
+def OpenSingleFileDialog(parent, types, line):
+    file, _ = QFileDialog.getOpenFileName(parent, "Open File", "", types)
+
+    if file:
+        line.setText(file)
+
+# TODO: move this also
+def OpenDirectoryDialog(parent, what, line):
+    options = QFileDialog.Option.ShowDirsOnly
+    directory = QFileDialog.getExistingDirectory(parent, f"Select {what} directory", "", options=options)
+
+    if directory:
+        line.setText(directory)
+
 def FindIwad() -> str:
 
     config: JacodemonConfig = GetConfig()

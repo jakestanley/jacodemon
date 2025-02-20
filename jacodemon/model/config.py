@@ -80,7 +80,7 @@ class JacodemonConfig(Config):
         self.config[_KEY_WAIT_SCENE] = self.wait_scene
         self.config[_KEY_BROWSER_SCENE] = self.browser_scene
         self.config[_KEY_TITLE_SOURCE] = self.title_source
-        self.config[_KEY_SETS] = [set.to_dict() for set in self.sets]
+        self.config[_KEY_SETS] = self.sets
         self.config[_KEY_SKILL] = self.skill
 
     def _DefaultConfig(self):

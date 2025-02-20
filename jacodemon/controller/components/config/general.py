@@ -1,15 +1,39 @@
 from jacodemon.model.app import AppModel
 
+from jacodemon.misc.files import OpenDirectoryDialog
+from jacodemon.view.components.config.general import GeneralTab
+
 class ControllerGeneral:
-    def __init__(self, app_model: AppModel, view):
+    def __init__(self, app_model: AppModel, view: GeneralTab):
         self.app_model = app_model
         self.view = view
 
-        self.view.demo_path_picker.clicked.connect(lambda: self.OpenDirectoryDialog("demos", self.demo_path))
-        self.view.iwad_path_picker.clicked.connect(lambda: self.OpenDirectoryDialog("IWAD", self.iwad_path))
-        self.view.maps_path_picker.clicked.connect(lambda: self.OpenDirectoryDialog("maps", self.maps_path))
-        self.view.mods_path_picker.clicked.connect(lambda: self.OpenDirectoryDialog("mods", self.mods_path))
+        self.view.demo_path_picker.clicked.connect(lambda: OpenDirectoryDialog(self.view, "demos",   self.view.demo_path))
+        self.view.iwad_path_picker.clicked.connect(lambda: OpenDirectoryDialog(self.view, "IWAD",    self.view.iwad_path))
+        self.view.maps_path_picker.clicked.connect(lambda: OpenDirectoryDialog(self.view, "maps",    self.view.maps_path))
+        self.view.mods_path_picker.clicked.connect(lambda: OpenDirectoryDialog(self.view, "mods",    self.view.mods_path))
 
+        self.view.demo_path.textChanged.connect(self.changed)
+        self.view.iwad_path.textChanged.connect(self.changed)
+        self.view.maps_path.textChanged.connect(self.changed)
+        self.view.mods_path.textChanged.connect(self.changed)
+        self.view.default_complevel.textChanged.connect(self.changed)
+
+        self.view.save_button.clicked.connect(self.save)
+        self.view.revert_button.clicked.connect(self.update)
+
+        self.update()
+
+    def changed(self):
+        self.view.save_button.setEnabled(True)
+        self.view.revert_button.setEnabled(True)
+
+    def save(self):
+        self.app_model.SetDemoDir(self.view.demo_path.text())
+        self.app_model.SetIwadDir(self.view.iwad_path.text())
+        self.app_model.SetMapsDir(self.view.maps_path.text())
+        self.app_model.SetModsDir(self.view.mods_path.text())
+        self.app_model.SetDefaultCompLevel(self.view.default_complevel.text())
         self.update()
 
     def update(self):
@@ -20,3 +44,6 @@ class ControllerGeneral:
         self.view.maps_path.setText(self.app_model.GetMapsDir())
         self.view.mods_path.setText(self.app_model.GetModsDir())
         self.view.default_complevel.setText(self.app_model.GetDefaultCompLevel())
+
+        self.view.save_button.setEnabled(False)
+        self.view.revert_button.setEnabled(False)
