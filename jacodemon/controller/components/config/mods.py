@@ -32,7 +32,6 @@ class ControllerMods(QObject):
 
     def on_mod_selected(self, selected):
         self.selected_mod = selected
-        print(f"selected mod index {selected}")
 
     def on_mod_toggled(self, index, checked):
         self.mods[index].enabled = checked

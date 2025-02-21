@@ -40,7 +40,6 @@ class ModsTab(ConfigWidget):
     def on_selection_changed(self, selected, _):
         if selected.indexes():  # Ensure there's a selection
             row = selected.indexes()[0].row()  # Extract row index
-            print(f"Selected row: {row}")
             self.row_selected.emit(row)  # Emit the row index
 
     def create_side_layout(self):

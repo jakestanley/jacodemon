@@ -7,6 +7,8 @@ from jacodemon.misc.files import FindDoomFiles
 from jacodemon.model.config import JacodemonConfig
 from jacodemon.model.mapset import MapSetPath, MapSet
 
+from jacodemon.service.wad_service import WadService
+
 def _LoadMapSet(dict) -> MapSet:
     paths = []
     for path in dict["paths"]:
@@ -23,6 +25,7 @@ class MapSetService:
 
     def __init__(self, configuration: JacodemonConfig):
         self.maps_dir = configuration.maps_dir
+        self.wad_service = WadService(self.maps_dir)
         self.configuration = configuration
         self.mapSets = [_LoadMapSet(ms) for ms in self.configuration.sets]
     
@@ -42,22 +45,20 @@ class MapSetService:
         if ext.startswith("."):
             ext = ext[1:]
 
-        # TODO use wad service to populate this
-        gameinfo = {}
-        # gameinfo = GetInfoFromFiles(paths)
-        # if "Title" in gameinfo and gameinfo["Title"] is not None:
-        #     title = gameinfo["Title"]
-
         # a small bit of ui here isn't toooo bad
         title, ok = QInputDialog.getText(None, "Map set name", "Enter a reference for this map set:", text=title)
         if not ok:
             return False
         
+        wadsData = self.wad_service.GetDataFromWads(paths)
+        iwad = wadsData.iwad if wadsData.iwad else "DOOM2.WAD"
+        compLevel = wadsData.complevel if wadsData.complevel else None
+
         mapSet = MapSet(
             paths=[MapSetPath(path) for path in paths], 
             name=title,
-            iwad= gameinfo.get("IWAD", "DOOM2.WAD"),
-            compLevel=gameinfo.get("complevel", None)
+            iwad= iwad,
+            compLevel=compLevel
         )
 
         self.mapSets.append(mapSet)
