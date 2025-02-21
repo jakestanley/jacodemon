@@ -42,5 +42,6 @@ if __name__ == "__main__":
     view = ModsTab()
 
     controller = ControllerMods(app_model, view)
+    view.resize(800, 600)
     view.show()
     sys.exit(app.exec())

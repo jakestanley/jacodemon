@@ -13,29 +13,32 @@ class ModsTab(ConfigWidget):
     def __init__(self, parent=None):
         super(ModsTab, self).__init__(parent)
 
-        self.layout: QVBoxLayout = QVBoxLayout()
+        # build layout
+        layout: QVBoxLayout = QVBoxLayout(self)
+
         hlayout = QHBoxLayout()
 
         self.mods = QListWidget(self)
 
         hlayout.addWidget(self.mods)
+        hlayout.addLayout(self.create_side_layout())
 
-        button_layout: QVBoxLayout = QVBoxLayout()
+        layout.addLayout(hlayout)
 
-        self.btn_add_mods: QPushButton = QPushButton("Add")
-        
-        button_layout.addWidget(self.btn_add_mods)        
+        self.AddButtons(layout)
 
-        self.btn_remove_mods: QPushButton = QPushButton("Remove")
-        
-        button_layout.addWidget(self.btn_remove_mods)
+    def create_side_layout(self):
+        side_layout = QVBoxLayout()
 
-        button_layout.addStretch()
+        self.btn_add_mods = QPushButton("Add Mods")
+        self.btn_remove_mods = QPushButton("Remove Mods")
 
-        hlayout.addLayout(button_layout)
-        self.layout.addLayout(hlayout)
+        side_layout.addWidget(self.btn_add_mods)
+        side_layout.addWidget(self.btn_remove_mods)
 
-        self.AddButtons(self.layout)
+        side_layout.addStretch()
+
+        return side_layout
 
     # TODO port over to controller
     # def save(self):
