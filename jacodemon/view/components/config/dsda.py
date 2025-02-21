@@ -1,10 +1,15 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
     QLabel, QLineEdit, QFileDialog
 
+from PySide6.QtCore import Signal
+
 from jacodemon.view.components.config.config import ConfigWidget
 from PySide6.QtWidgets import QGroupBox
 
 class DsdaTab(ConfigWidget):
+
+    fields_updated = Signal()
+
     def __init__(self, parent=None):
         super(DsdaTab, self).__init__(parent)
 
@@ -20,37 +25,18 @@ class DsdaTab(ConfigWidget):
         vlayout.addWidget(dsda_hud)
         vlayout.addStretch()
 
+        self.dsda_path.textChanged.connect(lambda: self.fields_updated.emit())
+        self.dsda_cfg_path.textChanged.connect(lambda: self.fields_updated.emit())
+        self.dsda_hud_path.textChanged.connect(lambda: self.fields_updated.emit())
+
         self.AddButtons(vlayout)
-
-    def save(self):
-        pass
-        # cfg: JacodemonConfig = GetConfig()
-
-        # cfg.dsda_path = self.dsda_path.text()
-        # cfg.dsda_cfg = self.dsda_cfg_path.text()
-        # cfg.dsdadoom_hud_lump = self.dsda_hud_path.text()
-        # cfg.Save()
-
-    def revert(self):
-        # self.LoadValuesFromConfig()
-        pass
-
-    def LoadValuesFromConfig(self):
-        pass
-        # cfg: JacodemonConfig = GetConfig()
-
-        # self.dsda_path.setText(cfg.dsda_path)
-        # self.dsda_cfg_path.setText(cfg.dsda_cfg)
-        # self.dsda_hud_path.setText(cfg.dsdadoom_hud_lump)
     
     def create_dsda_picker(self):
         groupbox: QGroupBox = QGroupBox("Executable")
         vlayout: QVBoxLayout = QVBoxLayout()
         self.dsda_path = QLineEdit(self)
         self.dsda_path.setEnabled(True)
-        # is self required for these?
         self.dsda_path_picker = QPushButton("Select dsda executable", self)
-        # self.dsda_path_picker.clicked.connect(lambda: self.OpenSingleFileDialog("All Files (*)", self.dsda_path))
         vlayout.addWidget(self.dsda_path)
         vlayout.addWidget(self.dsda_path_picker)
         groupbox.setLayout(vlayout)
@@ -62,13 +48,11 @@ class DsdaTab(ConfigWidget):
         self.dsda_cfg_path = QLineEdit(self)
         self.dsda_cfg_path.setEnabled(True)
         self.dsda_cfg_path_picker = QPushButton("Select dsda config file", self)
-        # self.dsda_cfg_path_picker.clicked.connect(lambda: self.OpenSingleFileDialog("All Files (*);;Text Files (*.cfg)", self.dsda_cfg_path))
         vlayout.addWidget(self.dsda_cfg_path)
         hlayout = QHBoxLayout()
         hlayout.addWidget(self.dsda_cfg_path_picker)
-        clear_button = QPushButton("Clear", self)
-        # clear_button.clicked.connect(lambda: self.dsda_cfg_path.clear())
-        hlayout.addWidget(clear_button)
+        self.clear_dsda_cfg_btn = QPushButton("Clear", self)
+        hlayout.addWidget(self.clear_dsda_cfg_btn)
         vlayout.addLayout(hlayout)
         groupbox.setLayout(vlayout)
         return groupbox
@@ -79,13 +63,11 @@ class DsdaTab(ConfigWidget):
         self.dsda_hud_path = QLineEdit(self)
         self.dsda_hud_path.setEnabled(True)
         self.dsda_hud_path_picker = QPushButton("Select dsda HUD lump file", self)
-        # self.dsda_hud_path_picker.clicked.connect(lambda: self.OpenSingleFileDialog("All Files (*);;LUMP Files (*.lmp)", self.dsda_hud_path))
         vlayout.addWidget(self.dsda_hud_path)
         hlayout = QHBoxLayout()
         hlayout.addWidget(self.dsda_hud_path_picker)
-        clear_button = QPushButton("Clear", self)
-        # clear_button.clicked.connect(lambda: self.dsda_hud_path.clear())
-        hlayout.addWidget(clear_button)
+        self.clear_dsda_hud_btn = QPushButton("Clear", self)
+        hlayout.addWidget(self.clear_dsda_hud_btn)
         vlayout.addLayout(hlayout)
         groupbox.setLayout(vlayout)
         return groupbox

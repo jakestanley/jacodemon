@@ -221,6 +221,27 @@ class AppModel(QObject):
         self.stats_service.Save(stats, launch_config)
         self.selected_mapset_updated.emit()
 
+    def GetDsdaPath(self):
+        return self.config.dsda_path
+
+    def SetDsdaPath(self, path):
+        self.config.dsda_path = path
+        self.config.Save()
+
+    def GetDsdaCfgPath(self):
+        return self.config.dsda_cfg
+    
+    def SetDsdaCfgPath(self, path):
+        self.config.dsda_cfg = path
+        self.config.Save()
+
+    def GetDsdaHudLump(self):
+        return self.config.dsdadoom_hud_lump
+    
+    def SetDsdaHudLump(self, path):
+        self.config.dsdadoom_hud_lump = path
+        self.config.Save()
+
 def InitialiseAppModel():
 
     from jacodemon.service.dsda_service import DsdaService

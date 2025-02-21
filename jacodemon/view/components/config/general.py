@@ -1,9 +1,14 @@
 from jacodemon.view.components.config.config import ConfigWidget
 
+from PySide6.QtCore import Signal
+
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLineEdit, \
-    QPushButton, QFileDialog, QGroupBox, QLabel
+    QPushButton, QGroupBox, QLabel
 
 class GeneralTab(ConfigWidget):
+
+    fields_updated = Signal()
+
     def __init__(self, parent=None):
         super(GeneralTab, self).__init__(parent)
         
@@ -18,6 +23,12 @@ class GeneralTab(ConfigWidget):
         layout.addWidget(general_group)
         layout.addWidget(directories_group)
         layout.addStretch()
+
+        self.demo_path.textChanged.connect(lambda: self.fields_updated.emit())
+        self.iwad_path.textChanged.connect(lambda: self.fields_updated.emit())
+        self.maps_path.textChanged.connect(lambda: self.fields_updated.emit())
+        self.mods_path.textChanged.connect(lambda: self.fields_updated.emit())
+        self.default_complevel.textChanged.connect(lambda: self.fields_updated.emit())
 
         self.AddButtons(layout)
 

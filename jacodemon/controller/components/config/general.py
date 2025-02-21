@@ -1,6 +1,6 @@
-from jacodemon.model.app import AppModel
-
 from jacodemon.misc.files import OpenDirectoryDialog
+
+from jacodemon.model.app import AppModel
 from jacodemon.view.components.config.general import GeneralTab
 
 class ControllerGeneral:
@@ -13,12 +13,7 @@ class ControllerGeneral:
         self.view.maps_path_picker.clicked.connect(lambda: OpenDirectoryDialog(self.view, "maps",    self.view.maps_path))
         self.view.mods_path_picker.clicked.connect(lambda: OpenDirectoryDialog(self.view, "mods",    self.view.mods_path))
 
-        self.view.demo_path.textChanged.connect(self.changed)
-        self.view.iwad_path.textChanged.connect(self.changed)
-        self.view.maps_path.textChanged.connect(self.changed)
-        self.view.mods_path.textChanged.connect(self.changed)
-        self.view.default_complevel.textChanged.connect(self.changed)
-
+        self.view.fields_updated.connect(self.changed)
         self.view.save_button.clicked.connect(self.save)
         self.view.revert_button.clicked.connect(self.update)
 

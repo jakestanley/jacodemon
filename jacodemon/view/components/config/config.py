@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QPushButton
 
