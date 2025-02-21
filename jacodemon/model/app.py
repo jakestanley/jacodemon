@@ -112,8 +112,12 @@ class AppModel(QObject):
         self.config.Save()
 
     def GetMods(self) -> List[Mod]:
-        mods = [Mod.from_dict(mod) for mod in self.config.mods]
-        return mods
+        return [Mod.from_dict(mod) for mod in self.config.mods]
+    
+    def SetMods(self, mods: List[Mod]):
+        self.config.mods = [mod.to_dict() for mod in mods]
+        self.config.Save()
+        self.mods_updated.emit()
 
     def IsRecordDemoEnabled(self) -> bool:
         return self.options.record_demo and not self.options.mode == MODE_REPLAY

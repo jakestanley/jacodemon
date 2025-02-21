@@ -1,5 +1,7 @@
 from jacodemon.view.components.config.config import ConfigWidget
 
+from PySide6.QtCore import Signal
+
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
     QLabel, QLineEdit, QListWidget, QListWidgetItem, QCheckBox, QFileDialog
 
@@ -10,6 +12,11 @@ from jacodemon.model.config import JacodemonConfig, GetConfig
 from jacodemon.misc.files import FindDoomFiles
 
 class ModsTab(ConfigWidget):
+
+    row_selected = Signal(int)
+    row_toggled = Signal(int, bool)
+    row_removed = Signal()
+
     def __init__(self, parent=None):
         super(ModsTab, self).__init__(parent)
 
@@ -19,6 +26,9 @@ class ModsTab(ConfigWidget):
         hlayout = QHBoxLayout()
 
         self.mods = QListWidget(self)
+        self.mods.setSelectionBehavior(QListWidget.SelectRows)
+        self.mods.setSelectionMode(QListWidget.SingleSelection)
+        self.mods.selectionModel().selectionChanged.connect(self.on_selection_changed)
 
         hlayout.addWidget(self.mods)
         hlayout.addLayout(self.create_side_layout())
@@ -26,6 +36,12 @@ class ModsTab(ConfigWidget):
         layout.addLayout(hlayout)
 
         self.AddButtons(layout)
+
+    def on_selection_changed(self, selected, _):
+        if selected.indexes():  # Ensure there's a selection
+            row = selected.indexes()[0].row()  # Extract row index
+            print(f"Selected row: {row}")
+            self.row_selected.emit(row)  # Emit the row index
 
     def create_side_layout(self):
         side_layout = QVBoxLayout()
@@ -39,32 +55,18 @@ class ModsTab(ConfigWidget):
         side_layout.addStretch()
 
         return side_layout
+    
+    def AddMod(self, mod: Mod, index: int):
+        item = QListWidgetItem(self.mods)
+        checkbox = QCheckBox(mod.path)
+        checkbox.setChecked(mod.enabled)
+        checkbox.stateChanged.connect(lambda state, x=index: self.row_toggled.emit(x, state == 2))
+        self.mods.setItemWidget(item, checkbox)
 
-    # TODO port over to controller
-    # def save(self):
-    #     cfg: JacodemonConfig = GetConfig()
-    #     cfg.mods = []
-    #     for index in range(self.mods.count()):
-    #         item = self.mods.item(index)
-    #         checkbox = self.mods.itemWidget(item)
-    #         path = checkbox.text()
-    #         enabled = checkbox.isChecked()
-    #         cfg.mods.append(Mod(path, enabled))
-    #     cfg.Save()
-
-    # def revert(self):
-    #     self.LoadValuesFromConfig()
-
-    # def AddMods(self):
-
-    #     files = FindDoomFiles(GetConfig().mods_dir)
-    #     for file in files:
-    #         self.AddMod(Mod(file))
-
-    # def RemoveMods(self):
-
-    #     for item in self.mods.selectedItems():
-    #         self.mods.takeItem(self.mods.row(item))
+    def SetMods(self, mods: list[Mod]):
+        self.mods.clear()
+        for index, mod in enumerate(mods):
+            self.AddMod(mod, index)
 
 if __name__ == "__main__":
 
