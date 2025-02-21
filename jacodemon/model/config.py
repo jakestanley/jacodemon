@@ -98,7 +98,7 @@ class JacodemonConfig(Config):
             print(f"Error: could not set dsda_path to '{path}'")
 
     def UpdateMapSets(self, mapSets: List[MapSet]):
-        self.sets = mapSets
+        self.sets = [mapSet.to_dict() for mapSet in mapSets]
         self.Save()
 
 """

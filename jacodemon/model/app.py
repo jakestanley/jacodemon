@@ -63,6 +63,9 @@ class AppModel(QObject):
         self.last_map = map_service.LoadLastMap()
         if self.last_map is not None:
             self.last_map.MapSet = next((ms for ms in self.map_set_service.mapSets if ms.id.lower() == self.last_map.MapSetId), None)
+        
+        if self.last_map.MapSet is None:
+            self.last_map = None
 
         # statistics
         self.selected_statistics = None
@@ -93,7 +96,7 @@ class AppModel(QObject):
         return self.config.maps_dir
     
     def SetMapsDir(self, dir):
-        self.config.map_dir = dir
+        self.config.maps_dir = dir
         self.config.Save()
     
     def GetModsDir(self):
@@ -188,7 +191,7 @@ class AppModel(QObject):
                 break
 
         # TODO fix that map sets are in many places, here, map set service and jacodemon config
-        self.map_service.TouchMapSet(mapSet)
+        self.map_set_service.TouchMapSet(mapSet)
 
         self.maps = self.map_service.LoadMaps(mapSet)
         for map in self.maps:
