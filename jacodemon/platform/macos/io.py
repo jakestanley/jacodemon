@@ -1,6 +1,6 @@
 import fcntl
 
-from jacodemon.io import IO
+from jacodemon.misc.io import IO
 from jacodemon.logs import GetLogManager, LogManager
 
 class MacIo(IO):

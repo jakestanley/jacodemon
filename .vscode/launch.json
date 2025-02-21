@@ -22,14 +22,21 @@
             "program": "run_tests.py"
         },
         {
+            "name": "v3start (No OBS, Debug)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "scripts/v3start.py",
+            "justMyCode": true,
+            "args": [
+                "--no-obs",
+                "-sll", "DEBUG"
+            ]
+        },
+        {
             "name": "Start2",
             "type": "debugpy",
             "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv"
-            ]
+            "program": "scripts/start.py"
         },
         {
             "name": "Start (Freestyle)",
@@ -68,10 +75,22 @@
             "type": "debugpy",
             "request": "launch",
             "program": "scripts/start.py",
+            "justMyCode": false,
             "args": [
                 "--playlist",
                 "./examples/v3_Season2.csv",
                 "--no-obs"
+            ]
+        },
+        {
+            "name": "Start2 (No OBS, Debug)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "scripts/start.py",
+            "justMyCode": false,
+            "args": [
+                "--no-obs",
+                "-sll", "DEBUG"
             ]
         },
         {
