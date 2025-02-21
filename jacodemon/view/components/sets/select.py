@@ -76,7 +76,6 @@ class MapSetList(QListWidget):
     openItemRequested = Signal(str)
     editItemRequested = Signal(str)
     removeItemRequested = Signal(str)
-    print("initialised signals")
 
     def __init__(self):
         super().__init__()

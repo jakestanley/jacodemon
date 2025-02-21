@@ -23,12 +23,9 @@ class ControllerSets(QObject):
         # do initial update
         self.on_mapsets_updated()
 
-        # these are a fucking nightmare!!!
         self.view.mapSetList.openItemRequested.connect(self.on_open_mapset)
         self.view.mapSetList.editItemRequested.connect(self.on_edit_mapset)
         self.view.mapSetList.removeItemRequested.connect(self.on_remove_mapset)
-    
-        print("Right, I've definitely just set up those connections")
 
     def on_new_mapset(self):
         self.app_model.CreateMapSet()
@@ -42,7 +39,7 @@ class ControllerSets(QObject):
         print(f"Controller hit! Editing {mapSetId}")
 
     def on_remove_mapset(self, mapSetId: str):
-        print(f"Controller hit! Removing {mapSetId}")
+        self.app_model.RemoveMapSet(mapSetId)
 
     def on_mapsets_updated(self):
 

@@ -65,9 +65,9 @@ class MapSetService:
 
         self.configuration.UpdateMapSets(self.mapSets)
 
-    def RemoveMapSet(self, mapset: MapSet):
+    def RemoveMapSetById(self, mapSetId: str):
         for set in self.mapSets:
-            if set.id == mapset.id:
+            if str(set.id) == mapSetId:
                 self.mapSets.remove(set)
 
         self.configuration.UpdateMapSets(self.mapSets)

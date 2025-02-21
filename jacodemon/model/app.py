@@ -202,6 +202,12 @@ class AppModel(QObject):
         self.selected_map_updated.emit()
         self.selected_mapset_updated.emit()
 
+    def RemoveMapSet(self, mapSetId):
+        self.map_set_service.RemoveMapSetById(mapSetId)
+        if self.selected_map_set and self.selected_map_set.id == mapSetId:
+            self.selected_map_set = None
+        self.mapsets_updated.emit()
+
     def SetPlayMode(self):
         self.options.mode = MODE_NORMAL
         self.mode_changed.emit()
