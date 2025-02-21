@@ -36,9 +36,6 @@ class AppModel(QObject):
 
     # used for when we switch to prelaunch
     mode_changed = Signal()
-
-    # most generic signal that isn't covered by the others
-    config_updated = Signal()
     
     def __init__(self, config_service: ConfigService, map_set_service: MapSetService, 
                  map_service: MapService, stats_service: StatsService, 
@@ -76,7 +73,6 @@ class AppModel(QObject):
         self.selected_map_updated.emit()
         self.selected_mapset_updated.emit()
         self.mapsets_updated.emit()
-        self.config_updated.emit()
 
     # attempting to abstract away JacodemonConfig
     def GetDemoDir(self):
@@ -85,7 +81,6 @@ class AppModel(QObject):
     def SetDemoDir(self, dir):
         self.config.demo_dir = dir
         self.config.Save()
-        self.config_updated.emit()
     
     def GetIwadDir(self):
         return self.config.iwad_dir
@@ -93,7 +88,6 @@ class AppModel(QObject):
     def SetIwadDir(self, dir):
         self.config.iwad_dir = dir
         self.config.Save()
-        self.config_updated.emit()
     
     def GetMapsDir(self):
         return self.config.maps_dir
@@ -101,7 +95,6 @@ class AppModel(QObject):
     def SetMapsDir(self, dir):
         self.config.map_dir = dir
         self.config.Save()
-        self.config_updated.emit()
     
     def GetModsDir(self):
         return self.config.mods_dir
@@ -109,7 +102,6 @@ class AppModel(QObject):
     def SetModsDir(self, dir):
         self.config.mods_dir = dir
         self.config.Save()
-        self.config_updated.emit()
     
     def GetDefaultCompLevel(self):
         return self.config.default_complevel
@@ -118,7 +110,6 @@ class AppModel(QObject):
     def SetDefaultCompLevel(self, level):
         self.config.default_complevel = level
         self.config.Save()
-        self.config_updated.emit()
 
     def GetMods(self) -> List[Mod]:
         mods = [Mod.from_dict(mod) for mod in self.config.mods]

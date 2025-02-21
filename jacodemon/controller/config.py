@@ -39,6 +39,14 @@ class ControllerConfig(QObject):
         else:
             self.view.lastWidget.play_last_button.setEnabled(False)
 
+        self.view.configTabWidget.currentChanged.connect(self.update)
+
+    def update(self):
+        self.cGeneral.update()
+        self.cMods.update()
+        self.cObs.update()
+        self.cDsda.update()
+
     def on_play_last(self):
         self.app_model.SetMapSet(self.app_model.last_map.MapSet.id)
         self.app_model.SetMapByMapId(self.app_model.last_map.MapId)
