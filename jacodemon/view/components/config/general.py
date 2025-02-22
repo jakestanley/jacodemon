@@ -92,6 +92,7 @@ class GeneralTab(ConfigWidget):
         vlayout = QVBoxLayout()
         hbox = QHBoxLayout()
         hbox.addWidget(QLabel("Default compatibility level"))
+        # TODO a skill level widget ffs
         self.default_complevel = QLineEdit(self)
         hbox.addWidget(self.default_complevel)
         vlayout.addLayout(hbox)
