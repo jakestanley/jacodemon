@@ -50,6 +50,11 @@ class LaunchConfig:
         else:
             self.mods = False
 
+        if options.fast:
+            self.fast = True
+        else:
+            self.fast = False
+
     def set_replay(self, demo):
         self._demo_path = demo.path
         # FIXME: hack, should use method for this idk

@@ -29,6 +29,7 @@ class ControllerPreLaunch(QObject):
         self.app_model.options.obs = self.view.checkbox_obs.isChecked()
         self.app_model.options.mods = self.view.checkbox_mods.isChecked()
         self.app_model.options.music = self.view.checkbox_music.isChecked()
+        self.app_model.options.fast = self.view.checkbox_fast.isChecked()
 
         self.accept_signal.emit()
 
@@ -43,8 +44,8 @@ class ControllerPreLaunch(QObject):
         self.view.checkbox_auto_record.setEnabled(self.app_model.CanAutoRecord())
 
         self.view.checkbox_mods.setChecked(self.app_model.IsModsEnabled())
-
         self.view.checkbox_music.setChecked(self.app_model.IsMusicEnabled())
+        self.view.checkbox_fast.setChecked(self.app_model.IsFastMonstersEnabled())
 
         # TODO: these have been removed or moved. commented for reference later
         # self.view.radio_normal.toggled.connect(self.set_mode)

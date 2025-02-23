@@ -124,6 +124,9 @@ class LaunchService(ABC):
             doom_args.append("-record")
             doom_args.append(os.path.join(jacodemon_config.demo_dir, self.GetDemoFileName(launch_config)))
 
+        if launch_config.fast:
+            doom_args.append('-fast')
+
         if not launch_config.music:
             doom_args.append('-nomusic')
 

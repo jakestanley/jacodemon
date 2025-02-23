@@ -147,6 +147,9 @@ class AppModel(QObject):
     def IsObsEnabled(self) -> bool:
         return self.options.obs
     
+    def IsFastMonstersEnabled(self) -> bool:
+        return self.options.fast == True
+    
     def GetMode(self) -> int:
         return self.options.mode
 

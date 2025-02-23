@@ -31,6 +31,10 @@ class ViewPreLaunch(QDialog):
         # options: music
         self.checkbox_music = QCheckBox("Enable music")
         layout.addWidget(self.checkbox_music)
+
+        # options: fast monsters
+        self.checkbox_fast = QCheckBox("Enable fast monsters")
+        layout.addWidget(self.checkbox_fast)
         
         # confirm or close
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)

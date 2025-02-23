@@ -15,6 +15,7 @@ def GetArgs():
     parser.add_argument("-nq", "--no-mods",         action='store_true',    help="Disable mods (use this if you are experiencing issues)")
     parser.add_argument("-ar", "--no-auto-record",  action='store_true',    help="Automatically record and stop when gameplay ends")
     parser.add_argument("-nd", "--no-demo",         action='store_true',    help="Demo recording will be disabled")
+    parser.add_argument("-fm", "--fast",            action='store_true',    help="Enable fast monsters")
 
     parser.add_argument("-m",  "--music",       action='store_true',    help="Enable music")
     
