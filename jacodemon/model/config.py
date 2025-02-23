@@ -4,6 +4,7 @@ from typing import List
 from common_py.config import Config
 
 from jacodemon.model.mapset import MapSet
+from jacodemon.misc.constants import DEFAULT_COMP_LEVEL, DEFAULT_SKILL
 
 _CONFIG_SINGLETON = None
 
@@ -31,10 +32,10 @@ class JacodemonConfig(Config):
         super().__init__("jacodemon")
 
         # general
-        self.default_complevel = self.config.get(_KEY_DEFAULT_COMPLEVEL)
+        self.default_complevel = self.config.get(_KEY_DEFAULT_COMPLEVEL, DEFAULT_COMP_LEVEL)
 
         # TODO UI should have a dropdown
-        self.skill = self.config.get(_KEY_SKILL, 4)
+        self.skill = self.config.get(_KEY_SKILL, DEFAULT_SKILL)
 
         # dsda doom
         self.dsda_path = self.config.get(_KEY_DSDA_PATH)

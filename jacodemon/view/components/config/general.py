@@ -3,7 +3,7 @@ from jacodemon.view.components.config.config import ConfigWidget
 from PySide6.QtCore import Signal
 
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLineEdit, \
-    QPushButton, QGroupBox, QLabel
+    QPushButton, QGroupBox, QLabel, QComboBox
 
 class GeneralTab(ConfigWidget):
 
@@ -29,6 +29,7 @@ class GeneralTab(ConfigWidget):
         self.maps_path.textChanged.connect(lambda: self.fields_updated.emit())
         self.mods_path.textChanged.connect(lambda: self.fields_updated.emit())
         self.default_complevel.textChanged.connect(lambda: self.fields_updated.emit())
+        self.default_skill.currentIndexChanged.connect(lambda: self.fields_updated.emit())
 
         self.AddButtons(layout)
 
@@ -90,12 +91,27 @@ class GeneralTab(ConfigWidget):
     def create_general_group(self):
         group_box = QGroupBox("General", self)
         vlayout = QVBoxLayout()
+
         hbox = QHBoxLayout()
         hbox.addWidget(QLabel("Default compatibility level"))
-        # TODO a skill level widget ffs
+
         self.default_complevel = QLineEdit(self)
+
         hbox.addWidget(self.default_complevel)
         vlayout.addLayout(hbox)
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(QLabel("Default skill level"))
+
+        self.default_skill= QComboBox()
+        self.default_skill.addItem("I'm too young to die", 1)
+        self.default_skill.addItem("Hey, not too rough", 2)
+        self.default_skill.addItem("Hurt me plenty", 3)
+        self.default_skill.addItem("Ultra-Violence", 4)
+        self.default_skill.addItem("Nightmare!", 5)
+        hbox.addWidget(self.default_skill)
+        vlayout.addLayout(hbox)
+
         group_box.setLayout(vlayout)
         return group_box
     

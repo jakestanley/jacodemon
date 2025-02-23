@@ -109,9 +109,15 @@ class AppModel(QObject):
     def GetDefaultCompLevel(self):
         return self.config.default_complevel
 
-    # TODO where does the save go? :D
     def SetDefaultCompLevel(self, level):
         self.config.default_complevel = level
+        self.config.Save()
+
+    def GetDefaultSkillLevel(self):
+        return self.config.skill
+    
+    def SetDefaultSkillLevel(self, skill):
+        self.config.skill = skill
         self.config.Save()
 
     def GetMods(self) -> List[Mod]:

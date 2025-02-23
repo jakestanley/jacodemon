@@ -1,17 +1,9 @@
-import platform
-import os
-from datetime import datetime
-
 from jacodemon.model.config import JacodemonConfig
 from jacodemon.model.map import Map
 from jacodemon.misc.map_utils import *
 from jacodemon.model.options import Options
 
-ULTRA_VIOLENCE = 4
-DEFAULT_SKILL = ULTRA_VIOLENCE
-
-BOOM_2_02 = "9"
-DEFAULT_COMP_LEVEL = BOOM_2_02
+from jacodemon.misc.constants import DEFAULT_COMP_LEVEL, DEFAULT_SKILL
 
 # TODO later if we wish to properly implement multi port support, we may 
 #   wish to make this a super class. as a fun exercise we should make a 

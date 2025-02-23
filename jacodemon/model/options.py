@@ -19,6 +19,9 @@ class Options:
         self.mode = MODE_NORMAL
         self.stdout_log_level = None
 
+        # TODO skill set in options overrides launchconfig skill
+        self.skill = None
+
     def last(self):
         return self.mode == MODE_LAST
 

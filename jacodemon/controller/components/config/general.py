@@ -29,11 +29,16 @@ class ControllerGeneral:
         self.app_model.SetMapsDir(self.view.maps_path.text())
         self.app_model.SetModsDir(self.view.mods_path.text())
         self.app_model.SetDefaultCompLevel(self.view.default_complevel.text())
+
+        index = self.view.default_skill.currentIndex() + 1
+        self.app_model.SetDefaultSkillLevel(index)
         self.update()
 
     def update(self):
 
         # general settings
+        skill = self.app_model.GetDefaultSkillLevel()-1
+        self.view.default_skill.setCurrentIndex(skill)
         self.view.demo_path.setText(self.app_model.GetDemoDir())
         self.view.iwad_path.setText(self.app_model.GetIwadDir())
         self.view.maps_path.setText(self.app_model.GetMapsDir())
