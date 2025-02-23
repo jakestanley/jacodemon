@@ -39,6 +39,8 @@ class ViewPreLaunch(QDialog):
         # confirm or close
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         layout.addWidget(self.button_box)
+
+        layout.addStretch()
         
         self.setLayout(layout)
 

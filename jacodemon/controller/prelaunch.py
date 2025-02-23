@@ -14,6 +14,8 @@ class ControllerPreLaunch(QObject):
     def __init__(self, app_model: AppModel, view_pre_launch: ViewPreLaunch):
         super().__init__()
         self.app_model = app_model
+        self.app_model.mode_changed.connect(self.refresh)
+
         self.view = view_pre_launch
 
         self.view.button_box.accepted.connect(self.on_accept)
@@ -34,11 +36,17 @@ class ControllerPreLaunch(QObject):
         self.accept_signal.emit()
 
     def refresh(self):
+
+        if self.app_model.GetMode() == MODE_REPLAY:
+            self.view.checkbox_record_demo.setEnabled(False)
+            self.view.checkbox_fast.setEnabled(False)
+            self.view.checkbox_mods.setEnabled(False)
+
         self.view.checkbox_record_demo.setChecked(self.app_model.IsRecordDemoEnabled())
         self.view.checkbox_record_demo.setEnabled(self.app_model.CanRecordDemo())
 
-        self.view.checkbox_obs.setEnabled(self.app_model.CanControlObs())
         self.view.checkbox_obs.setChecked(self.app_model.IsObsEnabled())
+        self.view.checkbox_obs.setEnabled(self.app_model.CanControlObs())
 
         self.view.checkbox_auto_record.setChecked(self.app_model.IsAutoRecordEnabled())
         self.view.checkbox_auto_record.setEnabled(self.app_model.CanAutoRecord())
