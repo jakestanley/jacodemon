@@ -88,11 +88,13 @@ _please explain how to run tests_
 
 ## Roadmap
 
+### Major features
+
 - More achievements/badges
 - Show your time vs. par time
-- Display WADINFO or accompanying text file if detected in "Set" section on map select
 - Migrate your config/stats/demos/cheevos, etc for backup
-- View stats from map select
+- Backup and move config and stats
+- DSDA config viewer/editor
 - Auto setup OBS scenes with "sensible defaults"
 - Support more ports out of the box
 - Big code cleanup
@@ -102,6 +104,16 @@ _please explain how to run tests_
 - Promote experimental features to actual features
 - PEP compliance
 - Plenty of bug fixes
+
+### Minor features
+
+- Make comp levels a drop down
+- Skill override in pre launch options
+- Sort demoes in timestamp order
+- Display Set WADINFO or accompanying text file if detected in "Set" section on map select
+    - Requires calling WadService::GetDataFromWads on map set selection
+- Beat par time badge/achievement
+- Multiple badges instead of one tiered badge
 
 ## Experimental features
 

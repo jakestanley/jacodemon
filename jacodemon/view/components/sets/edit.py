@@ -149,7 +149,6 @@ class MapSetPathItemTableModel(QAbstractTableModel):
 class EditSetView(QDialog):
 
     def __init__(self, parent, mapSet: MapSet) -> None:
-        # TODO: read COMPLVL from text lump if available
         super().__init__(parent)
         self.mapSet = mapSet
         self.setWindowTitle(f"Editing \"{self.mapSet.name}\"")
@@ -166,7 +165,6 @@ class EditSetView(QDialog):
         self.iwad_line_edit = QLineEdit(self.mapSet.iwad)
         self.iwad_line_edit.setReadOnly(True)
 
-        # TODO dropdown for comp levels
         self.comp_level_label = QLabel("Comp Level:")
         self.comp_level_line_edit = QLineEdit(str(self.mapSet.compLevel))
 

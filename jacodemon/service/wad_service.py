@@ -88,23 +88,33 @@ class WadService:
             if path:
                 wad = omgwad.WAD(path)
 
-                # TODO: you may wish to perform case conversion on keys, if 
-                #   it's not in the GAME/UMAPinfo standards
+                # case conversion on keys, it's not in the GAME/UMAPinfo standards
                 if "GAMEINFO" in wad.data:
                     lump = parse_gameinfo(wad.data['GAMEINFO'].data)
+                    data.title = lump.get('Title', data.title)
+                    data.iwad = lump.get('IWAD', data.iwad)
+                elif "gameinfo" in wad.data:
+                    lump = parse_gameinfo(wad.data['gameinfo'].data)
                     data.title = lump.get('Title', data.title)
                     data.iwad = lump.get('IWAD', data.iwad)
                 
                 if "COMPLVL" in wad.data:
                     lump = parse_complevel(wad.data['COMPLVL'].data)
                     data.complevel = lump.get('complevel', data.complevel)
+                elif "complevel" in wad.data:
+                    lump = parse_complevel(wad.data['complevel'].data)
+                    data.complevel = lump.get('complevel', data.complevel)
 
                 if "CREDITS" in wad.data:
                     data.credits = wad.data['CREDITS'].data.decode('utf-8')
+                elif "credits" in wad.data:
+                    data.credits = wad.data['credits'].data.decode('utf-8')
                 
                 # WADINFO may be necessary if a TXT file is not present
                 if "WADINFO" in wad.data:
                     data.text = wad.data['WADINFO'].data.decode('utf-8')
+                elif "wadinfo" in wad.data:
+                    data.text = wad.data['wadinfo'].data.decode('utf-8')
             else:
                 continue
 
@@ -121,7 +131,6 @@ class WadService:
             else:
                 continue
 
-        # TODO: sort in the consumer?
         return sorted(maps, key=lambda x: x.MapId)
 
 if __name__ == '__main__':

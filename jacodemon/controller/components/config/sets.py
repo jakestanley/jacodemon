@@ -42,7 +42,4 @@ class ControllerSets(QObject):
         self.app_model.RemoveMapSet(mapSetId)
 
     def on_mapsets_updated(self):
-
-        # TODO: we always want to show the end of the list at the top cos 
-        #   of how i do the crappy list thing i'm tired i should probbly slep
         self.view.mapSetList.populate(reversed(self.app_model.GetMapSets()))

@@ -10,6 +10,7 @@ class SceneManager():
         self._config: JacodemonConfig = GetConfig()
         self._previous_scene = None
 
+    # TODO use signals for this
     def SwitchToBrowserScene(self):
         # TODO: consider a stack for this, but may be overkill for my needs
         self._previous_scene = self._obs.GetScene()

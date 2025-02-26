@@ -24,7 +24,6 @@ _KEY_TITLE_SOURCE = 'title_source'
 _KEY_SETS = 'sets'
 _KEY_SKILL = 'skill'
 
-# TODO move this into app model etc
 class JacodemonConfig(Config):
 
     # TODO this needs a rewrite it's a reyt mess
@@ -34,7 +33,6 @@ class JacodemonConfig(Config):
         # general
         self.default_complevel = self.config.get(_KEY_DEFAULT_COMPLEVEL, DEFAULT_COMP_LEVEL)
 
-        # TODO UI should have a dropdown
         self.skill = self.config.get(_KEY_SKILL, DEFAULT_SKILL)
 
         # dsda doom
@@ -64,7 +62,6 @@ class JacodemonConfig(Config):
         self.mods = self.config.get(_KEY_MODS, [])
         # self.sets = [maps.LoadMapSet(ms) for ms in self.config.get(_KEY_SETS, [])]
         self.sets = self.config.get(_KEY_SETS, [])
-        # TODO where tf is default skill level?
 
     def _PrepareSave(self):
 

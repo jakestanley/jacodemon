@@ -52,7 +52,6 @@ class MapReport:
             else:
                 self.best_badge = badge
                 self.badges.append(badge)
-                # TODO consider best time?
         else:
             self.best_badge = badge
             self.badges.append(badge)

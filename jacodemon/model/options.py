@@ -16,8 +16,6 @@ class Options:
         self.fast = None
         self.mode: LaunchMode = None
         self.stdout_log_level = None
-
-        # TODO skill set in options overrides launchconfig skill
         self.skill = None
 
 def _ArgsToOptions(args) -> Options:

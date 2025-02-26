@@ -12,7 +12,6 @@ class LogManager:
 
         options: Options = GetOptions()
 
-        # TODO make this more programmatic
         if "INFO" in options.stdout_log_level:
             handler = logging.StreamHandler()
             handler.setLevel(logging.INFO)

@@ -9,7 +9,6 @@ class ControllerPreLaunch(QObject):
     accept_signal = Signal()
     reject_signal = Signal()
 
-    # TODO signal on prelaunch
     def __init__(self, app_model: AppModel, view_pre_launch: ViewPreLaunch):
         super().__init__()
         self.app_model = app_model
@@ -62,24 +61,6 @@ class ControllerPreLaunch(QObject):
         # self.view.ll_info.setChecked("INFO" in app_model.options.stdout_log_level)
         # self.view.ll_warning.setChecked("WARNING" in app_model.options.stdout_log_level or "WARN" in app_model.options.stdout_log_level)
         # self.view.ll_error.setChecked("ERROR" in app_model.options.stdout_log_level)
-
-    # def _GetMode(self):
-    #     if self.view.radio_last.isChecked():
-    #         return MODE_LAST
-    #     elif self.view.radio_random.isChecked():
-    #         return MODE_RANDOM
-    #     elif self.view.radio_replay.isChecked():
-    #         return MODE_REPLAY
-    #     else:
-    #         return MODE_NORMAL
-        
-    # def _SetMode(self):
-
-    #     # TODO setters and getters on the view? consult the model?
-    #     if self.view.radio_replay.isChecked() and self.view.checkbox_record_demo.isChecked():
-    #         self.view.checkbox_record_demo.setChecked(False)
-
-    #     self.view.checkbox_record_demo.setEnabled(not self.view.radio_replay.isChecked())
 
 if __name__ == "__main__":
 

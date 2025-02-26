@@ -122,8 +122,6 @@ class Statistics:
         else:
             return LegacyStatisticsArgsToLaunchSpec(self.args, self.demo, map)
 
-
-    # TODO make this work with multiple formats
     @classmethod
     def from_dict(cls, data):
         instance = cls()

@@ -48,7 +48,6 @@ class SelectSetController:
 
     def Remove(self, ms: MapSet):
         GetConfig().RemoveMapSet(ms)
-        # TODO redraw
 
     def SetMainWindow(self, mainWindow: QMainWindow):
         self._mainWindow = mainWindow

@@ -19,7 +19,6 @@ def OpenSingleFileDialog(parent, types, line):
     if file:
         line.setText(file)
 
-# TODO: move this also
 def OpenDirectoryDialog(parent, what, line):
     options = QFileDialog.Option.ShowDirsOnly
     directory = QFileDialog.getExistingDirectory(parent, f"Select {what} directory", "", options=options)
