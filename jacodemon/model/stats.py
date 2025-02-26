@@ -124,12 +124,15 @@ class Statistics:
         instance = cls()
 
         launch_config: LaunchSpec = None
+        launch_config_data = data.get(_KEY_LAUNCH_CONFIG, None)
+
+
 
         try:
-            launch_config = LaunchSpec.from_dict(data.get(_KEY_LAUNCH_CONFIG, None))
-            instance.timestamp = launch_config.timestamp
-            instance.comp_level = launch_config.comp_level or data.get(_KEY_COMP_LEVEL, data.get("compLevel", None))
-            instance.skill = launch_config.skill or data.get(_KEY_SKILL, None)
+            launch_config = LaunchSpec.from_dict(launch_config_data)
+            if launch_config:
+                instance.comp_level = launch_config.comp_level or data.get(_KEY_COMP_LEVEL, data.get("compLevel", None))
+                instance.skill = launch_config.skill or data.get(_KEY_SKILL, None)
         except TypeError:
             instance.comp_level = data.get(_KEY_COMP_LEVEL, data.get("compLevel", None))
             instance.skill = data.get(_KEY_SKILL, None)

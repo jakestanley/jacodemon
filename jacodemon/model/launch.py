@@ -3,6 +3,8 @@ from enum import Enum, auto
 from dataclasses import dataclass
 from typing import List
 
+from jacodemon.misc.files import ParseTimestampFromPath
+
 class LaunchMode(Enum):
     RECORD_DEMO = auto()
     REPLAY_DEMO = auto()
@@ -27,9 +29,13 @@ class LaunchSpec:
 
     @classmethod
     def from_dict(cls, data):
+
+        if data is None:
+            return None
+
         return cls(
             name=data['name'],
-            timestamp=data['timestamp'],
+            timestamp=data.get('timestamp', ParseTimestampFromPath(data['name'])),
             map_id=data['map_id'],
             iwad=data['iwad'],
             wads=data['wads'],
