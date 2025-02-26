@@ -114,7 +114,9 @@ _please explain how to run tests_
 
 ### Minor features
 
-- Edit map set to set comp level manually
+- Edit map set:
+    - to set comp level manually
+    - to override or change IWAD
 - Make comp levels a drop down
 - Skill override in pre launch options
 - Sort demoes in timestamp order
@@ -125,6 +127,7 @@ _please explain how to run tests_
 
 ### Bugs
 
+- Last map is not updated unless you restart the application
 - If you quit during saving the replay buffer, then the replay buffer does not get renamed
 
 ### Out of scope features

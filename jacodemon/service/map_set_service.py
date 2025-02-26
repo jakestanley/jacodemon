@@ -51,7 +51,7 @@ class MapSetService:
             return False
         
         wadsData = self.wad_service.GetDataFromWads(paths)
-        iwad = wadsData.iwad if wadsData.iwad else "DOOM2.WAD"
+        iwad = wadsData.iwad if wadsData.iwad else None
         compLevel = wadsData.complevel if wadsData.complevel else None
 
         mapSet = MapSet(
