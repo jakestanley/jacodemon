@@ -1,53 +1,59 @@
-from jacodemon.model.config import JacodemonConfig
-from jacodemon.model.map import Map
-from jacodemon.misc.map_utils import *
+from dataclasses import dataclass
+from typing import List
+
 from jacodemon.model.options import Options
 
-from jacodemon.misc.constants import DEFAULT_COMP_LEVEL, DEFAULT_SKILL
-
-# TODO later if we wish to properly implement multi port support, we may 
-#   wish to make this a super class. as a fun exercise we should make a 
-#   DsdaLaunchConfig subclass sooner than later
+@dataclass(frozen=True)
 class LaunchConfig:
-    def __init__(self, config: JacodemonConfig, options: Options, map: Map, demo_index: int):
-        self.timestamp = None
-        self.map: Map = map
-        self.window = True
-        self.demo_index = demo_index
+    """
+    Immutable launch properties that affect playback or demo compatibility
+    """
+    name: str
+    timestamp: str
+    map_id: str
+    # files
+    iwad: str
+    wads: List[str]
+    dehs: List[str]
+    mods: List[str]
+    # modifiers
+    fast_monsters: bool
+    skill: int
+    comp_level: str
 
-        if config.skill:
-            self.skill = config.skill
-        else:
-            self.skill = DEFAULT_SKILL
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            name=data['name'],
+            timestamp=data['timestamp'],
+            map_id=data['map_id'],
+            iwad=data['iwad'],
+            wads=data['wads'],
+            dehs=data['dehs'],
+            mods=data['mods'],
+            fast_monsters=data['fast_monsters'],
+            skill=data['skill'],
+            comp_level=data['comp_level']
+        )
+    
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'timestamp': self.timestamp,
+            'map_id': self.map_id,
+            'iwad': self.iwad,
+            'wads': self.wads,
+            'dehs': self.dehs,
+            'mods': self.mods,
+            'fast_monsters': self.fast_monsters,
+            'skill': self.skill,
+            'comp_level': self.comp_level
+        }
 
-        if map.MapSet.compLevel:
-            self.comp_level = map.MapSet.compLevel
-        elif config.default_complevel:
-            self.comp_level = config.default_complevel
-        else:
-            self.comp_level = DEFAULT_COMP_LEVEL
-
-        if options.record_demo:
-            self.record_demo = True
-        else:
-            self.record_demo = False
-
-        if options.music:
-            self.music = True
-        else:
-            self.music = False
-
-        if options.mods:
-            self.mods = True
-        else:
-            self.mods = False
-
-        if options.fast:
-            self.fast = True
-        else:
-            self.fast = False
-
-    def set_replay(self, demo):
-        self._demo_path = demo.path
-        # FIXME: hack, should use method for this idk
-        self._comp_level = demo.stats._stats.get('compLevel', self.get_comp_level())
+class LaunchConfigMutables:
+    """
+    Extra launch config options that do not affect playback or demo compatibility
+    """
+    def __init__(self, options: Options):
+        self.record_demo = options.record_demo
+        self.music = options.music

@@ -93,5 +93,5 @@ class StatisticsTableView(QWidget):
                 self.statistics_selected.emit(row)
 
     def Update(self, statisticses: List[Statistics]):
-        self.model.refreshData([statistics.to_dict() for statistics in statisticses])
+        self.model.refreshData([statistics.to_view() for statistics in statisticses])
         self.table_view.resizeColumnsToContents()

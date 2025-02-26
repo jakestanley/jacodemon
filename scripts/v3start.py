@@ -6,7 +6,6 @@ from jacodemon.model.options import InitialiseOptions
 from jacodemon.manager import UIManager, UIState
 
 from jacodemon.model.app import AppModel, InitialiseAppModel
-from jacodemon.model.launch import LaunchConfig
 
 from jacodemon.controller.config import ControllerConfig
 from jacodemon.controller.mapselect import ControllerMapSelect

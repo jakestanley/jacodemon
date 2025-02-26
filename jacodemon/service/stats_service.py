@@ -50,8 +50,8 @@ class StatsService:
             if new_badge > map.Badge:
                 map.Badge = new_badge
 
-    def Save(self, statistics: Statistics, launch_config: LaunchConfig):
+    def Save(self, statistics: Statistics):
         
-        stats_path = f"{self.stats_dir}/{launch_config.map.GetPrefix()}-{launch_config.timestamp}-STATS.json"
+        stats_path = f"{self.stats_dir}/{statistics.launch_config.name}-STATS.json"
         with open(stats_path, "w") as stats_file:
             stats_file.write(json.dumps(statistics.to_dict(), indent=2))

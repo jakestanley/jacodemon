@@ -2,14 +2,13 @@ from typing import List
 from PySide6.QtCore import QObject, Signal
 
 from jacodemon.model.mod import Mod
-from jacodemon.model.launch import LaunchConfig
 
 from jacodemon.service.config_service import ConfigService
 from jacodemon.service.map_service import MapService
 from jacodemon.service.map_set_service import MapSetService
 from jacodemon.service.stats_service import StatsService
 from jacodemon.service.demo_service import DemoService
-from jacodemon.service.launch_service import LaunchService
+from jacodemon.service.launch.launch_service import LaunchService
 
 # TODO move Options into model?
 from jacodemon.model.options import Options
@@ -226,17 +225,22 @@ class AppModel(QObject):
         self.mode_changed.emit()
 
     def Launch(self):
-        launch_config: LaunchConfig = LaunchConfig(
-            config=self.config_service.config,
-            options=self.options,
-            map=self.selected_map,
-            # TODO fix demo indexing
-            demo_index=None)
 
-        self.map_service.SaveLastMap(self.selected_map)
-        stats = self.launch_service.Launch(launch_config, self.config)
+        if self.options.mode != MODE_REPLAY:
+            self.map_service.SaveLastMap(self.selected_map)
 
-        self.stats_service.Save(stats, launch_config)
+        launch_config = self.launch_service.CreateLaunchConfig(
+            self.config, self.options, self.selected_map)
+
+        stats = self.launch_service.Launch(
+            launch_config=launch_config, 
+            jacodemon_config=self.config, 
+            play_demo=self.options.mode == MODE_REPLAY, 
+            record_demo=self.options.record_demo)
+
+        if self.options.mode != MODE_REPLAY:
+            self.stats_service.Save(stats)
+
         self.selected_mapset_updated.emit()
 
     def GetDsdaPath(self):
@@ -262,7 +266,7 @@ class AppModel(QObject):
 
 def InitialiseAppModel():
 
-    from jacodemon.service.dsda_service import DsdaService
+    from jacodemon.service.launch.dsda_service import DsdaService
 
     """Pretty please don't call this more than once. Used for initial setup 
     and individual components testing"""

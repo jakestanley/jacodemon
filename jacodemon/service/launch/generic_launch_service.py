@@ -8,10 +8,13 @@ from abc import ABC, abstractmethod
 
 from jacodemon.misc.map_utils import get_warp, get_inferred_iwad
 
+from jacodemon.misc.constants import DEFAULT_COMP_LEVEL, DEFAULT_SKILL
 from jacodemon.model.config import JacodemonConfig
-from jacodemon.model.launch import LaunchConfig
+from jacodemon.model.launch import LaunchConfig, LaunchConfigMutables
+from jacodemon.model.options import Options
 from jacodemon.model.stats import Statistics
 
+from jacodemon.model.map import Map
 from jacodemon.model.mapset import MapSet
 
 class LaunchService(ABC):
@@ -22,13 +25,42 @@ class LaunchService(ABC):
     def __init__(self):
         super().__init__()
 
-    # TODO use/call OBS Service in this super class in/around Execute/PostLaunch
-    def Launch(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig) -> Statistics:
-        
-        timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
-        launch_config.timestamp = timestamp
+    def CreateLaunchConfig(self, config: JacodemonConfig, options: Options, map: Map) -> LaunchConfig:
 
-        self.PreLaunch(launch_config, jacodemon_config)
+        skill = DEFAULT_SKILL
+        if config.skill:
+            skill = config.skill
+
+        comp_level = DEFAULT_COMP_LEVEL
+        if map.MapSet.compLevel:
+            comp_level = map.MapSet.compLevel
+        elif config.default_complevel:
+            comp_level = config.default_complevel
+
+        mods = []
+        if options.mods:
+            mods = [mod['path'] for mod in config.mods if mod['enabled']]
+
+        timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
+        name = f"{map.GetPrefix()}-{timestamp}"
+
+        return LaunchConfig(
+            name=name,
+            timestamp=timestamp,
+            map_id=map.MapId,
+            iwad=map.MapSet.iwad,
+            wads=self.GetWadPatches(map),
+            dehs=self.GetDehackedPatches(map),
+            mods=mods,
+            fast_monsters=options.fast,
+            skill=skill,
+            comp_level=comp_level
+        )
+
+    # TODO use/call OBS Service in this super class in/around Execute/PostLaunch
+    def Launch(self, launch_config: LaunchConfig, launch_config_extras: LaunchConfigMutables, jacodemon_config: JacodemonConfig) -> Statistics:
+
+        self.PreLaunch()
 
         command = self.GetLaunchCommand(launch_config, jacodemon_config)
 
@@ -38,11 +70,7 @@ class LaunchService(ABC):
             time.sleep(2)
 
         statistics = Statistics()
-        statistics.skill = launch_config.skill
-        statistics.command = command
-        statistics.comp_level = launch_config.comp_level
-        statistics.timestamp = timestamp
-        statistics.sourcePort = "dsdadoom"
+        statistics.sourcePort = self.GetSourcePortName()
 
         self.EnhanceStatistics(launch_config, jacodemon_config, statistics)
         self.PostLaunch(launch_config, jacodemon_config)
@@ -50,15 +78,19 @@ class LaunchService(ABC):
         return statistics
 
     @abstractmethod
-    def PreLaunch(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig):
-        print("PreLaunch is not implemented by this LaunchService instance")
-
-    @abstractmethod
-    def GetLaunchCommand(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig):
+    def GetSourcePortName(self) -> str:
         raise("Not implemented")
 
     @abstractmethod
-    def EnhanceStatistics(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig, statistics: Statistics):
+    def PreLaunch(self):
+        print("PreLaunch is not implemented by this LaunchService instance")
+
+    @abstractmethod
+    def GetLaunchCommand(self, launch_config: LaunchConfig, launch_config_extras: LaunchConfigMutables):
+        raise("Not implemented")
+
+    @abstractmethod
+    def EnhanceStatistics(self, launch_config: LaunchConfig, statistics: Statistics):
         print("EnhanceStatistics is not implemented by this LaunchService instance")
 
     @abstractmethod
@@ -80,55 +112,46 @@ class LaunchService(ABC):
                 patches.append(map.path)
 
         return patches
-    
-    def GetDemoFileName(self, launch_config: LaunchConfig):
-        return f"{launch_config.map.GetPrefix()}-{launch_config.timestamp}.lmp"
 
-    def GetGenericDoomArgs(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig):
-        wads = self.GetWadPatches(launch_config.map.MapSet)
-        dehs = self.GetDehackedPatches(launch_config.map.MapSet)
+    def GetGenericDoomArgs(self, launch_config: LaunchConfig, demo_dir: str, iwad_dir: str, play_demo: bool):
 
         doom_args = []
 
-        if len(dehs) > 0:
+        if len(launch_config.dehs) > 0:
             doom_args.append("-deh")
-            doom_args.extend(dehs)
+            doom_args.extend(launch_config.dehs)
 
         files = []
-        if len(wads) > 0:
-            files.extend(wads)
+        if len(launch_config.wads) > 0:
+            files.extend(launch_config.wads)
 
-        if launch_config.mods:
-            enabled_mods = [mod for mod in jacodemon_config.mods if mod['enabled']]
-            if len(enabled_mods) > 0:
-                files.extend(mod['path'] for mod in enabled_mods)
+        if len(launch_config.mods) > 0:
+            files.extend([mod for mod in launch_config.mods])
 
         if len(files) > 0:
             doom_args.append("-file")
             doom_args.extend(files)
 
         doom_args.extend(['-warp'])
-        doom_args.extend(get_warp(launch_config.map.MapId))
+        doom_args.extend(get_warp(launch_config.mapId))
 
         iwad = launch_config.map.MapSet.iwad
         if not iwad:
             iwad = get_inferred_iwad(launch_config.map.MapId)
 
-        iwad_path = os.path.join(jacodemon_config.iwad_dir, iwad)
+        iwad_path = os.path.join(iwad_dir, iwad)
         doom_args.extend(['-iwad', iwad_path])
 
-        if False: # TODO this should be fixed to play demos back
+        demo_path = os.path.join(demo_dir, f"{launch_config.name}.lmp")
+        if play_demo:
             doom_args.append("-playdemo")
-            doom_args.append(self._demo_path)
+            doom_args.append(demo_path)
         elif launch_config.record_demo:
             doom_args.append("-record")
-            doom_args.append(os.path.join(jacodemon_config.demo_dir, self.GetDemoFileName(launch_config)))
+            doom_args.append(demo_path)
 
         if launch_config.fast:
             doom_args.append('-fast')
-
-        if not launch_config.music:
-            doom_args.append('-nomusic')
 
         doom_args.extend(['-skill', f"{launch_config.skill}"])
 

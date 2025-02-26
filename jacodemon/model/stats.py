@@ -1,3 +1,5 @@
+from jacodemon.model.launch import LaunchConfig
+
 _KEY_TIMESTAMP = 'Timestamp'
 _KEY_COMP_LEVEL = 'CompLevel'
 _KEY_SOURCE_PORT = 'SourcePort'
@@ -7,28 +9,28 @@ _KEY_KILLS = 'Kills'
 _KEY_ITEMS = 'Items'
 _KEY_SECRETS = 'Secrets'
 _KEY_TIME = 'Time'
+_KEY_LAUNCH_CONFIG = 'LaunchConfig'
 
 # deprecated
 _KEY_LEVEL_STATS = 'levelStats'
 
 class Statistics:
 
-    def __init__(self, time=None, timestamp=None, comp_level=None, 
-                 sourcePort=None, command=None, demo=None):
+    def __init__(self, demo=None):
 
-        self.time = time
-        self.comp_level = comp_level
-        self.sourcePort = sourcePort
-        self.command = command
-        self.timestamp = timestamp
+        self.time = None
         self.kills = None
-        self.skill = None
+        self.sourcePort = None
         self.items = None
         self.secrets = None
+        self.launch_config: LaunchConfig = None
+
+        # deprecated
+        self.skill = None
+        self.comp_level = None
+
+        # transient
         self.demo = demo
-        
-    def get_timestamp(self):
-        return self.timestamp
 
     def get_time(self):
         return self.time
@@ -41,6 +43,16 @@ class Statistics:
     
     def get_secrets(self):
         return self.secrets
+    
+    def get_comp_level(self):
+        if self.launch_config:
+            return self.launch_config.comp_level or self.comp_level
+        return self.comp_level
+    
+    def get_skill(self):
+        if self.launch_config:
+            return self.launch_config.skill or self.skill
+        return self.skill
     
     def get_badge(self) -> int:
 
@@ -62,19 +74,39 @@ class Statistics:
     def set_level_stats(self):        
         self.dsda_service.GetLevelStats() # or something
 
-    # TODO separate to_dict for saving and for the table
-    def to_dict(self):
+    def to_view(self):
+        """
+        Get UI representation as dict
+        """
         dic = {}
 
         dic["Demo"] = "Yes" if self.demo else "No"
-        dic[_KEY_SKILL] = self.skill
+        dic[_KEY_TIMESTAMP] = self.timestamp
+        dic[_KEY_COMP_LEVEL] = self.get_comp_level()
+        dic[_KEY_SOURCE_PORT] = self.sourcePort
+        dic[_KEY_SKILL] = self.get_skill()
+        dic[_KEY_KILLS] = self.kills
+        dic[_KEY_ITEMS] = self.items
+        dic[_KEY_SECRETS] = self.secrets
+        dic[_KEY_TIME] = self.time
+
+        return dic
+
+    def to_dict(self):
+        """
+        Convert to dict for persistence only
+        """
+        dic = {}
+        
+        dic[_KEY_SKILL] = self.get_skill()
         dic[_KEY_SOURCE_PORT] = self.sourcePort
         dic[_KEY_TIME] = self.time
         dic[_KEY_KILLS] = self.kills
         dic[_KEY_ITEMS] = self.items
         dic[_KEY_SECRETS] = self.secrets
         dic[_KEY_TIMESTAMP] = self.timestamp
-        dic[_KEY_COMP_LEVEL] = self.comp_level
+        dic[_KEY_COMP_LEVEL] = self.get_comp_level()
+        dic[_KEY_LAUNCH_CONFIG] = self.launch_config.to_dict()
 
         return dic
 
@@ -83,12 +115,21 @@ class Statistics:
     def from_dict(cls, data):
         instance = cls()
 
+        launch_config: LaunchConfig = None
+
+        try:
+            launch_config = LaunchConfig.from_dict(data.get(_KEY_LAUNCH_CONFIG, None))
+            instance.timestamp = launch_config.timestamp
+            instance.comp_level = launch_config.comp_level or data.get(_KEY_COMP_LEVEL, data.get("compLevel", None))
+            instance.skill = launch_config.skill or data.get(_KEY_SKILL, None)
+        except TypeError:
+            instance.comp_level = data.get(_KEY_COMP_LEVEL, data.get("compLevel", None))
+            instance.skill = data.get(_KEY_SKILL, None)
+
         # fallbacks are old keys
         instance.timestamp = data.get(_KEY_TIMESTAMP, data.get("timestamp", None))
-        instance.comp_level = data.get(_KEY_COMP_LEVEL, data.get("compLevel", None))
         instance.sourcePort = data.get(_KEY_SOURCE_PORT, data.get("sourcePort", None))
-        instance.command = data.get(_KEY_ARGS, None)
-        instance.skill = data.get(_KEY_SKILL, None)
+        instance.launch_config = launch_config
 
         # old style level stats
         levelStats = data.get(_KEY_LEVEL_STATS, None)

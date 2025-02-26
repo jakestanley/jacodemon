@@ -12,7 +12,7 @@ from jacodemon.view.config import ViewConfig
 from jacodemon.signaling import Signaling, SWITCH_TO_BROWSER_SCENE
 from jacodemon.model.config import JacodemonConfig, GetConfig
 from jacodemon.last import *
-from jacodemon.model.launch import LaunchConfig
+from jacodemon.model.launch import __LaunchConfigREMOVEME
 from jacodemon.service.obs.obs import ObsController, GetObsController
 from jacodemon.model.options import Options, InitialiseOptions, GetOptions, MODE_LAST, MODE_REPLAY
 from jacodemon.service.dsda.stats import Statistics, NewStatistics
@@ -38,7 +38,7 @@ def GetMap():
 
         # if user clicked play last, override and set it to be sure
         if cd.last:
-            GetOptions().mode = MODE_LAST
+            GetOptions().demo_mode = MODE_LAST
 
     demo_index = None
     if GetOptions().last():
@@ -47,7 +47,7 @@ def GetMap():
         map, demo_index = OpenSelectMapDialog()
 
     if demo_index is not None:
-        GetOptions().mode = MODE_REPLAY
+        GetOptions().demo_mode = MODE_REPLAY
 
     return map, demo_index
 
@@ -97,7 +97,7 @@ def main():
             logger.debug("Saving selected map for next time")
             SaveSelectedMap(map, GetMapsSelectController().mapSet.id)
 
-        launch = LaunchConfig()
+        launch = __LaunchConfigREMOVEME()
         if GetMapsSelectController().mapSet:
             launch.set_map_set(GetMapsSelectController().mapSet.id)
         else:
