@@ -4,7 +4,6 @@ import platform
 
 from jacodemon.logs import GetLogManager
 
-from jacodemon.model.options import Options
 from jacodemon.model.launch import LaunchSpec, LaunchSession, LaunchMode
 from jacodemon.model.stats import Statistics
 from jacodemon.service.launch.launch_service import LaunchService
@@ -57,7 +56,7 @@ class DsdaService(LaunchService):
         args = self.GetGenericDoomArgs(launch_spec=launch_config, 
                                        launch_session=launch_session)
 
-        args.extend(['-complevel', str(launch_config.comp_level)])
+        args.extend(['-complevel', self._FormatCompLevel(str(launch_config.comp_level))])
 
         if launch_session is not LaunchMode.REPLAY_DEMO:
             args.append('-levelstat')
