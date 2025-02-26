@@ -127,7 +127,10 @@ _please explain how to run tests_
 
 ### Bugs
 
-- Last map is not updated unless you restart the application
+- Play button is not disabled if you haven't selected a map yet
+- Last map...
+    - is not updated unless you restart the application
+    - should probably use launch config for reproduction?
 - If you quit during saving the replay buffer, then the replay buffer does not get renamed
 
 ### Out of scope features

@@ -42,11 +42,10 @@ class MapService:
 
                 # pickle will only return a decoded instance if a type 
                 #   matching the type under "py/object" exists
-                unpickled = jsonpickle.decode(json.load(f))
+                pickled = json.load(f)
 
-                # the persisted map set may be stale, so we must clear it
                 try:
-                    unpickled.MapSet = None
+                    unpickled = jsonpickle.decode(pickled)
                 except AttributeError:
                     print("Cannot parse last map config. Returning nothing")
                     return None
