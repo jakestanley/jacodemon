@@ -91,7 +91,13 @@ _please explain how to run tests_
 ### Major features
 
 - More achievements/badges
+- Enemies count in map picker (optional)
+- In depth analysis, which maps were easy? How many attempts before you completed a map for the first time?
 - Show your time vs. par time
+- WAD locations and PWAD search (uses WAD.TXT if available)
+- WADSeeker/idgames API integration
+- Add FINISHED to auto-records output file rename
+- Option to delete OBS recording instead of saving
 - Migrate your config/stats/demos/cheevos, etc for backup
 - Backup and move config and stats
 - DSDA config viewer/editor
@@ -104,6 +110,7 @@ _please explain how to run tests_
 - Promote experimental features to actual features
 - PEP compliance
 - Plenty of bug fixes
+- Tag/rate maps. Tags like "awesome-music", "challenging", etc. Memento Mori's "Galaxy" is great!
 
 ### Minor features
 
@@ -114,6 +121,22 @@ _please explain how to run tests_
     - Requires calling WadService::GetDataFromWads on map set selection
 - Beat par time badge/achievement
 - Multiple badges instead of one tiered badge
+
+### Bugs
+
+- If you quit during saving the replay buffer, then the replay buffer does not get renamed
+
+### Out of scope features
+
+#### Other source ports
+
+I'm thinking if you've got to the point you want to use a tool like this to 
+handle recording your Doom career, you've probably already realised that 
+DSDA Doom is one of the best tools for this, so at this point I will not be 
+supporting other ports, though I do wish to make the code extensible enough 
+to support such options. I made this scope decision in February 2025 after I 
+have already written some code for Crispy/Chocolate Doom, so I'll leave that 
+in for now, unused.
 
 ## Experimental features
 
