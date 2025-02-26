@@ -90,7 +90,7 @@ _please explain how to run tests_
 
 - More achievements/badges
 - Show your time vs. par time
-- Display WADINFO or accompanying text file if detected
+- Display WADINFO or accompanying text file if detected in "Set" section on map select
 - Migrate your config/stats/demos/cheevos, etc for backup
 - View stats from map select
 - Auto setup OBS scenes with "sensible defaults"

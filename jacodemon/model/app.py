@@ -233,7 +233,7 @@ class AppModel(QObject):
             self.map_service.SaveLastMap(self.selected_map)
 
         if self.options.mode == LaunchMode.REPLAY_DEMO:
-            launch_spec = self.selected_statistics.GetLaunchSpec()
+            launch_spec = self.selected_statistics.GetLaunchSpec(self.selected_map)
             # TODO verify launch spec
         else:
             launch_spec = self.launch_service.CreateLaunchSpec(self.config, self.options, self.selected_map)

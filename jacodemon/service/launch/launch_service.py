@@ -137,7 +137,10 @@ class LaunchService(ABC):
         if not iwad:
             iwad = get_inferred_iwad(launch_spec.map_id)
 
-        iwad_path = os.path.join(launch_session.iwad_dir, iwad)
+        if os.path.exists(iwad):
+            iwad_path = iwad
+        else:
+            iwad_path = os.path.join(launch_session.iwad_dir, iwad)
         doom_args.extend(['-iwad', iwad_path])
 
         demo_path = os.path.join(launch_session.demo_dir, f"{launch_spec.name}.lmp")

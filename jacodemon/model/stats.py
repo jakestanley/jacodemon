@@ -1,4 +1,9 @@
+from typing import List
+
+from jacodemon.misc.legacy import LegacyStatisticsArgsToLaunchSpec
+
 from jacodemon.model.launch import LaunchSpec
+from jacodemon.model.map import Map
 
 _KEY_TIMESTAMP = 'Timestamp'
 _KEY_COMP_LEVEL = 'CompLevel'
@@ -27,6 +32,7 @@ class Statistics:
         # deprecated
         self.skill = None
         self.comp_level = None
+        self.args: List[str] = None
 
         # transient
         self.demo = demo
@@ -106,17 +112,16 @@ class Statistics:
 
         return dic
 
-    def GetLaunchSpec(self):
+    def GetLaunchSpec(self, map: Map):
+        """
+        Get launch spec for a pre-recorded demo. Map argument is only used if 
+        launch config is to be inferred when launch config data is unavailable
+        """
         if self.launch_spec:
             return self.launch_spec
         else:
-            # we'll have to generate one based on what we have. it may be inaccurate
-            return LaunchSpec(
-                name=self.demo,
-                timestamp=self.timestamp,
-                skill=self.skill,
-                comp_level=self.comp_level
-            )
+            return LegacyStatisticsArgsToLaunchSpec(self.args, self.demo, map)
+
 
     # TODO make this work with multiple formats
     @classmethod
@@ -125,8 +130,6 @@ class Statistics:
 
         launch_config: LaunchSpec = None
         launch_config_data = data.get(_KEY_LAUNCH_CONFIG, None)
-
-
 
         try:
             launch_config = LaunchSpec.from_dict(launch_config_data)
@@ -155,5 +158,8 @@ class Statistics:
             instance.items = data.get(_KEY_ITEMS, None)
             instance.secrets = data.get(_KEY_SECRETS, None)
             instance.time = data.get(_KEY_TIME, None)
+
+        # deprecated
+        instance.args = data.get("args", None)
 
         return instance
