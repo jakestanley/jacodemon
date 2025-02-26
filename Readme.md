@@ -114,6 +114,7 @@ _please explain how to run tests_
 
 ### Minor features
 
+- Edit map set to set comp level manually
 - Make comp levels a drop down
 - Skill override in pre launch options
 - Sort demoes in timestamp order

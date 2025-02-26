@@ -44,15 +44,12 @@ class ViewPreLaunch(QDialog):
 
         layout.addWidget(groupbox)
 
+        layout.addStretch()
+
         # confirm or close
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         layout.addWidget(self.button_box)
 
-        
-
-
-        layout.addStretch()
-        
         self.setLayout(layout)
 
     def create_modes_group(self):
