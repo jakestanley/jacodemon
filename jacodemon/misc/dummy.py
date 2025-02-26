@@ -38,10 +38,7 @@ class DummyConfig(config.JacodemonConfig):
 
 def DummyArgs():
     args = argparse.Namespace()
-    args.no_gui = False
     args.stdout_log_level = 'DEBUG'
-    args.playlist = None
-    args.wad = None
     args.no_obs = False
     args.no_auto_record = False
     args.no_demo = False

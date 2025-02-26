@@ -5,9 +5,8 @@ import platform
 from jacodemon.logs import GetLogManager
 
 from jacodemon.model.options import Options
-from jacodemon.model.launch import LaunchConfig, LaunchConfigMutables
+from jacodemon.model.launch import LaunchSpec, LaunchSession, LaunchMode
 from jacodemon.model.stats import Statistics
-from jacodemon.model.config import JacodemonConfig
 from jacodemon.service.launch.launch_service import LaunchService
 
 
@@ -31,12 +30,6 @@ def _AddParsedLevelStats(rawLevelStats, stats: Statistics):
     if re.search(regex_items, rawLevelStats):
         stats.items = re.search(regex_items, rawLevelStats).group(1)
 
-class DsdaLaunchConfigMutables(LaunchConfigMutables):
-    def __init__(self, options: Options):
-        self.dsda_path = options.dsda_path
-        self.dsda_cfg = options.dsda_cfg
-        self.dsdadoom_hud_lump = options.dsdadoom_hud_lump
-
 class DsdaService(LaunchService):
 
     def __init__(self):
@@ -59,17 +52,14 @@ class DsdaService(LaunchService):
         if os.path.exists(_LEVELSTAT_TXT):
             os.remove(_LEVELSTAT_TXT)
 
-    def GetLaunchCommand(self, launch_config: LaunchConfig, jacodemon_config: JacodemonConfig, play_demo: bool = False, record_demo: bool = True):
+    def GetLaunchCommand(self, launch_config: LaunchSpec, launch_session: LaunchSession):
 
-        args = self.GetGenericDoomArgs(launch_config=launch_config, 
-                                       iwad_dir=jacodemon_config.iwad_dir,
-                                       demo_dir=jacodemon_config.demo_dir,
-                                       play_demo=play_demo,
-                                       record_demo=record_demo)
+        args = self.GetGenericDoomArgs(launch_spec=launch_config, 
+                                       launch_session=launch_session)
 
         args.extend(['-complevel', str(launch_config.comp_level)])
 
-        if not play_demo:
+        if launch_session is not LaunchMode.REPLAY_DEMO:
             args.append('-levelstat')
 
         if platform.system() == "Darwin":
@@ -77,24 +67,21 @@ class DsdaService(LaunchService):
         else:
             args.append('-window')
 
-        if jacodemon_config.dsdadoom_hud_lump:
-            args.extend(['-hud', jacodemon_config.dsdadoom_hud_lump])
+        # TODO that this may break demo compatibility if it changes, but
+        #   i'm not about to start hashing/backing these up
+        if launch_session.cfg_path:
+            args.extend(['-config', launch_session.cfg_path])
 
-        # TODO that this may break demo compatibility if it changes, but #
-        #   i'm not about to start backing these up
-        if jacodemon_config.dsda_cfg:
-            args.extend(['-config', jacodemon_config.dsda_cfg])
-
-        command = [jacodemon_config.dsda_path]
+        command = [launch_session.executable]
         command.extend(args)
 
         return command
     
-    def EnhanceStatistics(self, launch_config: LaunchConfig, statistics: Statistics):
+    def EnhanceStatistics(self, launch_spec: LaunchSpec, statistics: Statistics):
         if not os.path.exists("./tmp"):
             os.mkdir("./tmp")
 
-        archived_levelstat_txt = f"./tmp/{launch_config.name}.txt"
+        archived_levelstat_txt = f"./tmp/{launch_spec.name}.txt"
 
         if os.path.exists(_LEVELSTAT_TXT):
             with(open(_LEVELSTAT_TXT)) as raw_level_stats:

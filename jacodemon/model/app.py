@@ -1,6 +1,8 @@
 from typing import List
 from PySide6.QtCore import QObject, Signal
 
+from jacodemon.model.options import Options
+from jacodemon.model.launch import LaunchMode, LaunchSpec, LaunchSession
 from jacodemon.model.mod import Mod
 
 from jacodemon.service.config_service import ConfigService
@@ -10,8 +12,6 @@ from jacodemon.service.stats_service import StatsService
 from jacodemon.service.demo_service import DemoService
 from jacodemon.service.launch.launch_service import LaunchService
 
-# TODO move Options into model?
-from jacodemon.model.options import Options
 from jacodemon.service.options_service import OptionsService
 
 from jacodemon.model.options import MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
@@ -128,10 +128,10 @@ class AppModel(QObject):
         self.mods_updated.emit()
 
     def IsRecordDemoEnabled(self) -> bool:
-        return self.options.record_demo and not self.options.mode == MODE_REPLAY
+        return self.options.mode == LaunchMode.RECORD_DEMO
     
     def CanRecordDemo(self) -> bool:
-        return self.options.mode != MODE_REPLAY
+        return self.options.mode != LaunchMode.REPLAY_DEMO
     
     def IsAutoRecordEnabled(self) -> bool:
         return self.options.auto_record and self.options.obs
@@ -217,28 +217,40 @@ class AppModel(QObject):
         self.mapsets_updated.emit()
 
     def SetPlayMode(self):
-        self.options.mode = MODE_NORMAL
+        self.options.mode = LaunchMode.RECORD_DEMO
         self.mode_changed.emit()
 
-    def SetDemoMode(self):
-        self.options.mode = MODE_REPLAY
+    def SetReplayMode(self):
+        self.options.mode = LaunchMode.REPLAY_DEMO
         self.mode_changed.emit()
 
     def Launch(self):
 
-        if self.options.mode != MODE_REPLAY:
+        launch_spec: LaunchSpec = None
+
+        # only save last map if we are not replaying a demo
+        if self.options.mode != LaunchMode.REPLAY_DEMO:
             self.map_service.SaveLastMap(self.selected_map)
 
-        launch_config = self.launch_service.CreateLaunchConfig(
-            self.config, self.options, self.selected_map)
+        if self.options.mode == LaunchMode.REPLAY_DEMO:
+            launch_spec = self.selected_statistics.GetLaunchSpec()
+            # TODO verify launch spec
+        else:
+            launch_spec = self.launch_service.CreateLaunchSpec(self.config, self.options, self.selected_map)
+
+        launch_session = LaunchSession(
+            executable=self.config_service.GetExecutableForSourcePort(self.launch_service.GetSourcePortName()),
+            cfg_path=self.config_service.GetCfgPathForSourcePort(self.launch_service.GetSourcePortName()),
+            iwad_dir=self.config.iwad_dir,
+            demo_dir=self.config.demo_dir,
+            mode=self.options.mode,
+            music=self.options.music)
 
         stats = self.launch_service.Launch(
-            launch_config=launch_config, 
-            jacodemon_config=self.config, 
-            play_demo=self.options.mode == MODE_REPLAY, 
-            record_demo=self.options.record_demo)
-
-        if self.options.mode != MODE_REPLAY:
+            launch_spec=launch_spec, 
+            launch_session=launch_session)
+        
+        if stats:
             self.stats_service.Save(stats)
 
         self.selected_mapset_updated.emit()

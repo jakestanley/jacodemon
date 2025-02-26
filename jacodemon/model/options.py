@@ -1,3 +1,5 @@
+from jacodemon.model.launch import LaunchMode
+
 _SINGLETON = None
 
 MODE_NORMAL: int = 1
@@ -7,35 +9,19 @@ MODE_REPLAY: int = 4
 
 class Options:
     def __init__(self):
-        self.playlist = None
-        self.wad = None
-        self.gui = None
         self.obs = None
         self.mods = None
         self.music = None
         self.auto_record = None
-        self.record_demo = None
         self.fast = None
-        self.mode = MODE_NORMAL
+        self.mode: LaunchMode = None
         self.stdout_log_level = None
 
         # TODO skill set in options overrides launchconfig skill
         self.skill = None
 
-    def last(self):
-        return self.mode == MODE_LAST
-
-    def random(self):
-        return self.mode == MODE_RANDOM
-
-    def replay(self):
-        return self.mode == MODE_REPLAY
-
 def _ArgsToOptions(args) -> Options:
     options = Options()
-    options.playlist            = args.playlist
-    options.wad                 = args.wad
-    options.gui                 = not args.no_gui
     options.stdout_log_level    = args.stdout_log_level.upper()
 
     # these are not common so we perform hasattr checks

@@ -23,6 +23,7 @@ class ObsController:
         self._logger = GetLogManager().GetLogger(__name__)
 
     def _GetReplayName(self):
+        # TODO use the one from the launch spec
         timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
         return f"{self._demo_name}-REPLAY-{timestamp}"
 

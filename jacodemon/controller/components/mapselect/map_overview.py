@@ -36,6 +36,7 @@ class ControllerMapOverview(QObject):
             self.view.play_button.setEnabled(True)
 
     def on_statistics_updated(self):
+
         if self.app_model.selected_statistics.demo:
             self.view.play_demo_button.setEnabled(True)
         else:

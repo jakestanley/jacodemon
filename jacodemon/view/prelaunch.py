@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QLabel, QDialog
+from PySide6.QtWidgets import QVBoxLayout, QCheckBox, QRadioButton, QGroupBox, QDialogButtonBox, QGroupBox, QDialog
 
 class ViewPreLaunch(QDialog):
     def __init__(self):
@@ -8,37 +8,48 @@ class ViewPreLaunch(QDialog):
 
         layout = QVBoxLayout(self)
         
-        # options: demo
+        groupbox = QGroupBox("Game")
+        groupbox.setLayout(QVBoxLayout())
+
         self.checkbox_record_demo = QCheckBox("Record demo lump")
+
+        self.checkbox_mods = QCheckBox("Enable mods")
+        self.checkbox_mods.setToolTip("If unchecked, any configured 'Quality of Life' mods \nwill not be included in the launch configuration")
+        self.checkbox_fast = QCheckBox("Enable fast monsters")
+
+        groupbox.layout().addWidget(self.checkbox_record_demo)
+        groupbox.layout().addWidget(self.checkbox_mods)
+        groupbox.layout().addWidget(self.checkbox_fast)
         
-        layout.addWidget(self.checkbox_record_demo)
+        layout.addWidget(groupbox)
 
         # options: obs
+        groupbox = QGroupBox("Recording && Streaming")
+        groupbox.setLayout(QVBoxLayout())
+
         self.checkbox_obs = QCheckBox("Control OBS")
         self.checkbox_obs.setToolTip("If unchecked, OBS will not be controlled")
-        layout.addWidget(self.checkbox_obs)
 
         # options: auto-record 
         self.checkbox_auto_record = QCheckBox("Enable auto record")
         self.checkbox_auto_record.setToolTip("If unchecked, video recording will not be started automatically")
-        layout.addWidget(self.checkbox_auto_record)
-
-        # options: mods
-        self.checkbox_mods = QCheckBox("Enable mods")
-        self.checkbox_mods.setToolTip("If unchecked, any configured 'Quality of Life' mods \nwill not be included in the launch configuration")
-        layout.addWidget(self.checkbox_mods)
 
         # options: music
         self.checkbox_music = QCheckBox("Enable music")
-        layout.addWidget(self.checkbox_music)
-
-        # options: fast monsters
-        self.checkbox_fast = QCheckBox("Enable fast monsters")
-        layout.addWidget(self.checkbox_fast)
+        self.checkbox_music.setToolTip("Game music will be disabled if unchecked")
         
+        groupbox.layout().addWidget(self.checkbox_obs)
+        groupbox.layout().addWidget(self.checkbox_auto_record)
+        groupbox.layout().addWidget(self.checkbox_music)
+
+        layout.addWidget(groupbox)
+
         # confirm or close
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         layout.addWidget(self.button_box)
+
+        
+
 
         layout.addStretch()
         

@@ -32,6 +32,6 @@ class DemoService:
         # this creates empty statistics for any demos that don't have stats,
         #   i.e failed attempts
         for timestamp in demos:
-            map.Statistics.append(Statistics(timestamp=timestamp, demo=demos[timestamp]))
+            map.Statistics.append(Statistics(demo=demos[timestamp]))
 
         return

@@ -1,9 +1,8 @@
-from PySide6.QtCore import Qt, QObject, Signal
+from PySide6.QtCore import QObject, Signal
 
 from jacodemon.model.app import AppModel
+from jacodemon.model.launch import LaunchMode
 from jacodemon.view.prelaunch import ViewPreLaunch
-
-from jacodemon.model.options import MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
 
 class ControllerPreLaunch(QObject):
 
@@ -37,11 +36,7 @@ class ControllerPreLaunch(QObject):
 
     def refresh(self):
 
-        if self.app_model.GetMode() == MODE_REPLAY:
-            self.view.checkbox_record_demo.setEnabled(False)
-            self.view.checkbox_fast.setEnabled(False)
-            self.view.checkbox_mods.setEnabled(False)
-
+        # TODO: this sucks
         self.view.checkbox_record_demo.setChecked(self.app_model.IsRecordDemoEnabled())
         self.view.checkbox_record_demo.setEnabled(self.app_model.CanRecordDemo())
 
@@ -52,6 +47,8 @@ class ControllerPreLaunch(QObject):
         self.view.checkbox_auto_record.setEnabled(self.app_model.CanAutoRecord())
 
         self.view.checkbox_mods.setChecked(self.app_model.IsModsEnabled())
+        self.view.checkbox_mods.setEnabled(self.app_model.GetMode() != LaunchMode.REPLAY_DEMO)
+
         self.view.checkbox_music.setChecked(self.app_model.IsMusicEnabled())
         self.view.checkbox_fast.setChecked(self.app_model.IsFastMonstersEnabled())
 

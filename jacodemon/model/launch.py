@@ -1,21 +1,25 @@
+from enum import Enum, auto
+
 from dataclasses import dataclass
 from typing import List
 
-from jacodemon.model.options import Options
+class LaunchMode(Enum):
+    RECORD_DEMO = auto()
+    REPLAY_DEMO = auto()
 
 @dataclass(frozen=True)
-class LaunchConfig:
+class LaunchSpec:
     """
     Immutable launch properties that affect playback or demo compatibility
     """
     name: str
     timestamp: str
     map_id: str
-    # files
+    # files (thinking about saving hashes)
     iwad: str
-    wads: List[str]
-    dehs: List[str]
-    mods: List[str]
+    wads: List[tuple[str, str]]
+    dehs: List[tuple[str, str]]
+    mods: List[tuple[str, str]]
     # modifiers
     fast_monsters: bool
     skill: int
@@ -50,10 +54,11 @@ class LaunchConfig:
             'comp_level': self.comp_level
         }
 
-class LaunchConfigMutables:
-    """
-    Extra launch config options that do not affect playback or demo compatibility
-    """
-    def __init__(self, options: Options):
-        self.record_demo = options.record_demo
-        self.music = options.music
+@dataclass
+class LaunchSession:
+    executable: str
+    cfg_path: str
+    iwad_dir: str
+    demo_dir: str
+    mode: LaunchMode
+    music: bool

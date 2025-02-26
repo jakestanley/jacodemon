@@ -1,9 +1,8 @@
-from jacodemon.model.launch import LaunchConfig
+from jacodemon.model.launch import LaunchSpec
 
 _KEY_TIMESTAMP = 'Timestamp'
 _KEY_COMP_LEVEL = 'CompLevel'
 _KEY_SOURCE_PORT = 'SourcePort'
-_KEY_ARGS = 'args'
 _KEY_SKILL = 'Skill'
 _KEY_KILLS = 'Kills'
 _KEY_ITEMS = 'Items'
@@ -23,7 +22,7 @@ class Statistics:
         self.sourcePort = None
         self.items = None
         self.secrets = None
-        self.launch_config: LaunchConfig = None
+        self.launch_spec: LaunchSpec = None
 
         # deprecated
         self.skill = None
@@ -45,13 +44,13 @@ class Statistics:
         return self.secrets
     
     def get_comp_level(self):
-        if self.launch_config:
-            return self.launch_config.comp_level or self.comp_level
+        if self.launch_spec:
+            return self.launch_spec.comp_level or self.comp_level
         return self.comp_level
     
     def get_skill(self):
-        if self.launch_config:
-            return self.launch_config.skill or self.skill
+        if self.launch_spec:
+            return self.launch_spec.skill or self.skill
         return self.skill
     
     def get_badge(self) -> int:
@@ -81,7 +80,7 @@ class Statistics:
         dic = {}
 
         dic["Demo"] = "Yes" if self.demo else "No"
-        dic[_KEY_TIMESTAMP] = self.timestamp
+        dic[_KEY_TIMESTAMP] = self.demo
         dic[_KEY_COMP_LEVEL] = self.get_comp_level()
         dic[_KEY_SOURCE_PORT] = self.sourcePort
         dic[_KEY_SKILL] = self.get_skill()
@@ -98,27 +97,36 @@ class Statistics:
         """
         dic = {}
         
-        dic[_KEY_SKILL] = self.get_skill()
         dic[_KEY_SOURCE_PORT] = self.sourcePort
         dic[_KEY_TIME] = self.time
         dic[_KEY_KILLS] = self.kills
         dic[_KEY_ITEMS] = self.items
         dic[_KEY_SECRETS] = self.secrets
-        dic[_KEY_TIMESTAMP] = self.timestamp
-        dic[_KEY_COMP_LEVEL] = self.get_comp_level()
-        dic[_KEY_LAUNCH_CONFIG] = self.launch_config.to_dict()
+        dic[_KEY_LAUNCH_CONFIG] = self.launch_spec.to_dict()
 
         return dic
+
+    def GetLaunchSpec(self):
+        if self.launch_spec:
+            return self.launch_spec
+        else:
+            # we'll have to generate one based on what we have. it may be inaccurate
+            return LaunchSpec(
+                name=self.demo,
+                timestamp=self.timestamp,
+                skill=self.skill,
+                comp_level=self.comp_level
+            )
 
     # TODO make this work with multiple formats
     @classmethod
     def from_dict(cls, data):
         instance = cls()
 
-        launch_config: LaunchConfig = None
+        launch_config: LaunchSpec = None
 
         try:
-            launch_config = LaunchConfig.from_dict(data.get(_KEY_LAUNCH_CONFIG, None))
+            launch_config = LaunchSpec.from_dict(data.get(_KEY_LAUNCH_CONFIG, None))
             instance.timestamp = launch_config.timestamp
             instance.comp_level = launch_config.comp_level or data.get(_KEY_COMP_LEVEL, data.get("compLevel", None))
             instance.skill = launch_config.skill or data.get(_KEY_SKILL, None)
@@ -129,7 +137,7 @@ class Statistics:
         # fallbacks are old keys
         instance.timestamp = data.get(_KEY_TIMESTAMP, data.get("timestamp", None))
         instance.sourcePort = data.get(_KEY_SOURCE_PORT, data.get("sourcePort", None))
-        instance.launch_config = launch_config
+        instance.launch_spec = launch_config
 
         # old style level stats
         levelStats = data.get(_KEY_LEVEL_STATS, None)

@@ -21,9 +21,6 @@ class ControllerMapSelect(QObject):
 
         self.view.mapTableWidget.row_selected.connect(self._HandleSelection)
 
-        # self.view.mapOverviewWidget.play_signal.connect(self._HandlePlay)
-        # self.view.mapOverviewWidget.play_demo_signal.connect(self._HandlePlayDemo)
-
         self.app_model.selected_mapset_updated.connect(self.on_mapset_updated)
         self.app_model.selected_map_updated.connect(self.on_map_updated)
 
@@ -38,7 +35,7 @@ class ControllerMapSelect(QObject):
         self.accept_signal.emit()
 
     def play_demo(self):
-        self.app_model.SetDemoMode()
+        self.app_model.SetReplayMode()
         self.accept_signal.emit()
 
     def on_mapset_updated(self):
@@ -49,28 +46,6 @@ class ControllerMapSelect(QObject):
 
     def _HandleSelection(self, index):
         self.app_model.SetMap(index)
-
-# def OpenSelectMapDialog() -> str:
-#     """Returns MapId of the selected map or None"""
-
-#     # at this point a map set and its maps MUST have been loaded
-#     table_rows = [map.to_dict() for map in GetMapsSelectController().maps]
-#     dialog = ViewMapSelect(table_rows, GetMapsSelectController().mapSet)
-
-#     if dialog.exec() == QDialog.DialogCode.Rejected:
-#         # clear the selected map set
-#         GetMapsSelectController().mapSet = None
-
-#         return None, None
-
-#     if dialog.selectedIndex is None:
-#         return None, None
-#     else:
-#         map = GetMapsSelectController().maps[dialog.selectedIndex]
-#         if dialog.selectedDemo is not None:
-#             return map, dialog.selectedDemo
-#         return map, None
-        pass
 
     def on_map_updated(self):
         pass

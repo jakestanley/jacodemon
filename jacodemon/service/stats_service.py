@@ -4,7 +4,7 @@ import json
 from jacodemon.misc.files import ParseTimestampFromPath
 
 from jacodemon.model.map import Map
-from jacodemon.model.launch import LaunchConfig
+from jacodemon.model.launch import LaunchSpec
 from jacodemon.model.stats import Statistics
 import os
 
@@ -52,6 +52,6 @@ class StatsService:
 
     def Save(self, statistics: Statistics):
         
-        stats_path = f"{self.stats_dir}/{statistics.launch_config.name}-STATS.json"
+        stats_path = f"{self.stats_dir}/{statistics.launch_spec.name}-STATS.json"
         with open(stats_path, "w") as stats_file:
             stats_file.write(json.dumps(statistics.to_dict(), indent=2))
