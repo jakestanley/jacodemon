@@ -79,6 +79,7 @@ class LaunchService(ABC):
         return LaunchConfig(
             name=name,
             map_id=map.MapId,
+            timestamp=timestamp,
             iwad=map.MapSet.iwad,
             wads=self.GetWadPatches(map.MapSet),
             dehs=self.GetDehackedPatches(map.MapSet),
