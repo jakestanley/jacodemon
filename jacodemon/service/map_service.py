@@ -45,7 +45,11 @@ class MapService:
                 unpickled = jsonpickle.decode(json.load(f))
 
                 # the persisted map set may be stale, so we must clear it
-                unpickled.MapSet = None
+                try:
+                    unpickled.MapSet = None
+                except AttributeError:
+                    print("Cannot parse last map config. Returning nothing")
+                    return None
                 return unpickled
         else:
             print("Cannot select last map as '{LAST_JSON}' was not found")

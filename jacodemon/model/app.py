@@ -63,7 +63,7 @@ class AppModel(QObject):
         if self.last_map is not None:
             self.last_map.MapSet = next((ms for ms in self.map_set_service.mapSets if ms.id.lower() == self.last_map.MapSetId), None)
         
-        if self.last_map.MapSet is None:
+        if self.last_map and self.last_map.MapSet is None:
             self.last_map = None
 
         # statistics
