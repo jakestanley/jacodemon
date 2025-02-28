@@ -156,6 +156,11 @@ class LaunchService(ABC):
         if launch_spec.fast_monsters:
             doom_args.append('-fast')
 
+        if launch_session.music:
+            pass
+        else:
+            doom_args.append("-nomusic")
+
         doom_args.extend(['-skill', f"{launch_spec.skill}"])
 
         return doom_args
