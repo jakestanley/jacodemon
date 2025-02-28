@@ -8,6 +8,7 @@ from jacodemon.misc.io import IO
 
 import obsws_python as obs
 from jacodemon.model.options import Options, GetOptions
+from jacodemon.model.config import JacodemonConfig
 from jacodemon.notifications import Notifications, GetNotifications
 from jacodemon.misc.io import IO, GetIo
 from jacodemon.exceptions import ObsServiceException
@@ -17,8 +18,8 @@ from PySide6.QtWidgets import QMessageBox
 class ObsService:
     # TODO: v3 -> notifications re-write
     # def __init__(self,notifications: Notifications, io: IO):
-    def __init__(self, fake=False):
-        # self.config: JacodemonConfig = GetConfig()
+    def __init__(self, config: JacodemonConfig, fake=False):
+        self.config: JacodemonConfig = config
         # self.notifications = notifications
         # self.io = io
         self._logger = logging.getLogger(self.__class__.__name__)
@@ -39,14 +40,6 @@ class ObsService:
         # TODO use the one from the launch spec
         timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
         return f"{self._demo_name}-REPLAY-{timestamp}"
-
-    def Setup(self):
-
-            self.obs_client.set_current_program_scene(self.config.wait_scene)
-            if not self.obs_client.get_replay_buffer_status().output_active:
-                self.notifications.notify("Replay buffer disabled", "That's it really.")
-        # catch specific exceptions
-
 
     def IsRecording(self):
         return self.obs_client.get_record_status().output_active
@@ -135,46 +128,6 @@ class ObsService:
     def SetDemoName(self, name):
         self._demo_name = name
 
-class MockObsService(ObsService):
-
-    def __init__(self):
-        super().__init__(fake=True)
-        self._logger.warning("OBS is disabled. MockObsService is being used")
-    # def __init__(self, notifications: Notifications):
-        # super().__init__(notifications=notifications, io=None)
-
-    def Setup(self):
-        return
-
-    def IsRecording(self):
-        return False
-
-    def StartRecording(self):
-        self._logger.warning(f"OBS is disabled. Cannot start recording")
-
-    def CancelRecording(self):
-        self._logger.warning(f"OBS is disabled. This CancelRecording call is redundant")
-
-    def MoveRecording(self, path, new_name):
-        self._logger.warning(f"OBS is disabled. This MoveRecording call is redundant")
-
-    def SaveReplay(self):
-        replay_name = self._GetReplayName()
-
-        self.notifications.notify("OBS is disabled", f"Not saving replay: '{replay_name}'")
-
-    def StopRecording(self):
-        return
-
-    def GetScene(self):
-        return ""
-
-    def SetScene(self, title):
-        self._logger.warning(f"OBS is disabled. Scene requested: '{title}'")
-
-    def UpdateMapTitle(self, title):
-        self._logger.warning(f"OBS is disabled. Title provided: '{title}'")
-
 def PromptUserContinueExit():
     message_box = QMessageBox()
 
@@ -203,6 +156,7 @@ def GetObsController() -> ObsService:
             obsController = ObsService(notifications, io)
             obsController.Setup()
         except ObsServiceException:
+            # TODO reuse this
             if PromptUserContinueExit():
                 obsController = MockObsService(notifications)
             else:

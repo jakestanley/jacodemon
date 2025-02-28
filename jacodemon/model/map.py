@@ -43,10 +43,13 @@ class Map:
         return self._Files
     
     def GetTitle(self):
+
+        mapTitle = self.MapId
         if self.MapName:
-            return self.MapName
-        return self.MapId
-    
+            mapTitle = self.MapName
+
+        return f"{self.MapSet.name} - {mapTitle}"
+
     def SetMapSet(self, mapSet: MapSet):
 
         # if we save last map, we'll want to save the mapset id for reference

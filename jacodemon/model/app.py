@@ -8,10 +8,11 @@ from jacodemon.model.mod import Mod
 from jacodemon.service.config_service import ConfigService
 from jacodemon.service.map_service import MapService
 from jacodemon.service.map_set_service import MapSetService
+from jacodemon.service.obs.mock_obs_service import MockObsService
 from jacodemon.service.stats_service import StatsService
 from jacodemon.service.demo_service import DemoService
 from jacodemon.service.launch.launch_service import LaunchService
-from jacodemon.service.obs_service import ObsService, MockObsService
+from jacodemon.service.obs_service import ObsService
 
 from jacodemon.service.options_service import OptionsService
 
@@ -139,7 +140,7 @@ class AppModel(QObject):
         return self.options.auto_record and self.options.obs
     
     def CanAutoRecord(self) -> bool:
-        return self.obs_service.IsEnabled()
+        return self.options.obs
     
     def CanControlObs(self) -> bool:
         # TODO: restore this functionality by re-implementing OBS service
@@ -152,7 +153,7 @@ class AppModel(QObject):
         return self.options.music
     
     def IsObsEnabled(self) -> bool:
-        return self.obs_service.IsEnabled()
+        return self.options.obs
     
     def IsFastMonstersEnabled(self) -> bool:
         return self.options.fast == True
@@ -248,6 +249,7 @@ class AppModel(QObject):
             mode=self.options.mode,
             music=self.options.music)
 
+        self.obs_service.UpdateMapTitle(self.selected_map.GetTitle())
         stats = self.launch_service.Launch(
             launch_spec=launch_spec, 
             launch_session=launch_session)
@@ -293,9 +295,11 @@ def InitialiseAppModel():
     launch_service = DsdaService()
     options_service = OptionsService()
 
-    obs_service = MockObsService()
+    obs_service = None
     if options_service.GetOptions().obs:
-        obs_service = ObsService()
+        obs_service = ObsService(config_service.config)
+    else:
+        obs_service = MockObsService(config_service.config)
 
     # model, view, controller setup
     return AppModel(

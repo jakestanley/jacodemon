@@ -1,9 +1,14 @@
 from jacodemon.view.components.config.config import ConfigWidget
 
+from PySide6.QtCore import Signal
+
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, \
     QLabel, QLineEdit
 
 class ObsTab(ConfigWidget):
+
+    fields_updated = Signal()
+
     def __init__(self, parent=None):
         super(ObsTab, self).__init__(parent)
 
@@ -43,17 +48,9 @@ class ObsTab(ConfigWidget):
         layout.addLayout(hbox)
         layout.addStretch()
 
+        self.play_scene.textChanged.connect(lambda: self.fields_updated.emit())
+        self.wait_scene.textChanged.connect(lambda: self.fields_updated.emit())
+        self.browser_scene.textChanged.connect(lambda: self.fields_updated.emit())
+        self.title_source.textChanged.connect(lambda: self.fields_updated.emit())
+
         self.AddButtons(layout)
-
-    def save(self):
-        pass
-        # TODO: get data or similar
-        # cfg: JacodemonConfig = GetConfig()
-        # cfg.play_scene = self.play_scene.text()
-        # cfg.wait_scene = self.wait_scene.text()
-        # cfg.browser_scene = self.browser_scene.text()
-        # cfg.title_source = self.title_source.text()
-        # cfg.Save()
-
-    def revert(self):
-        self.LoadValuesFromConfig()
