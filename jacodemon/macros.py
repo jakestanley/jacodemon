@@ -1,6 +1,6 @@
 import platform
 
-from jacodemon.service.obs.obs import ObsController
+from jacodemon.service.obs_service import ObsService
 from jacodemon.keys import *
 
 class Key:

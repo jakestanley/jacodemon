@@ -31,6 +31,16 @@
                 "--no-obs",
                 "-sll", "DEBUG"
             ]
+        },
+        {
+            "name": "v3start (Debug)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "scripts/v3start.py",
+            "justMyCode": true,
+            "args": [
+                "-sll", "DEBUG"
+            ]
         }
     ]
 }

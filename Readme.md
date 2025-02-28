@@ -91,6 +91,7 @@ _please explain how to run tests_
 ### Major features
 
 - More achievements/badges
+- Verify and locate missing WADs on file system when playing old launch configs that refer to files that have now moved
 - Enemies count in map picker (optional)
 - In depth analysis, which maps were easy? How many attempts before you completed a map for the first time?
 - Show your time vs. par time
@@ -111,6 +112,8 @@ _please explain how to run tests_
 - PEP compliance
 - Plenty of bug fixes
 - Tag/rate maps. Tags like "awesome-music", "challenging", etc. Memento Mori's "Galaxy" is great!
+- Publish tags/ratings/statistics/demoes automatically
+- Multiplayer launching (would require chocolate doom)
 
 ### Minor features
 

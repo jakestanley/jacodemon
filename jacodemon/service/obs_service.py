@@ -15,7 +15,7 @@ from jacodemon.exceptions import ObsControllerException
 
 from PySide6.QtWidgets import QMessageBox
 
-class ObsController:
+class ObsService:
     def __init__(self,notifications: Notifications, io: IO):
         self.config: JacodemonConfig = GetConfig()
         self.notifications = notifications
@@ -128,7 +128,7 @@ class ObsController:
     def SetDemoName(self, name):
         self._demo_name = name
 
-class MockObsController(ObsController):
+class MockObsController(ObsService):
     def __init__(self, notifications: Notifications):
         super().__init__(notifications=notifications, io=None)
 
@@ -181,7 +181,7 @@ def PromptUserContinueExit():
     elif message_box.clickedButton() == exit_button:
         return False
 
-def GetObsController() -> ObsController:
+def GetObsController() -> ObsService:
 
     options: Options = GetOptions()
     notifications: Notifications = GetNotifications()
@@ -189,7 +189,7 @@ def GetObsController() -> ObsController:
 
     if options.obs:
         try:
-            obsController = ObsController(notifications, io)
+            obsController = ObsService(notifications, io)
             obsController.Setup()
         except ObsControllerException:
             if PromptUserContinueExit():
