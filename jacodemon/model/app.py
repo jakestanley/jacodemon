@@ -250,12 +250,20 @@ class AppModel(QObject):
             music=self.options.music)
 
         self.obs_service.UpdateMapTitle(self.selected_map.GetTitle())
+        self.obs_service.SetDemoName(launch_spec.name)
+        self.obs_service.SetScene(self.config.play_scene)
+        self.obs_service.StartRecording()
+
         stats = self.launch_service.Launch(
             launch_spec=launch_spec, 
             launch_session=launch_session)
         
         if stats:
             self.stats_service.Save(stats)
+
+        self.obs_service.StopRecording()
+        self.obs_service.SetScene(self.config.wait_scene)
+
 
         self.selected_mapset_updated.emit()
 

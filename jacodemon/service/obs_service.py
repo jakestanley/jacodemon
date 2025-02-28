@@ -21,7 +21,7 @@ class ObsService:
     def __init__(self, config: JacodemonConfig, fake=False):
         self.config: JacodemonConfig = config
         # self.notifications = notifications
-        # self.io = io
+        self.io = GetIo()
         self._logger = logging.getLogger(self.__class__.__name__)
         if fake:
             return
@@ -37,7 +37,9 @@ class ObsService:
             raise ObsServiceException(cause)
 
     def _GetReplayName(self):
-        # TODO use the one from the launch spec
+        """
+        Get name for replay buffer saved file
+        """
         timestamp = datetime.now().strftime("%Y-%m-%dT%H%M%S")
         return f"{self._demo_name}-REPLAY-{timestamp}"
 
@@ -70,8 +72,8 @@ class ObsService:
         try:
             self.io.RenameFile(path, newpath)
             self._logger.debug(f"Moved {path} to {newpath}\n")
-        except Exception:
-            self._logger.error("Failed to move recording")
+        except Exception as e:
+            self._logger.error("Failed to move recording " + e)
 
         return newpath
 
@@ -110,8 +112,12 @@ class ObsService:
 
         # TODO toast notification that allows user to delete if they want
         if self._demo_name:
+            # TODO consider this in Qt instead - post launch
             newpath = self.MoveRecording(path, self._demo_name)
-            self.notifications.notify("Recording stopped", f"Saved to '{newpath}'")
+            try:
+                self.notifications.notify("Recording stopped", f"Saved to '{newpath}'")
+            except AttributeError as e:
+                self._logger.error(f"Could not notify of recording stop: {e}")
 
     def GetScene(self):
         return self.obs_client.get_current_program_scene().current_program_scene_name
