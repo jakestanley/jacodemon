@@ -1,4 +1,6 @@
-from PySide6.QtWidgets import QApplication
+import sys
+
+from PySide6.QtWidgets import QApplication, QMessageBox
 
 from jacodemon.arguments import GetArgs
 from jacodemon.model.options import InitialiseOptions
@@ -7,6 +9,8 @@ from jacodemon.misc.logs import InitialiseLoggingConfig
 from jacodemon.manager import UIManager, UIState
 
 from jacodemon.model.app import AppModel, InitialiseAppModel
+
+from jacodemon.service.obs_service import ObsServiceException
 
 from jacodemon.controller.config import ControllerConfig
 from jacodemon.controller.mapselect import ControllerMapSelect
@@ -28,9 +32,18 @@ def start():
     InitialiseOptions(args)
     InitialiseLoggingConfig(args.stdout_log_level.upper())
 
-    app_model: AppModel = InitialiseAppModel()
-
     app = QApplication([])
+
+    try:
+        app_model: AppModel = InitialiseAppModel()
+    except ObsServiceException as e:
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Critical)
+        msg_box.setText(e.cause)
+        msg_box.setWindowTitle("Error")
+        msg_box.exec()
+        sys.exit(1)
+    
     ui_manager = UIManager()
 
     view_config     = ViewConfig()

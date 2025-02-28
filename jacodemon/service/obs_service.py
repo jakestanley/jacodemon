@@ -7,22 +7,33 @@ from datetime import datetime
 from jacodemon.misc.io import IO
 
 import obsws_python as obs
-from jacodemon.model.config import JacodemonConfig, GetConfig
 from jacodemon.model.options import Options, GetOptions
 from jacodemon.notifications import Notifications, GetNotifications
 from jacodemon.misc.io import IO, GetIo
-from jacodemon.exceptions import ObsControllerException
+from jacodemon.exceptions import ObsServiceException
 
 from PySide6.QtWidgets import QMessageBox
 
 class ObsService:
     # TODO: v3 -> notifications re-write
     # def __init__(self,notifications: Notifications, io: IO):
-    def __init__(self):
+    def __init__(self, fake=False):
         # self.config: JacodemonConfig = GetConfig()
         # self.notifications = notifications
         # self.io = io
         self._logger = logging.getLogger(self.__class__.__name__)
+        if fake:
+            return
+        try:
+            self.obs_client = obs.ReqClient(host='localhost', port=4455, password='')
+            # if not self.obs_client.get_replay_buffer_status().output_active:
+                # self.notifications.notify("OBS replay buffer is not active")
+        except ConnectionRefusedError as cause:
+            self._logger.error("Connection to OBS refused. Is it running? Is the Websocket API enabled?")
+            raise ObsServiceException("Connection to OBS refused. Is it running? Is the Websocket API enabled? If it is desired to run without OBS, please use the --no-obs flag")
+        # catch all other exceptions
+        except Exception as cause:
+            raise ObsServiceException(cause)
 
     def _GetReplayName(self):
         # TODO use the one from the launch spec
@@ -30,18 +41,12 @@ class ObsService:
         return f"{self._demo_name}-REPLAY-{timestamp}"
 
     def Setup(self):
-        try:
-            self.obs_client = obs.ReqClient(host='localhost', port=4455, password='')
+
             self.obs_client.set_current_program_scene(self.config.wait_scene)
             if not self.obs_client.get_replay_buffer_status().output_active:
                 self.notifications.notify("Replay buffer disabled", "That's it really.")
         # catch specific exceptions
-        except ConnectionRefusedError as cause:
-            self._logger.error("Connection to OBS refused. Is it running? Is the Websocket API enabled?")
-            raise ObsControllerException(cause)
-        # catch all other exceptions
-        except Exception as cause:
-            raise ObsControllerException(cause)
+
 
     def IsRecording(self):
         return self.obs_client.get_record_status().output_active
@@ -130,9 +135,13 @@ class ObsService:
     def SetDemoName(self, name):
         self._demo_name = name
 
-class MockObsController(ObsService):
-    def __init__(self, notifications: Notifications):
-        super().__init__(notifications=notifications, io=None)
+class MockObsService(ObsService):
+
+    def __init__(self):
+        super().__init__(fake=True)
+        self._logger.warning("OBS is disabled. MockObsService is being used")
+    # def __init__(self, notifications: Notifications):
+        # super().__init__(notifications=notifications, io=None)
 
     def Setup(self):
         return
@@ -193,12 +202,12 @@ def GetObsController() -> ObsService:
         try:
             obsController = ObsService(notifications, io)
             obsController.Setup()
-        except ObsControllerException:
+        except ObsServiceException:
             if PromptUserContinueExit():
-                obsController = MockObsController(notifications)
+                obsController = MockObsService(notifications)
             else:
                 sys.exit(0)
     else:
-        obsController = MockObsController(notifications)
+        obsController = MockObsService(notifications)
 
     return obsController
