@@ -1,3 +1,4 @@
+import logging
 import sys
 import os
 import uuid
@@ -25,16 +26,17 @@ def _DummyMapSet() -> MapSet:
 
 class DummyConfig(config.JacodemonConfig):
     def __init__(self) -> None:
+        self._logger = logging.getLogger(self.__class__.__name__)
         self.sets = [_DummyMapSet()]
         self.iwad_dir = "D:\Dropbox\Games\Doom\WADs\IWADs"
         self.maps_dir = "D:\Dropbox\Games\Doom\WADs\Maps"
 
     def _PrepareSave(self):
-        print("_PrepareSave called on inert DummyConfig")
+        self._logger.warning("_PrepareSave called on inert DummyConfig")
 
     def Save(self):
         self._PrepareSave()
-        print("Save called on inert DummyConfig")
+        self._logger.warning("Save called on inert DummyConfig")
 
 def DummyArgs():
     args = argparse.Namespace()

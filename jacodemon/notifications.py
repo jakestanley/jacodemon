@@ -1,11 +1,11 @@
 import logging
-from jacodemon.logs import GetLogManager
+
 import platform
 
 class Notifications:
     def __init(self):
         self._warn = False
-        self._logger = GetLogManager().GetLogger(__name__)
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     def logNotification(self, title, body):
         self._logger.debug(f"Notification: {title} - {body}")

@@ -1,6 +1,7 @@
 import os
 import json
 import jsonpickle
+import logging
 
 from typing import Optional
 from typing import List
@@ -21,6 +22,7 @@ class MapService:
     """
 
     def __init__(self, maps_dir) -> None:
+        self._logger = logging.getLogger(self.__class__.__name__)
         self.maps_dir = maps_dir
         self.wad_service = WadService(self.maps_dir)
 
@@ -47,11 +49,11 @@ class MapService:
                 try:
                     unpickled = jsonpickle.decode(pickled)
                 except AttributeError:
-                    print("Cannot parse last map config. Returning nothing")
+                    self._logger.error("Cannot parse last map config. Returning nothing")
                     return None
                 return unpickled
         else:
-            print("Cannot select last map as '{LAST_JSON}' was not found")
+            self._logger.warning("Cannot select last map as '{LAST_JSON}' was not found")
             return None
 
     def SaveLastMap(self, map: Map):

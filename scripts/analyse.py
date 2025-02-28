@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
+import logging
 import json
 import glob
 
 from typing import List
 import jacodemon.arguments as args
-import jacodemon.logs as logs
+import jacodemon.misc.logs as logs
 from jacodemon.model.options import Options
 from jacodemon.model.config import JacodemonConfig, GetConfig
 from jacodemon.model.map import Map, EnrichMaps
-from jacodemon.csv import load_raw_maps
-from jacodemon.model.demo import Demo, GetDemosForMap, AddBadgesToMap
 
 class Badge:
     def __init__(self, rank, attempt, timestamp) -> None:
@@ -80,7 +79,7 @@ config: JacodemonConfig = GetConfig()
 # set up logging now that we have arguments
 logs.configure()
 logs.InitLogManager(options)
-logger = logs.GetLogManager().GetLogger(__name__)
+logger = logging.getLogger(self.__class__.__name__)
 logger.info("Starting application...")
 
 raw_maps = load_raw_maps(options.playlist)

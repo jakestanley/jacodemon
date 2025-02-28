@@ -1,8 +1,7 @@
 import os
 import re
 import platform
-
-from jacodemon.logs import GetLogManager
+import logging
 
 from jacodemon.model.launch import LaunchSpec, LaunchSession, LaunchMode
 from jacodemon.model.stats import Statistics
@@ -13,26 +12,26 @@ _LEVELSTAT_TXT = "./levelstat.txt"
 
 def _AddParsedLevelStats(rawLevelStats, stats: Statistics):
 
-    regex_time = '(\d+:\d+\.\d+)'
+    regex_time = r'(\d+:\d+\.\d+)'
     if re.search(regex_time, rawLevelStats):
         stats.time = re.search(regex_time, rawLevelStats).group(1)
 
-    regex_kills = 'K: (\d+\/\d+)'
+    regex_kills = r'K: (\d+\/\d+)'
     if re.search(regex_kills, rawLevelStats):
         stats.kills = re.search(regex_kills, rawLevelStats).group(1)
 
-    regex_secrets = 'S: (\d+\/\d+)'
+    regex_secrets = r'S: (\d+\/\d+)'
     if re.search(regex_secrets, rawLevelStats):
         stats.secrets = re.search(regex_secrets, rawLevelStats).group(1)
 
-    regex_items = 'I: (\d+\/\d+)'
+    regex_items = r'I: (\d+\/\d+)'
     if re.search(regex_items, rawLevelStats):
         stats.items = re.search(regex_items, rawLevelStats).group(1)
 
 class DsdaService(LaunchService):
 
     def __init__(self):
-        self._logger = GetLogManager().GetLogger(__name__)
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     def _FormatCompLevel(self, comp_level):
         if comp_level == 'vanilla':

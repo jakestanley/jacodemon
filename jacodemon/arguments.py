@@ -1,10 +1,19 @@
 import argparse
+import logging
 
 parser = argparse.ArgumentParser()
 
 def _get_common_args():
-    parser.add_argument("-g", "--no-gui",       action='store_true',    help="Command line operation only")
-    parser.add_argument("-sll", "--stdout-log-level", type=str,        help="Log level that should also be printed to console", default='INFO')
+    parser.add_argument("-g", "--no-gui",
+                        action='store_true',
+                        help="Command line operation only")
+
+    parser.add_argument("-sll", "--stdout-log-level",  
+                        type=lambda s: s.upper(),
+                        help="Log level that should also be printed to console", 
+                        default='INFO', 
+                        choices=[lvl.upper() for lvl in logging._nameToLevel])
+
     # mutually exclusive
     parser.add_argument("-w", "--wad",          type=str,               help="WAD")
 

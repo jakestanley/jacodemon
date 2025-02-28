@@ -1,12 +1,11 @@
-from jacodemon.logs import GetLogManager
+import logging
 import os
-import time
 import platform
 
 class IO:
 
     def __init__(self) -> None:
-        self._logger = GetLogManager().GetLogger(__name__)
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     def _wait_for_file_unlock(self, file):
         self._logger.warning("Locking checks not implemented on this platform")

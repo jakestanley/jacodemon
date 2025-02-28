@@ -1,6 +1,6 @@
 from jacodemon.misc.io import IO
-from jacodemon.logs import LogManager, GetLogManager
 
+import logging
 import os
 import time
 
@@ -10,7 +10,7 @@ class WinIo(IO):
 
     def __init__(self) -> None:
         super().__init__()
-        self._logger = GetLogManager().GetLogger(__name__)
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     def RenameFile(self, path, newpath):
         if path == None:

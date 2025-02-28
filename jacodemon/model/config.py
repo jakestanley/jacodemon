@@ -29,6 +29,7 @@ class JacodemonConfig(Config):
     # TODO this needs a rewrite it's a reyt mess
     def __init__(self) -> None:
         super().__init__("jacodemon")
+        self._logger = logging.getLogger(self.__class__.__name__)
 
         # general
         self.default_complevel = self.config.get(_KEY_DEFAULT_COMPLEVEL, DEFAULT_COMP_LEVEL)
@@ -93,7 +94,7 @@ class JacodemonConfig(Config):
         elif os.path.basename(path).endswith(".app"):
             self.dsda_path = os.path.join(path, "Contents/Resources/dsda-doom")
         else:
-            print(f"Error: could not set dsda_path to '{path}'")
+            self._logger.error(f"could not set dsda_path to '{path}'")
 
     def UpdateMapSets(self, mapSets: List[MapSet]):
         self.sets = [mapSet.to_dict() for mapSet in mapSets]

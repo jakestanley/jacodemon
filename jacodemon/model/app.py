@@ -11,6 +11,7 @@ from jacodemon.service.map_set_service import MapSetService
 from jacodemon.service.stats_service import StatsService
 from jacodemon.service.demo_service import DemoService
 from jacodemon.service.launch.launch_service import LaunchService
+from jacodemon.service.obs_service import ObsService
 
 from jacodemon.service.options_service import OptionsService
 
@@ -39,7 +40,7 @@ class AppModel(QObject):
     def __init__(self, config_service: ConfigService, map_set_service: MapSetService, 
                  map_service: MapService, stats_service: StatsService, 
                  demo_service: DemoService, launch_service: LaunchService,
-                 options_service: OptionsService):
+                 options_service: OptionsService, obs_service: ObsService):
         super().__init__()
 
         self.config_service = config_service
@@ -290,6 +291,7 @@ def InitialiseAppModel():
     demo_service = DemoService(config_service.config.demo_dir)
     launch_service = DsdaService()
     options_service = OptionsService()
+    obs_service = ObsService()
 
     # model, view, controller setup
     return AppModel(
@@ -299,4 +301,5 @@ def InitialiseAppModel():
         stats_service=stats_service,
         demo_service=demo_service,
         launch_service=launch_service,
-        options_service=options_service)
+        options_service=options_service,
+        obs_service=obs_service)

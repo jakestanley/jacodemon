@@ -1,4 +1,5 @@
 import os
+import logging
 import subprocess
 import threading
 import time
@@ -25,6 +26,7 @@ class LaunchService(ABC):
 
     def __init__(self):
         super().__init__()
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     @abstractmethod
     def GetSourcePortName(self) -> str:
@@ -32,7 +34,7 @@ class LaunchService(ABC):
 
     @abstractmethod
     def PreLaunch(self):
-        print("PreLaunch is not implemented by this LaunchService instance")
+        self._logger.warning("PreLaunch is not implemented by this LaunchService instance")
 
     @abstractmethod
     def GetLaunchCommand(self, launch_config: LaunchSpec, launch_session: LaunchSession):
@@ -40,7 +42,7 @@ class LaunchService(ABC):
 
     @abstractmethod
     def EnhanceStatistics(self, spec: LaunchSpec, statistics: Statistics):
-        print("EnhanceStatistics is not implemented by this LaunchService instance")
+        self._logger.warning("EnhanceStatistics is not implemented by this LaunchService instance")
 
     def GetDehackedPatches(self, mapSet: MapSet):
         patches = []

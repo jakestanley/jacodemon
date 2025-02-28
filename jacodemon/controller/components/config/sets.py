@@ -1,3 +1,5 @@
+import logging
+
 from PySide6.QtCore import QObject, Signal
 
 from jacodemon.model.app import AppModel
@@ -10,6 +12,7 @@ class ControllerSets(QObject):
 
     def __init__(self, app_model: AppModel, view: SetsTab):
         super().__init__()
+        self._logger = logging.getLogger(self.__class__.__name__)
         self.app_model: AppModel = app_model
         self.view: SetsTab = view
 
@@ -31,12 +34,12 @@ class ControllerSets(QObject):
         self.app_model.CreateMapSet()
 
     def on_open_mapset(self, mapSetId: str):
-        print(f"Controller hit! Opening {mapSetId}")
+        self._logger.debug(f"Controller hit! Opening {mapSetId}")
         self.app_model.SetMapSet(mapSetId)
         self.accept_signal.emit()
 
     def on_edit_mapset(self, mapSetId: str):
-        print(f"Controller hit! Editing {mapSetId}")
+        self._logger(f"Controller hit! Editing {mapSetId}")
 
     def on_remove_mapset(self, mapSetId: str):
         self.app_model.RemoveMapSet(mapSetId)

@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QApplication
 
 from jacodemon.arguments import GetArgs
 from jacodemon.model.options import InitialiseOptions
+from jacodemon.misc.logs import InitialiseLoggingConfig
 
 from jacodemon.manager import UIManager, UIState
 
@@ -23,7 +24,9 @@ def run(app_model: AppModel, ui_manager: UIManager):
 
 def start():
 
-    InitialiseOptions(GetArgs())
+    args = GetArgs()
+    InitialiseOptions(args)
+    InitialiseLoggingConfig(args.stdout_log_level.upper())
 
     app_model: AppModel = InitialiseAppModel()
 

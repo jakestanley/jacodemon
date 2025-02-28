@@ -1,10 +1,10 @@
 import logging
+
 import os
 import sys
 import time
 from datetime import datetime
 from jacodemon.misc.io import IO
-from jacodemon.logs import GetLogManager
 
 import obsws_python as obs
 from jacodemon.model.config import JacodemonConfig, GetConfig
@@ -16,11 +16,13 @@ from jacodemon.exceptions import ObsControllerException
 from PySide6.QtWidgets import QMessageBox
 
 class ObsService:
-    def __init__(self,notifications: Notifications, io: IO):
-        self.config: JacodemonConfig = GetConfig()
-        self.notifications = notifications
-        self.io = io
-        self._logger = GetLogManager().GetLogger(__name__)
+    # TODO: v3 -> notifications re-write
+    # def __init__(self,notifications: Notifications, io: IO):
+    def __init__(self):
+        # self.config: JacodemonConfig = GetConfig()
+        # self.notifications = notifications
+        # self.io = io
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     def _GetReplayName(self):
         # TODO use the one from the launch spec
