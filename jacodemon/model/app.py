@@ -133,18 +133,11 @@ class AppModel(QObject):
     def IsRecordDemoEnabled(self) -> bool:
         return self.options.mode == LaunchMode.RECORD_DEMO
     
-    def CanRecordDemo(self) -> bool:
-        return self.options.mode != LaunchMode.REPLAY_DEMO
-    
     def IsAutoRecordEnabled(self) -> bool:
         return self.options.auto_record and self.options.obs
     
-    def CanAutoRecord(self) -> bool:
+    def IsObsAvailable(self) -> bool:
         return self.options.obs
-    
-    def CanControlObs(self) -> bool:
-        # TODO: restore this functionality by re-implementing OBS service
-        return False
     
     def IsModsEnabled(self) -> bool:
         return self.options.mods

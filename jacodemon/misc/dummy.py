@@ -41,7 +41,7 @@ class DummyConfig(config.JacodemonConfig):
 def DummyArgs():
     args = argparse.Namespace()
     args.stdout_log_level = 'DEBUG'
-    args.no_obs = False
+    args.no_obs = True
     args.no_auto_record = False
     args.no_demo = False
     args.no_mods = False

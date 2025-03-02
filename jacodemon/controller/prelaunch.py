@@ -35,39 +35,28 @@ class ControllerPreLaunch(QObject):
 
     def refresh(self):
 
-        # TODO: this sucks
-        self.view.checkbox_record_demo.setChecked(self.app_model.IsRecordDemoEnabled())
-        self.view.checkbox_record_demo.setEnabled(self.app_model.CanRecordDemo())
-
-        self.view.checkbox_obs.setChecked(self.app_model.IsObsEnabled())
-        self.view.checkbox_obs.setEnabled(self.app_model.CanControlObs())
-
-        self.view.checkbox_auto_record.setChecked(self.app_model.IsAutoRecordEnabled())
-        self.view.checkbox_auto_record.setEnabled(self.app_model.CanAutoRecord())
-
-        self.view.checkbox_mods.setChecked(self.app_model.IsModsEnabled())
+        # disable buttons that aren't allowed during demo replay
+        self.view.checkbox_record_demo.setEnabled(self.app_model.GetMode() != LaunchMode.REPLAY_DEMO)
         self.view.checkbox_mods.setEnabled(self.app_model.GetMode() != LaunchMode.REPLAY_DEMO)
+        self.view.checkbox_fast.setEnabled(self.app_model.GetMode() != LaunchMode.REPLAY_DEMO)
 
+        # disable buttons OBS conditional buttons
+        self.view.checkbox_obs.setEnabled(self.app_model.IsObsAvailable())
+        self.view.checkbox_auto_record.setEnabled(self.app_model.IsObsAvailable())
+
+        self.view.checkbox_record_demo.setChecked(self.app_model.IsRecordDemoEnabled())
+        self.view.checkbox_obs.setChecked(self.app_model.IsObsEnabled())
+        self.view.checkbox_auto_record.setChecked(self.app_model.IsAutoRecordEnabled())
+        self.view.checkbox_mods.setChecked(self.app_model.IsModsEnabled())
         self.view.checkbox_music.setChecked(self.app_model.IsMusicEnabled())
         self.view.checkbox_fast.setChecked(self.app_model.IsFastMonstersEnabled())
-
-        # TODO: these have been removed or moved. commented for reference later
-        # self.view.radio_normal.toggled.connect(self.set_mode)
-        # self.view.radio_random.toggled.connect(self.set_mode)
-        # self.view.radio_last.toggled.connect(self.set_mode)
-        # self.view.radio_replay.toggled.connect(self.set_mode)
-
-        # self.view.ll_debug.setChecked("DEBUG" in app_model.options.stdout_log_level)
-        # self.view.ll_info.setChecked("INFO" in app_model.options.stdout_log_level)
-        # self.view.ll_warning.setChecked("WARNING" in app_model.options.stdout_log_level or "WARN" in app_model.options.stdout_log_level)
-        # self.view.ll_error.setChecked("ERROR" in app_model.options.stdout_log_level)
 
 if __name__ == "__main__":
 
     import sys
     from PySide6.QtWidgets import QApplication
 
-    from jacodemon.arguments import DummyArgs
+    from jacodemon.misc.dummy import DummyArgs
     from jacodemon.model.options import InitialiseOptions
     from jacodemon.model.app import InitialiseAppModel
 
