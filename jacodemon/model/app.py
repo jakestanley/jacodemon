@@ -246,6 +246,8 @@ class AppModel(QObject):
             cfg_path=self.config_service.GetCfgPathForSourcePort(self.launch_service.GetSourcePortName()),
             iwad_dir=self.config.iwad_dir,
             demo_dir=self.config.demo_dir,
+            maps_dir=self.config.maps_dir,
+            mods_dir=self.config.mods_dir,
             mode=self.options.mode,
             music=self.options.music)
 

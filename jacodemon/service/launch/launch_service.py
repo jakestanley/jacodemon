@@ -17,7 +17,7 @@ from jacodemon.model.stats import Statistics
 
 from jacodemon.model.map import Map
 from jacodemon.model.mapset import MapSet
-from jacodemon.misc.files import ToPathHashTupleList
+from jacodemon.misc.files import ToPathHashTupleList, FindAndVerify
 
 class LaunchService(ABC):
     """
@@ -119,14 +119,14 @@ class LaunchService(ABC):
 
         if len(launch_spec.dehs) > 0:
             doom_args.append("-deh")
-            doom_args.extend(d[0] for d in launch_spec.dehs)
+            doom_args.extend(d[0] for d in FindAndVerify(launch_spec.dehs, [launch_session.maps_dir]))
 
         files = []
         if len(launch_spec.wads) > 0:
-            files.extend(w[0] for w in launch_spec.wads)
+            files.extend(w[0] for w in FindAndVerify(launch_spec.wads, [launch_session.maps_dir]))
 
         if len(launch_spec.mods) > 0:
-            files.extend([m[0] for m in launch_spec.mods])
+            files.extend(m[0] for m in FindAndVerify(launch_spec.mods, [launch_session.mods_dir]))
 
         if len(files) > 0:
             doom_args.append("-file")

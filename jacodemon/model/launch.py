@@ -66,5 +66,7 @@ class LaunchSession:
     cfg_path: str
     iwad_dir: str
     demo_dir: str
+    maps_dir: str
+    mods_dir: str
     mode: LaunchMode
     music: bool

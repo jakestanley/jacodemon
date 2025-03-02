@@ -65,3 +65,28 @@ def GetFileHash(filepath: str) -> str:
 def ToPathHashTupleList(filepaths: list[str]) -> list[tuple[str, str]]:
     """Convert a list of filepaths to a list of tuples of (filepath, hash)."""
     return [(filepath, GetFileHash(filepath)) for filepath in filepaths]
+
+def FindAndVerify(filepaths: list[tuple[str, str]], additionalSearchDirectories: list[str]) -> list[tuple[str, str]]:
+    """Verify that the files in the list exist, search for them in additional search 
+    directories recursively if not, and ensure the files have not been modified. 
+    If no hash is present, skip verification"""
+    verified = []
+
+    # TODO: make this recursive, and verify hash (if present) before 
+    #   returning a result in the filepaths loop
+    for filepath, hash in filepaths:
+        if not os.path.exists(filepath):
+            for directory in additionalSearchDirectories:
+                if os.path.exists(os.path.join(directory, os.path.basename(filepath))):
+                    filepath = os.path.join(directory, os.path.basename(filepath))
+                    break
+            else:
+                raise FileNotFoundError(f"File not found: {filepath}")
+
+        if hash:
+            if hash != GetFileHash(filepath):
+                raise ValueError(f"File has been modified: {filepath}")
+
+        verified.append((filepath, hash))
+
+    return verified
