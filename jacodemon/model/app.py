@@ -174,6 +174,16 @@ class AppModel(QObject):
         self.selected_map = self.maps[index]
         self.selected_map_updated.emit()
 
+    def GetSelectedMapIndex(self):
+
+        if self.selected_map is None:
+            return -1
+
+        for i, map in enumerate(self.maps):
+            if map.MapId == self.selected_map.MapId:
+                return i
+        return -1
+
     def SetStatistics(self, index):
 
         # TODO another bounds check
@@ -195,16 +205,19 @@ class AppModel(QObject):
                 break
 
         # TODO fix that map sets are in many places, here, map set service and jacodemon config
-        self.map_set_service.TouchMapSet(mapSet)
+        self.map_set_service.TouchMapSet(self.selected_map_set)
 
-        self.maps = self.map_service.LoadMaps(mapSet)
-        for map in self.maps:
-            map.SetMapSet(mapSet)
-            self.stats_service.AddStatsToMap(map)
-            self.demo_service.AddDemoesToMapStats(map)
+        self.ReloadMaps()
 
         self.selected_map_updated.emit()
         self.selected_mapset_updated.emit()
+
+    def ReloadMaps(self):
+        self.maps = self.map_service.LoadMaps(self.selected_map_set)
+        for map in self.maps:
+            map.SetMapSet(self.selected_map_set)
+            self.stats_service.AddStatsToMap(map)
+            self.demo_service.AddDemoesToMapStats(map)
 
     def RemoveMapSet(self, mapSetId):
         self.map_set_service.RemoveMapSetById(mapSetId)
@@ -258,7 +271,7 @@ class AppModel(QObject):
 
         self.obs_service.StopRecording()
         self.obs_service.SetScene(self.config.wait_scene)
-
+        self.ReloadMaps()
 
         self.selected_mapset_updated.emit()
 
