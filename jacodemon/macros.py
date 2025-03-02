@@ -1,6 +1,7 @@
+import logging
 import platform
 
-from jacodemon.obs import ObsController
+from jacodemon.service.obs_service import ObsService
 from jacodemon.keys import *
 
 class Key:
@@ -33,10 +34,11 @@ KeyNames = [
 
 class Macros:
     def __init__(self):
+        self._logger = logging.getLogger(self.__class__.__name__)
         return
 
     def add_hotkey_callback(self, key: str, callback):
-        print("Warning: add_hotkey_callback not implemented")
+        self._logger.warning("add_hotkey_callback not implemented")
 
     def listen(self):
         pass

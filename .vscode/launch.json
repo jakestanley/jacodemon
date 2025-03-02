@@ -22,151 +22,24 @@
             "program": "run_tests.py"
         },
         {
-            "name": "Start2",
+            "name": "v3start (No OBS, Debug)",
             "type": "debugpy",
             "request": "launch",
-            "program": "scripts/start.py",
+            "program": "scripts/v3start.py",
+            "justMyCode": true,
             "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv"
-            ]
-        },
-        {
-            "name": "Start (Freestyle)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-
-            ]
-        },
-        {
-            "name": "Start2 (Last)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv",
-                "--last"
-            ]
-        },
-        {
-            "name": "Start2 (Debug, Last)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv",
-                "--last",
+                "--no-obs",
                 "-sll", "DEBUG"
             ]
         },
         {
-            "name": "Start2 (No OBS)",
+            "name": "v3start (Debug)",
             "type": "debugpy",
             "request": "launch",
-            "program": "scripts/start.py",
+            "program": "scripts/v3start.py",
+            "justMyCode": true,
             "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv",
-                "--no-obs"
-            ]
-        },
-        {
-            "name": "Start2 (No OBS, No Demo)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv",
-                "--no-obs",
-                "--no-demo"
-            ]
-        },
-        {
-            "name": "Start2 (No OBS, No Demo, WAD path)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--wad",
-                "/Users/jake/Dropbox/Games/Doom/WADs/Maps/SIGIL_v1_21.wad",
-                "--no-obs",
-                "--no-demo"
-            ]
-        },
-        {
-            "name": "Start2 (No OBS, No Demo, Quiet)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv",
-                "--no-obs",
-                "--no-demo",
-                "--stdout-log-level", "error"
-            ]
-        },
-        {
-            "name": "Start2 (No OBS, No Demo, Last)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv",
-                "--no-obs",
-                "--no-demo",
-                "--last"
-            ]
-        },
-        {
-            "name": "Start2 (No Auto, No Demo, Last)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv",
-                "--no-auto-record",
-                "--no-demo",
-                "--last"
-            ]
-        },
-        {
-            "name": "Start2 (Replay)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv",
-                "--replay"
-            ]
-        },
-        {
-            "name": "Start2 (Replay + No OBS)",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "scripts/start.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv",
-                "--replay", "--no-obs"
-            ]
-        },
-        {
-            "name": "Analyse",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "analyse.py",
-            "args": [
-                "--playlist",
-                "./examples/v3_Season2.csv"
+                "-sll", "DEBUG"
             ]
         }
     ]

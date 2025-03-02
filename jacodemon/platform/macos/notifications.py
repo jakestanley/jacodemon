@@ -1,8 +1,6 @@
 from jacodemon.notifications import Notifications
-import os
 import subprocess
 import logging
-from jacodemon.logs import GetLogManager
 
 _CMD = '''
 on run argv
@@ -13,7 +11,7 @@ end run
 class MacNotifications(Notifications):
     def __init__(self):
         super().__init__()
-        self._logger = GetLogManager().GetLogger(__name__)
+        self._logger = logging.getLogger(self.__class__.__name__)
         
     def notify(self, title, body):
         subprocess.call(['osascript', '-e', _CMD, title, body])

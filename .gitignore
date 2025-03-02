@@ -8,4 +8,5 @@ last.json
 report.json
 tmp/
 .idea/
+tests/data/thirdparty
 __pycache__

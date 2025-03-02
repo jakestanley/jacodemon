@@ -1,6 +1,6 @@
 import unittest
 
-from jacodemon.stats import *
+from jacodemon.service.dsda.stats import *
 
 
 class TestStats(unittest.TestCase):

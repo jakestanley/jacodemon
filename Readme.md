@@ -1,10 +1,60 @@
 # JACODEMON
 
-- A Doom launcher with support for managing OBS. This was created to aid streaming and recording my journey through [Doomworld's "Top 100 WADs of All Time"](https://doomwiki.org/wiki/Top_100_WADs_of_All_Time)
-- I stream almost all of my gameplay on [Twitch](https://www.twitch.tv/madstanners)
-- I occasionally edit and upload videos to [YouTube](https://www.youtube.com/channel/UCRJqHDn3N8mGfEtlida1S0w)
+Jacodemon is a Doom launcher focused on managing your WADs, recording demos and with support for managing OBS recordings. It also includes a rudimentary achievement system when DSDA Doom is used. This was created to aid streaming and recording my journey through [Doomworld's "Top 100 WADs of All Time"](https://doomwiki.org/wiki/Top_100_WADs_of_All_Time). I stream almost all of my gameplay on [Twitch](https://www.twitch.tv/madstanners) and I occasionally edit and upload videos to [YouTube](https://www.youtube.com/user/madstanners).
 
-## Running
+The recommended source port to use with Jacodemon is DSDA Doom
+
+## Features
+
+### MapSets
+
+Create a map set, with the WADs and DEH patches needed and Jacodemon will handle the rest
+
+### MapSelect
+
+Once you've opened a MapSet, you can see the following for each map if the information is available:
+- Map ID
+- Map name*
+- Map author*
+- "Badge"
+
+*Supports UMAPINFO and ZMAPINFO currently
+
+### OBS recording, scene, and overlay management
+
+Configure for streaming and recording. Recorded videos will be named automatically. Can add level name overlay to stream automatically if your scene is set up right.
+
+_need to expand on this wrt how to get OBS set up right_
+
+### Demo and stats recording
+
+By default a demo will be recorded for every run. 
+
+If you complete the level, statistics will be saved for that run (for best results, exit the game on the "Kills, Secrets, Items" screen)
+
+### Achievements & Badges
+
+If you complete a map, when you next view the map select screen you'll see a little badge next to that map.
+
+_need to explain the badges_
+
+## Getting started
+
+[Poetry](https://python-poetry.org/) is used for dependency management system and running. 
+
+For more information, see the [development](#development) section
+
+### Install
+
+```
+poetry install
+```
+
+### Run
+
+```
+poetry run jacodemon <args>
+```
 
 Sensible defaults are chosen for recording and streaming
 
@@ -17,54 +67,6 @@ Sensible defaults are chosen for recording and streaming
 - `--no-auto-record`
 - `--stdout-log-level <DEBUG,INFO,WARNING>` or `-sll` to set the logging levels that will print to the console
 
-## Configuration
-
-### Script variables
-
-- This can now be configured in app
-- Deprecated: Update `config.json` accordingly. Currently the script is not resilient to missing values.
-
-### Playlist format (CSV)
-
-I worked with ChatGPT to come up with a format that works for mods where a list of maps is provided and when one is not.
-
-```
-ModName,MapId,MapName,Author,CompLevel,Files,Merge,Port,Notes
-Fava Beans,E1M1,Gaspra Armory,Sean Birkel,2,FAVA.WAD,,,
-Fava Beans,E1M2,Hangar 18,Sean Birkel,2,FAVA.WAD,,,
-Fava Beans,E1M3,Impalement Station,Sean Birkel,2,FAVA.WAD,,,Exit to secret level
-The Final Gathering,,,Stormin,2,GATHER.WAD,,,From original release. Maps unnamed. Mod test
-The Final Gathering (Bonus),MAP04,,Stormin,9,GATHER2.WAD|NEW.WAD,,,Bonus level added in 2005. Using Boom to be safe
-The Final Gathering (Bonus),MAP05,,Stormin,9,GATHER2.WAD|NEW.WAD,,,Bonus level added in 2005. Using Boom to be safe
-```
-
-The following values _MUST_ currently be present in the map CSV for the script to work:
-
-- `ModName`
-- `MapId` (optional*)
-	- Expected formats are 'E1M1' (Doom) or 'MAP01' (Doom 2)
-- `MapName` (optional)
-    - MAY be displayed on the stream
-- `Author` (optional)
-    - MAY be displayed on the stream
-    - If no MapIds provided for this ModName, this will be used for all maps in the mod
-- `CompLevel` (optional)
-	- If empty, `default_complevel` from `config.json` is used
-- `Files` determines the files that need to be loaded. 
-	- Currently DEH and WAD are supported. 
-	- Multiple files MUST be separated by a pipe character. 
-	- This can be empty.
-- `Merge` (optional)
-    - For use with chocolate doom to specify which files require the `-merge` parameter
-	- See [WAD merging capability](https://www.chocolate-doom.org/wiki/index.php/WAD_merging_capability)
-- `Port` (optional)
-    - Use this port to use, i.e `chocolate` for chocolate doom.
-	- Defaults to dsda-doom
-    - Overridden with `--source-port` flag
-- `Notes` (optional)
-
-*If ModName is provided without MapId, then a tool will be used to infer the maps from files. Note: if further maps are provided with the same name, they will be appended to the list for that mod. Handling this behaviour is not planned yet.
-
 ## Configure OBS
 
 ### Enable WebSocket server
@@ -74,69 +76,122 @@ The following values _MUST_ currently be present in the map CSV for the script t
 - Uncheck "Enable Authentication"
 - Keep the default port, should be 4455
 
-## Python
+## Development
 
-### Install dependencies
+Preferred "IDE" is VSCode as it provides pretty clever Python and test integration.
 
-```
-pip install -r requirements.txt
-```
+### Testing
 
-## Testing
+Testing leverages the the `unittest` framework
 
-- Uses `unittest` package
-- Run `run_tests.py`
+_please explain how to run tests_
 
-### Regression
+## Roadmap
 
-TBC
+### Major features
 
-## Scripting OBS
+- More achievements/badges
+- Verify and locate missing WADs on file system when playing old launch configs that refer to files that have now moved
+- Enemies count in map picker (optional)
+- In depth analysis, which maps were easy? How many attempts before you completed a map for the first time?
+- Show your time vs. par time
+- WAD locations and PWAD search (uses WAD.TXT if available)
+- WADSeeker/idgames API integration
+- Add FINISHED to auto-records output file rename
+- Option to delete OBS recording instead of saving
+- Migrate your config/stats/demos/cheevos, etc for backup
+- Backup and move config and stats
+- DSDA config viewer/editor
+- Auto setup OBS scenes with "sensible defaults"
+- Support more ports out of the box
+- Big code cleanup
+- All those TODOs I've left lying around
+- Compile to a distributable and release
+- Test coverage and UI regression plan for future releases
+- Promote experimental features to actual features
+- PEP compliance
+- Plenty of bug fixes
+- Tag/rate maps. Tags like "awesome-music", "challenging", etc. Memento Mori's "Galaxy" is great!
+- Publish tags/ratings/statistics/demoes automatically
+- Multiplayer launching (would require chocolate doom)
 
-I'm referencing my bass stream from the past year when writing OBS commands: https://github.com/jakestanley/midi-obs-ws-thing/blob/main/app.js
+### Minor features
 
+- Edit map set:
+    - to set comp level manually
+    - to override or change IWAD
+- Make comp levels a drop down
+- Skill override in pre launch options
+- Sort demoes in timestamp order
+- Display Set WADINFO or accompanying text file if detected in "Set" section on map select
+    - Requires calling WadService::GetDataFromWads on map set selection
+- Beat par time badge/achievement
+- Multiple badges instead of one tiered badge
 
-# Optional functionality
+### Bugs
 
-- [maghoff/wad](https://github.com/maghoff/wad) for reading wad data (requires [rust](https://doc.rust-lang.org/cargo/getting-started/installation.html))
+- Play button is not disabled if you haven't selected a map yet
+- Last map...
+    - is not updated unless you restart the application
+    - should probably use launch config for reproduction?
+- If you quit during saving the replay buffer, then the replay buffer does not get renamed
 
-## Macros
+### Out of scope features
+
+#### Other source ports
+
+I'm thinking if you've got to the point you want to use a tool like this to 
+handle recording your Doom career, you've probably already realised that 
+DSDA Doom is one of the best tools for this, so at this point I will not be 
+supporting other ports, though I do wish to make the code extensible enough 
+to support such options. I made this scope decision in February 2025 after I 
+have already written some code for Crispy/Chocolate Doom, so I'll leave that 
+in for now, unused.
+
+## Experimental features
+
+Don't rely on any of these to work, they're a bit rubbish. Actually, don't rely on anything in this app working properly but I digress...
+
+### Macros
 
 Currently hardcoded and for Windows only:
 - Numpad 0: Capture replay buffer
 - Numpad dot/delete: Cancel recording
 - Numpad 3: Switch to browser scene and open doom wiki in a Qt web view (need to make this pop up)
 
-### Windows
+#### Windows
 - ahk
 - ahk (python)
 
-### macOS
+#### macOS
 - [hammerspoon](http://www.hammerspoon.org/go/)
 - hammerspoon-bridge [github](https://github.com/AaronC81/hammerspoon_bridge), [pypi](https://pypi.org/project/hammerspoon-bridge/)
 - Hammerspoon must be running
 - `~/.hammerspoon/init.lua` must contain the line: `local ipc = require('hs.ipc')`
 
-## Notifications
+### Notifications
 
-### Windows 11
+#### Windows 11
 Set these settings in Windows Settings to ensure notifications are visible when you are playing a game:
 - In System -> Notifications, uncheck "When using an app in full-screen mode" under "Turn on do not disturb automatically"
 - In System -> Notifications -> Set priority notifications, add "Python" under "Apps"
 
-# Thanks
+## Thanks
 
-## ChatGPT
-For when my patience was wearing thin with PowerShell, and because I'm lazy.
+### Package maintainers
+_please list Jake_
 
-## Doom Text Generator
+### ChatGPT
+For when my patience was wearing thin, and because I'm lazy
+
+### Doom Text Generator
 Thanks to https://c.eev.ee/doom-text-generator for the rendered stream overlay text
 
-## Doom Wiki
+### Doom Wiki
 I've nicked so much data used in my streams from here. You can visit them at: https://doomwiki.org/
 
-## id Software
+### id Software
 For Doom of course
 
-## Doomworld
+### Doomworld
 For their contributions and support for this now 30 year old community

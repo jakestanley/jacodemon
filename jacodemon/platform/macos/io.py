@@ -1,13 +1,13 @@
+import logging
 import fcntl
 
-from jacodemon.io import IO
-from jacodemon.logs import GetLogManager, LogManager
+from jacodemon.misc.io import IO
 
 class MacIo(IO):
 
     def __init__(self) -> None:
         super().__init__()
-        self._logger = GetLogManager().GetLogger(__name__)
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     def _wait_for_file_unlock(self, file):
         try:
