@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from typing import List
 from omg import wad as omgwad
@@ -78,6 +79,20 @@ class WadService:
 
         return None
     
+    def GetTextFileContentsFromWadName(self, wad_path):
+        path = Path(wad_path)
+
+        # Search for a case-insensitive .txt file in the same directory
+        for txt_file in path.parent.glob(f"{path.stem}.*"):
+            if txt_file.suffix.lower() == ".txt":
+                for encoding in ("utf-8", "latin-1", "windows-1252"):
+                    try:
+                        return txt_file.read_text(encoding=encoding)
+                    except UnicodeDecodeError:
+                        continue
+
+        return None  # Return None if no matching file is found
+    
     # TODO: user added data in MapSet to be added separately
     def GetDataFromWads(self, wads: List[str]) -> WadsData:
         data = WadsData()
@@ -115,6 +130,9 @@ class WadService:
                     data.text = wad.data['WADINFO'].data.decode('utf-8')
                 elif "wadinfo" in wad.data:
                     data.text = wad.data['wadinfo'].data.decode('utf-8')
+                else:
+                    data.text = self.GetTextFileContentsFromWadName(file)
+
             else:
                 continue
 

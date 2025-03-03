@@ -30,6 +30,7 @@ class MapSet:
         self.paths: List[MapSetPath] = paths
         self.iwad = iwad
         self.compLevel = compLevel
+        self.text = ""
 
     def HasInvalidConfiguration(self):
         for path in self.paths:

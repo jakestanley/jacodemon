@@ -1,6 +1,6 @@
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QStandardItemModel, QStandardItem
-from PySide6.QtWidgets import QDialog, QWidget, QHBoxLayout, QVBoxLayout, QTableView, QPushButton
+from PySide6.QtCore import Qt, Signal, QFlag
+from PySide6.QtGui import QStandardItemModel, QStandardItem, QFont
+from PySide6.QtWidgets import QDialog, QWidget, QHBoxLayout, QVBoxLayout, QTableView, QTextEdit
 
 from PySide6.QtWidgets import QLabel, QGroupBox, QDialogButtonBox
 from PySide6.QtGui import QBrush
@@ -27,7 +27,7 @@ class MapTableWidget(QTableView):
         self.selectionModel().selectionChanged.connect(self._HandleSelection)
         self.resizeColumnsToContents()
 
-    def populate(self, data):
+    def populate(self, data, selectionIndex=-1):
         self.model.removeRows(0, self.model.rowCount())
 
         # TODO should replace, not append
@@ -37,6 +37,9 @@ class MapTableWidget(QTableView):
                 item.setEditable(False)  # Set the item as uneditable
             self.model.appendRow(row_items)
         self.resizeColumnsToContents()
+
+        if selectionIndex < 0:
+            return
 
     def _HandleSelection(self, selected, deselected):
         if len(selected.indexes()) == 0:
@@ -65,6 +68,9 @@ class PathsTableWidget(QTableView):
     def on_map_set_change(self, mapSet):
 
         paths = []
+
+        self.model = QStandardItemModel()
+        self.setModel(self.model)
         
         if mapSet:
             paths = mapSet.paths
@@ -72,9 +78,12 @@ class PathsTableWidget(QTableView):
 
         for path in paths:
             item = QStandardItem(path.path)
+            item.setEditable(False)
             if not path.enabled:
                 item.setForeground(QBrush(Qt.gray))
             self.model.appendRow(item)
+
+        self.resizeColumnsToContents()
             
 class SetOverviewWidget(QWidget):
     
@@ -86,15 +95,34 @@ class SetOverviewWidget(QWidget):
         paths = []
         compLevel = None
 
-        layout.addWidget(PathsTableWidget(self))
+        self.wad_text = QTextEdit(self)
+        monospace_font = QFont("Courier New")  # Use a standard monospace font
+        monospace_font.setStyleHint(QFont.Monospace)
+
+        self.wad_text.setFont(monospace_font)
+        self.wad_text.setReadOnly(True)
+
+        self.paths_table = PathsTableWidget(self)
+        layout.addWidget(QLabel(f"Info"))
+        layout.addWidget(self.wad_text)
+        layout.addWidget(QLabel(f"Files"))
+        layout.addWidget(self.paths_table)
         layout.addWidget(QLabel(f"CompLevel: {compLevel}"))
         layout.addStretch()
         self.setLayout(layout)
 
-    def on_map_set_change(mapSet):
+    def on_map_set_change(self, mapSet):
+
+        if not mapSet:
+            return
+
+        if mapSet.text:
+            self.wad_text.setText(mapSet.text)
+        else:
+            self.wad_text.setText("")
+
         if mapSet:
-            paths = mapSet.paths
-            mapSet.compLevel
+            self.paths_table.on_map_set_change(mapSet)
 
 class ViewMapSelect(QDialog):
 
@@ -123,9 +151,13 @@ class ViewMapSelect(QDialog):
         
         self.setLayout(layout)
 
+    def on_map_set_change(self, mapSet):
+        self.set_overview_widget.on_map_set_change(mapSet)
+
     def _CreateSetOverviewGroupBox(self) -> QGroupBox:
         gb_layout = QVBoxLayout()
-        gb_layout.addWidget(SetOverviewWidget(self))
+        self.set_overview_widget = SetOverviewWidget(self)
+        gb_layout.addWidget(self.set_overview_widget)
 
         set_groupbox = QGroupBox("Set")
         set_groupbox.setLayout(gb_layout)

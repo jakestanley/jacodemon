@@ -13,6 +13,7 @@ from jacodemon.service.stats_service import StatsService
 from jacodemon.service.demo_service import DemoService
 from jacodemon.service.launch.launch_service import LaunchService
 from jacodemon.service.obs_service import ObsService
+from jacodemon.service.wad_service import WadService
 
 from jacodemon.service.options_service import OptionsService
 
@@ -41,7 +42,8 @@ class AppModel(QObject):
     def __init__(self, config_service: ConfigService, map_set_service: MapSetService, 
                  map_service: MapService, stats_service: StatsService, 
                  demo_service: DemoService, launch_service: LaunchService,
-                 options_service: OptionsService, obs_service: ObsService):
+                 options_service: OptionsService, obs_service: ObsService,
+                 wad_service: WadService):
         super().__init__()
 
         self.config_service = config_service
@@ -52,6 +54,7 @@ class AppModel(QObject):
         self.launch_service = launch_service
         self.options_service = options_service
         self.obs_service = obs_service
+        self.wad_service = wad_service
 
         self.config = self.config_service.config
         self.options: Options = self.options_service.GetOptions()
@@ -213,7 +216,10 @@ class AppModel(QObject):
         self.selected_mapset_updated.emit()
 
     def ReloadMaps(self):
+        
         self.maps = self.map_service.LoadMaps(self.selected_map_set)
+        wadsData = self.wad_service.GetDataFromWads([p.path for p in self.selected_map_set.paths])
+        self.selected_map_set.text = wadsData.text
         for map in self.maps:
             map.SetMapSet(self.selected_map_set)
             self.stats_service.AddStatsToMap(map)
@@ -310,6 +316,7 @@ def InitialiseAppModel():
     demo_service = DemoService(config_service.config.demo_dir)
     launch_service = DsdaService()
     options_service = OptionsService()
+    wad_service = WadService(config_service.config.maps_dir)
 
     obs_service = None
     if options_service.GetOptions().obs:
@@ -326,4 +333,5 @@ def InitialiseAppModel():
         demo_service=demo_service,
         launch_service=launch_service,
         options_service=options_service,
-        obs_service=obs_service)
+        obs_service=obs_service,
+        wad_service=wad_service)

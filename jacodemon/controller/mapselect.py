@@ -22,7 +22,6 @@ class ControllerMapSelect(QObject):
         self.view.mapTableWidget.row_selected.connect(self._HandleSelection)
 
         self.app_model.selected_mapset_updated.connect(self.on_mapset_updated)
-        self.app_model.selected_map_updated.connect(self.on_map_updated)
 
         self._cMapOverview.play_signal.connect(self.play)
         self._cMapOverview.play_demo_signal.connect(self.play_demo)
@@ -42,13 +41,11 @@ class ControllerMapSelect(QObject):
 
         # TODO you may wish to reset demo, map, etc etc
         maps = [map.to_dict() for map in self.app_model.maps]
-        self.view.mapTableWidget.populate(maps)
+        self.view.mapTableWidget.populate(maps, self.app_model.GetSelectedMapIndex())
+        self.view.on_map_set_change(self.app_model.selected_map_set)
 
     def _HandleSelection(self, index):
         self.app_model.SetMap(index)
-
-    def on_map_updated(self):
-        pass
 
 if __name__ == "__main__":
 

@@ -91,7 +91,7 @@ _please explain how to run tests_
 ### Major features
 
 - More achievements/badges
-- Verify and locate missing WADs on file system when playing old launch configs that refer to files that have now moved
+- Verify and locate missing WADs on file system when playing old launch configs that refer to files that have now moved (partially implemented)
 - Enemies count in map picker (optional)
 - In depth analysis, which maps were easy? How many attempts before you completed a map for the first time?
 - Show your time vs. par time
@@ -123,8 +123,6 @@ _please explain how to run tests_
 - Make comp levels a drop down
 - Skill override in pre launch options
 - Sort demoes in timestamp order
-- Display Set WADINFO or accompanying text file if detected in "Set" section on map select
-    - Requires calling WadService::GetDataFromWads on map set selection
 - Beat par time badge/achievement
 - Multiple badges instead of one tiered badge
 
