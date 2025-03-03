@@ -7,9 +7,11 @@ from jacodemon.model.map import Map
 from jacodemon.model.launch import LaunchSpec
 from jacodemon.model.stats import Statistics
 import os
+import logging
 
 class StatsService:
     def __init__(self, stats_dir):
+        self._logger = logging.getLogger(self.__class__.__name__)
         self.stats_dir = stats_dir
 
     # TODO rename this to get statistics for map? idk
@@ -19,7 +21,11 @@ class StatsService:
         stats = None
         if stats_path:
             with open(stats_path, "r") as stats_file:
-                raw_json = json.load(stats_file)
+                try:
+                    raw_json = json.load(stats_file)
+                except json.JSONDecodeError as e:
+                    self._logger.error(f"Failed to parse stats: {stats_file}")
+                    return None
                 stats = Statistics.from_dict(raw_json)
                 if stats.timestamp is None:
                     stats.timestamp = ParseTimestampFromPath(stats_path)
