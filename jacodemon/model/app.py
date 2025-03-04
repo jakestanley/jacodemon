@@ -18,6 +18,7 @@ from jacodemon.service.wad_service import WadService
 from jacodemon.service.options_service import OptionsService
 
 from jacodemon.model.options import MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
+import logging
 
 class AppModel(QObject):
 
@@ -45,6 +46,7 @@ class AppModel(QObject):
                  options_service: OptionsService, obs_service: ObsService,
                  wad_service: WadService):
         super().__init__()
+        self._logger = logging.getLogger(self.__class__.__name__)
 
         self.config_service = config_service
         self.map_set_service = map_set_service
