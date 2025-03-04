@@ -8,6 +8,7 @@ from jacodemon.misc.logs import InitialiseLoggingConfig
 
 from jacodemon.manager import UIManager, UIState
 
+from jacodemon.wiring.context import Context, InitialiseContext
 from jacodemon.model.app import AppModel, InitialiseAppModel
 
 from jacodemon.service.obs_service import ObsServiceException
@@ -19,7 +20,6 @@ from jacodemon.controller.prelaunch import ControllerPreLaunch
 from jacodemon.view.config import ViewConfig
 from jacodemon.view.mapselect import ViewMapSelect
 from jacodemon.view.prelaunch import ViewPreLaunch
-
 
 def run(app_model: AppModel, ui_manager: UIManager):
     app_model.Launch()
@@ -33,6 +33,7 @@ def start():
     InitialiseLoggingConfig(args.stdout_log_level.upper())
 
     app = QApplication([])
+    InitialiseContext()
 
     try:
         app_model: AppModel = InitialiseAppModel()

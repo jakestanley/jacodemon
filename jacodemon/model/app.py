@@ -1,4 +1,5 @@
 from typing import List
+from jacodemon.wiring.context import Context
 from PySide6.QtCore import QObject, Signal
 
 from jacodemon.model.options import Options
@@ -304,36 +305,22 @@ class AppModel(QObject):
         self.config.dsdadoom_hud_lump = path
         self.config.Save()
 
-def InitialiseAppModel():
+def InitialiseAppModel() -> AppModel:
 
     from jacodemon.service.launch.dsda_service import DsdaService
 
     """Pretty please don't call this more than once. Used for initial setup 
     and individual components testing"""
 
-    config_service = ConfigService()
-    map_set_service = MapSetService(config_service.config)
-    map_service = MapService(config_service.config.maps_dir)
-    stats_service = StatsService(config_service.config.stats_dir)
-    demo_service = DemoService(config_service.config.demo_dir)
-    launch_service = DsdaService()
-    options_service = OptionsService()
-    wad_service = WadService(config_service.config.maps_dir)
-
-    obs_service = None
-    if options_service.GetOptions().obs:
-        obs_service = ObsService(config_service.config)
-    else:
-        obs_service = MockObsService(config_service.config)
-
     # model, view, controller setup
     return AppModel(
-        config_service=config_service, 
-        map_set_service=map_set_service,
-        map_service=map_service,
-        stats_service=stats_service,
-        demo_service=demo_service,
-        launch_service=launch_service,
-        options_service=options_service,
-        obs_service=obs_service,
-        wad_service=wad_service)
+        config_service=Context.get(ConfigService), 
+        map_set_service=Context.get(MapSetService),
+        map_service=Context.get(MapService),
+        stats_service=Context.get(StatsService),
+        demo_service=Context.get(DemoService),
+        launch_service=Context.get(DsdaService),
+        options_service=Context.get(OptionsService),
+        obs_service=Context.get(ObsService),
+        wad_service=Context.get(WadService)
+    )
