@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 from jacodemon.service.registry import Registry
 from jacodemon.service.map_set_service import MapSetService
@@ -6,6 +7,7 @@ from jacodemon.service.map_set_service import MapSetService
 from PySide6.QtCore import QObject, Signal
 
 from jacodemon.model.app import AppModel
+from jacodemon.model.map import MapSet
 
 from jacodemon.view.components.config.sets import SetsTab
 
@@ -47,4 +49,4 @@ class ControllerSets(QObject):
         self.app_model.RemoveMapSet(mapSetId)
 
     def on_mapsets_updated(self):
-        self.view.mapSetList.populate(reversed(self.map_set_service.GetMapSets()))
+        self.view.mapSetList.populate(reversed(self.map_set_service.mapSets))
