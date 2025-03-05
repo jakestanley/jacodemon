@@ -1,6 +1,8 @@
 import glob
 import json
 
+from PySide6.QtCore import QObject, Signal
+
 from jacodemon.misc.files import ParseTimestampFromPath
 
 from jacodemon.model.map import Map
@@ -9,10 +11,24 @@ from jacodemon.model.stats import Statistics
 import os
 import logging
 
-class StatsService:
+class StatsService(QObject):
+
+    # when a user selects stats from the list
+    selected_statistics_updated = Signal()
+
     def __init__(self, stats_dir):
+        super().__init__()
+
         self._logger = logging.getLogger(self.__class__.__name__)
         self.stats_dir = stats_dir
+
+    def initialise(self):
+        pass
+
+    def SetStatistics(self, index):
+
+        self.selected_statistics = self.selected_map.Statistics[index]
+        self.selected_statistics_updated.emit()
 
     # TODO rename this to get statistics for map? idk
     def LoadStatistics(self, stats_path) -> Statistics:

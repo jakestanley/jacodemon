@@ -1,5 +1,8 @@
 from PySide6.QtCore import QObject, Signal
 
+from jacodemon.service.registry import Registry
+from jacodemon.service.map_set_service import MapSetService
+
 from jacodemon.model.app import AppModel
 from jacodemon.view.mapselect import ViewMapSelect
 
@@ -16,12 +19,16 @@ class ControllerMapSelect(QObject):
         self.app_model = app_model
         self.view = view_map_select
 
+        # services
+        self.map_set_service: MapSetService = Registry.get(MapSetService)
+
+        # service event listeners
+        self.map_set_service.selected_mapset_updated.connect(self.on_mapset_updated)
+
         # i'm sure this was deffo getting GC'd without the assignment
         self._cMapOverview = ControllerMapOverview(self.app_model, self.view.mapOverviewWidget)
 
         self.view.mapTableWidget.row_selected.connect(self._HandleSelection)
-
-        self.app_model.selected_mapset_updated.connect(self.on_mapset_updated)
 
         self._cMapOverview.play_signal.connect(self.play)
         self._cMapOverview.play_demo_signal.connect(self.play_demo)
@@ -45,6 +52,8 @@ class ControllerMapSelect(QObject):
         self.view.on_map_set_change(self.app_model.selected_map_set)
 
     def _HandleSelection(self, index):
+
+        # TODO don't use index it's crap
         self.app_model.SetMap(index)
 
 if __name__ == "__main__":

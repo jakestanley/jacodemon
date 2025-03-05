@@ -33,6 +33,9 @@ class DsdaService(LaunchService):
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)
 
+    def initialise(self):
+        pass
+
     def _FormatCompLevel(self, comp_level):
         if comp_level == 'vanilla':
             return "4"

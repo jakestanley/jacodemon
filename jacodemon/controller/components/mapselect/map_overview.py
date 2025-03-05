@@ -1,5 +1,9 @@
 from PySide6.QtCore import QObject, Signal
 
+from jacodemon.service.registry import Registry
+from jacodemon.service.map_service import MapService
+from jacodemon.service.stats_service import StatsService
+
 from jacodemon.model.app import AppModel
 
 from jacodemon.view.components.mapselect.map_overview import MapOverviewWidget
@@ -16,18 +20,26 @@ class ControllerMapOverview(QObject):
         self.app_model = app_model
         self.view = view
 
+        # services
+        self.map_service: MapService = Registry.get(MapService)
+        self.stats_service: StatsService = Registry.get(StatsService)
+
+        # service event listeners
+        self.map_service.selected_map_updated.connect(self.on_map_updated)
+        self.stats_service.selected_statistics_updated.connect(self.on_statistics_updated)
+
         # i'm sure this was deffo getting GC'd without the assignment.
         #   perhaps these nested controller declarations might get a little unwieldy? we'll see
-        self._cDemoTable = ControllerStatisticsTable(self.app_model, self.view.demo_table)
+        self._cDemoTable = ControllerStatisticsTable(self.view.demo_table)
 
         self.view.play_button.setEnabled(False)
         self.view.play_demo_button.setEnabled(False)
 
+        # ui event listeners
         self.view.play_button.clicked.connect(self._HandlePlay)
         self.view.play_demo_button.clicked.connect(self._HandlePlayDemo)
 
-        self.app_model.selected_map_updated.connect(self.on_map_updated)
-        self.app_model.selected_statistics_updated.connect(self.on_statistics_updated)
+
 
     def on_map_updated(self):
 

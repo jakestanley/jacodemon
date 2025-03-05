@@ -69,6 +69,9 @@ class WadService:
     def __init__(self, maps_dir):
         self.maps_dir = maps_dir
 
+    def initialise(self):
+        pass
+
     def _GetWadPath(self, file: str):
         ext = os.path.splitext(file)[1]
         if ext.lower() == ".wad":
@@ -95,6 +98,8 @@ class WadService:
     
     # TODO: user added data in MapSet to be added separately
     def GetDataFromWads(self, wads: List[str]) -> WadsData:
+
+        # TODO cache me, possibly keyed on MapSetId
         data = WadsData()
 
         for file in wads:

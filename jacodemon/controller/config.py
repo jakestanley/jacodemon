@@ -1,6 +1,9 @@
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QFileDialog
 
+from jacodemon.service.registry import Registry
+from jacodemon.service.map_service import MapService
+
 from jacodemon.model.app import AppModel
 from jacodemon.view.config import ViewConfig
 
@@ -20,11 +23,12 @@ class ControllerConfig(QObject):
         super().__init__()
 
         self.app_model = app_model
+        self.map_service = Registry.get(MapService)
         self.view = view_config
 
         # create views and controllers for tabs
         self.cSets = ControllerSets(app_model, self.view.selectSetTab)
-        self.cGeneral = ControllerGeneral(app_model, self.view.generalTab)
+        self.cGeneral = ControllerGeneral(self.view.generalTab)
         self.cMods = ControllerMods(app_model, self.view.modsTab)
         self.cObs = ControllerObs(app_model, self.view.obsTab)
         self.cDsda = ControllerDsda(app_model, self.view.dsdaTab)
@@ -32,9 +36,9 @@ class ControllerConfig(QObject):
         self.cSets.accept_signal.connect(self.accept_signal.emit)
         self.view.lastWidget.last_signal.connect(self.on_play_last)
 
-        if self.app_model.last_map is not None:
-            self.view.lastWidget.last_map_set_name.setText(f"Mod: {self.app_model.last_map.MapSet.name}")
-            self.view.lastWidget.last_map_map_id.setText(f"Map: {self.app_model.last_map.MapId}")
+        if self.map_service.last_map is not None:
+            self.view.lastWidget.last_map_set_name.setText(f"Mod: {self.map_service.last_map.MapSet.name}")
+            self.view.lastWidget.last_map_map_id.setText(f"Map: {self.map_service.last_map.MapId}")
             self.view.lastWidget.play_last_button.setEnabled(True)
         else:
             self.view.lastWidget.play_last_button.setEnabled(False)
@@ -68,7 +72,7 @@ if __name__ == "__main__":
     app = QApplication([])
 
     InitialiseOptions(DummyArgs())
-    app_model = InitialiseAppModel()
+    app_model = AppModel()
     view = ViewConfig()
     
     controller = ControllerConfig(app_model, view)

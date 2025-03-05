@@ -1,238 +1,38 @@
-from typing import List
-from jacodemon.wiring.context import Context
+import logging
+
 from PySide6.QtCore import QObject, Signal
 
-from jacodemon.model.options import Options
+from jacodemon.service.registry import Registry
 from jacodemon.model.launch import LaunchMode, LaunchSpec, LaunchSession
-from jacodemon.model.mod import Mod
 
 from jacodemon.service.config_service import ConfigService
 from jacodemon.service.map_service import MapService
 from jacodemon.service.map_set_service import MapSetService
-from jacodemon.service.obs.mock_obs_service import MockObsService
 from jacodemon.service.stats_service import StatsService
 from jacodemon.service.demo_service import DemoService
 from jacodemon.service.launch.launch_service import LaunchService
 from jacodemon.service.obs_service import ObsService
 from jacodemon.service.wad_service import WadService
-
 from jacodemon.service.options_service import OptionsService
 
-from jacodemon.model.options import MODE_NORMAL, MODE_RANDOM, MODE_LAST, MODE_REPLAY
-import logging
-
 class AppModel(QObject):
-
-    mods_updated = Signal()
-    maps_updated = Signal()
-
-    # map changes, we must update demos, stats, etc on map select view.
-    selected_map_updated = Signal()
-
-    # mapset changes, we must update map select view
-    selected_mapset_updated = Signal()
-
-    # when a user selects stats from the list
-    selected_statistics_updated = Signal()
-
-    # used for when we add, remove, edit, touch map sets
-    mapsets_updated = Signal()
 
     # used for when we switch to prelaunch
     mode_changed = Signal()
     
-    def __init__(self, config_service: ConfigService, map_set_service: MapSetService, 
-                 map_service: MapService, stats_service: StatsService, 
-                 demo_service: DemoService, launch_service: LaunchService,
-                 options_service: OptionsService, obs_service: ObsService,
-                 wad_service: WadService):
+    def __init__(self):
         super().__init__()
         self._logger = logging.getLogger(self.__class__.__name__)
 
-        self.config_service = config_service
-        self.map_set_service = map_set_service
-        self.map_service = map_service
-        self.stats_service = stats_service
-        self.demo_service = demo_service
-        self.launch_service = launch_service
-        self.options_service = options_service
-        self.obs_service = obs_service
-        self.wad_service = wad_service
-
-        self.config = self.config_service.config
-        self.options: Options = self.options_service.GetOptions()
-
-        # map sets (CONSIDER: do we want to load map sets in the constructor?)
-        self.selected_map_set = None
-
-        # maps
-        self.maps = []
-        self.selected_map = None
-        self.last_map = map_service.LoadLastMap()
-        if self.last_map is not None:
-            self.last_map.MapSet = next((ms for ms in self.map_set_service.mapSets if ms.id.lower() == self.last_map.MapSetId), None)
-        
-        if self.last_map and self.last_map.MapSet is None:
-            self.last_map = None
-
-        # statistics
-        self.selected_statistics = None
-
-    def update(self):
-        self.mods_updated.emit()
-        self.maps_updated.emit()
-        self.selected_map_updated.emit()
-        self.selected_mapset_updated.emit()
-        self.mapsets_updated.emit()
-
-    # attempting to abstract away JacodemonConfig
-    def GetDemoDir(self):
-        return self.config.demo_dir
-    
-    def SetDemoDir(self, dir):
-        self.config.demo_dir = dir
-        self.config.Save()
-    
-    def GetIwadDir(self):
-        return self.config.iwad_dir
-    
-    def SetIwadDir(self, dir):
-        self.config.iwad_dir = dir
-        self.config.Save()
-    
-    def GetMapsDir(self):
-        return self.config.maps_dir
-    
-    def SetMapsDir(self, dir):
-        self.config.maps_dir = dir
-        self.config.Save()
-    
-    def GetModsDir(self):
-        return self.config.mods_dir
-    
-    def SetModsDir(self, dir):
-        self.config.mods_dir = dir
-        self.config.Save()
-    
-    def GetDefaultCompLevel(self):
-        return self.config.default_complevel
-
-    def SetDefaultCompLevel(self, level):
-        self.config.default_complevel = level
-        self.config.Save()
-
-    def GetDefaultSkillLevel(self):
-        return self.config.skill
-    
-    def SetDefaultSkillLevel(self, skill):
-        self.config.skill = skill
-        self.config.Save()
-
-    def GetMods(self) -> List[Mod]:
-        return [Mod.from_dict(mod) for mod in self.config.mods]
-    
-    def SetMods(self, mods: List[Mod]):
-        self.config.mods = [mod.to_dict() for mod in mods]
-        self.config.Save()
-        self.mods_updated.emit()
-
-    def IsRecordDemoEnabled(self) -> bool:
-        return self.options.mode == LaunchMode.RECORD_DEMO
-    
-    def IsAutoRecordEnabled(self) -> bool:
-        return self.options.auto_record and self.options.obs
-    
-    def IsObsAvailable(self) -> bool:
-        return self.options.obs
-    
-    def IsModsEnabled(self) -> bool:
-        return self.options.mods
-    
-    def IsMusicEnabled(self) -> bool:
-        return self.options.music
-    
-    def IsObsEnabled(self) -> bool:
-        return self.options.obs
-    
-    def IsFastMonstersEnabled(self) -> bool:
-        return self.options.fast == True
-    
-    def GetMode(self) -> int:
-        return self.options.mode
-
-    def GetMapSets(self):
-        return self.map_set_service.mapSets
-
-    def CreateMapSet(self):
-        self.map_set_service.CreateMapSet()
-        self.mapsets_updated.emit()
-
-    def SetMapByMapId(self, mapId):
-        for map in self.maps:
-            if map.MapId == mapId:
-                self.selected_map = map
-                break
-        self.selected_map_updated.emit()
-
-    def SetMap(self, index):
-        
-        # TODO bounds check
-        self.selected_map = self.maps[index]
-        self.selected_map_updated.emit()
-
-    def GetSelectedMapIndex(self):
-
-        if self.selected_map is None:
-            return -1
-
-        for i, map in enumerate(self.maps):
-            if map.MapId == self.selected_map.MapId:
-                return i
-        return -1
-
-    def SetStatistics(self, index):
-
-        # TODO another bounds check
-        self.selected_statistics = self.selected_map.Statistics[index]
-        self.selected_statistics_updated.emit()
-
-    def SetMapSet(self, mapSetId):
-
-        # don't do anything if mapset hasn't changed
-        if self.selected_map_set is not None and self.selected_map_set.id == mapSetId:
-            return
-        
-        # clear the selected map
-        self.selected_map = None
-
-        for mapSet in self.map_set_service.mapSets:
-            if mapSet.id == mapSetId:
-                self.selected_map_set = mapSet
-                break
-
-        # TODO fix that map sets are in many places, here, map set service and jacodemon config
-        self.map_set_service.TouchMapSet(self.selected_map_set)
-
-        self.ReloadMaps()
-
-        self.selected_map_updated.emit()
-        self.selected_mapset_updated.emit()
-
-    def ReloadMaps(self):
-        
-        self.maps = self.map_service.LoadMaps(self.selected_map_set)
-        wadsData = self.wad_service.GetDataFromWads([p.path for p in self.selected_map_set.paths])
-        self.selected_map_set.text = wadsData.text
-        for map in self.maps:
-            map.SetMapSet(self.selected_map_set)
-            self.stats_service.AddStatsToMap(map)
-            self.demo_service.AddDemoesToMapStats(map)
-
-    def RemoveMapSet(self, mapSetId):
-        self.map_set_service.RemoveMapSetById(mapSetId)
-        if self.selected_map_set and self.selected_map_set.id == mapSetId:
-            self.selected_map_set = None
-        self.mapsets_updated.emit()
+        self.config_service: ConfigService = Registry.get(ConfigService)
+        self.map_set_service: MapSetService = Registry.get(MapSetService)
+        self.map_service: MapService = Registry.get(MapService)
+        self.stats_service: StatsService = Registry.get(StatsService)
+        self.demo_service: DemoService = Registry.get(DemoService)
+        self.options_service: OptionsService = Registry.get(OptionsService)
+        self.obs_service: ObsService = Registry.get(ObsService)
+        self.wad_service: WadService = Registry.get(WadService)
+        self.launch_service: LaunchService = Registry.get(LaunchService)
 
     def SetPlayMode(self):
         self.options.mode = LaunchMode.RECORD_DEMO
@@ -283,44 +83,3 @@ class AppModel(QObject):
         self.ReloadMaps()
 
         self.selected_mapset_updated.emit()
-
-    def GetDsdaPath(self):
-        return self.config.dsda_path
-
-    def SetDsdaPath(self, path):
-        self.config.dsda_path = path
-        self.config.Save()
-
-    def GetDsdaCfgPath(self):
-        return self.config.dsda_cfg
-    
-    def SetDsdaCfgPath(self, path):
-        self.config.dsda_cfg = path
-        self.config.Save()
-
-    def GetDsdaHudLump(self):
-        return self.config.dsdadoom_hud_lump
-    
-    def SetDsdaHudLump(self, path):
-        self.config.dsdadoom_hud_lump = path
-        self.config.Save()
-
-def InitialiseAppModel() -> AppModel:
-
-    from jacodemon.service.launch.dsda_service import DsdaService
-
-    """Pretty please don't call this more than once. Used for initial setup 
-    and individual components testing"""
-
-    # model, view, controller setup
-    return AppModel(
-        config_service=Context.get(ConfigService), 
-        map_set_service=Context.get(MapSetService),
-        map_service=Context.get(MapService),
-        stats_service=Context.get(StatsService),
-        demo_service=Context.get(DemoService),
-        launch_service=Context.get(DsdaService),
-        options_service=Context.get(OptionsService),
-        obs_service=Context.get(ObsService),
-        wad_service=Context.get(WadService)
-    )

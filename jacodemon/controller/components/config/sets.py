@@ -1,5 +1,8 @@
 import logging
 
+from jacodemon.service.registry import Registry
+from jacodemon.service.map_set_service import MapSetService
+
 from PySide6.QtCore import QObject, Signal
 
 from jacodemon.model.app import AppModel
@@ -16,15 +19,14 @@ class ControllerSets(QObject):
         self.app_model: AppModel = app_model
         self.view: SetsTab = view
 
+        self.map_set_service: MapSetService = Registry.get(MapSetService)
+
         # listen for changes to map sets
-        self.app_model.mapsets_updated.connect(self.on_mapsets_updated)
+        self.map_set_service.mapsets_updated.connect(self.on_mapsets_updated)
 
         # do stuff if handle add is clicked, probably call the model, etc. 
         #   unsure about file dialog/ui in between yet
         self.view.new_button.clicked.connect(self.on_new_mapset)
-
-        # do initial update
-        self.on_mapsets_updated()
 
         self.view.mapSetList.openItemRequested.connect(self.on_open_mapset)
         self.view.mapSetList.editItemRequested.connect(self.on_edit_mapset)
@@ -45,4 +47,4 @@ class ControllerSets(QObject):
         self.app_model.RemoveMapSet(mapSetId)
 
     def on_mapsets_updated(self):
-        self.view.mapSetList.populate(reversed(self.app_model.GetMapSets()))
+        self.view.mapSetList.populate(reversed(self.map_set_service.GetMapSets()))

@@ -7,7 +7,11 @@ from jacodemon.model.map import Map
 
 class DemoService:
     def __init__(self, demo_dir):
+        
         self.demo_dir = demo_dir
+
+    def initialise(self):
+        pass
 
     def AddDemoesToMapStats(self, map: Map):
 

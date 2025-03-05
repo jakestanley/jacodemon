@@ -1,6 +1,6 @@
 import sys
 
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import QApplication
 
 from jacodemon.arguments import GetArgs
 from jacodemon.model.options import InitialiseOptions
@@ -8,10 +8,8 @@ from jacodemon.misc.logs import InitialiseLoggingConfig
 
 from jacodemon.manager import UIManager, UIState
 
-from jacodemon.wiring.context import Context, InitialiseContext
-from jacodemon.model.app import AppModel, InitialiseAppModel
-
-from jacodemon.service.obs_service import ObsServiceException
+from jacodemon.service.registry import CreateAndRegisterServices, CreateAndRegisterObsService
+from jacodemon.model.app import AppModel
 
 from jacodemon.controller.config import ControllerConfig
 from jacodemon.controller.mapselect import ControllerMapSelect
@@ -33,17 +31,11 @@ def start():
     InitialiseLoggingConfig(args.stdout_log_level.upper())
 
     app = QApplication([])
-    InitialiseContext()
-
-    try:
-        app_model: AppModel = InitialiseAppModel()
-    except ObsServiceException as e:
-        msg_box = QMessageBox()
-        msg_box.setIcon(QMessageBox.Critical)
-        msg_box.setText(e.cause)
-        msg_box.setWindowTitle("Error")
-        msg_box.exec()
+    CreateAndRegisterServices()
+    if CreateAndRegisterObsService() == False:
         sys.exit(1)
+
+    app_model: AppModel = AppModel()
     
     ui_manager = UIManager()
 
@@ -66,9 +58,6 @@ def start():
     ui_manager.register_view(UIState.SELECT_SET,    view_config)
     ui_manager.register_view(UIState.SELECT_MAP,    view_map_select)
     ui_manager.register_view(UIState.PRE_LAUNCH,    view_pre_launch)
-
-    # force all appmodel signals to emit, which should refresh all UIs
-    app_model.update()
 
     ui_manager.show()
     app.exec()

@@ -11,4 +11,5 @@ class Mod:
     
     @classmethod
     def from_dict(cls, dic: dict):
+        # TODO add hash for replays
         return cls(dic['path'], dic['enabled'])
