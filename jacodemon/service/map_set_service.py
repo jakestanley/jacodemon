@@ -48,6 +48,8 @@ class MapSetService(QObject):
 
         self.mapSets = [_LoadMapSet(ms) for ms in self.configuration.sets]
 
+        self.mapsets_updated.emit()
+
         self.is_ready = True
     
     def TouchMapSet(self, mapSet):

@@ -24,7 +24,7 @@ class Registry:
     def get(cls):
         return Registry._services[cls]
     
-def CreateAndRegisterServices():
+def RegisterServices():
 
     config_service = ConfigService()
     options_service = OptionsService()
@@ -38,16 +38,7 @@ def CreateAndRegisterServices():
     Registry.register(OptionsService, options_service)
     Registry.register(WadService, WadService(config_service.config.maps_dir))
 
-    Registry.get(ConfigService).initialise()
-    Registry.get(MapService).initialise()
-    Registry.get(MapSetService).initialise()
-    Registry.get(StatsService).initialise()
-    Registry.get(DemoService).initialise()
-    Registry.get(LaunchService).initialise()
-    Registry.get(OptionsService).initialise()
-    Registry.get(WadService).initialise()
-
-def CreateAndRegisterObsService() -> bool:
+def RegisterObsService() -> bool:
     """
     Creates and registers the OBS service. Returns True if successful, False otherwise.
     """
@@ -75,3 +66,14 @@ def CreateAndRegisterObsService() -> bool:
     Registry.register(ObsService, obs_service)
 
     return True
+
+def InitialiseServices():
+
+    Registry.get(ConfigService).initialise()
+    Registry.get(MapService).initialise()
+    Registry.get(MapSetService).initialise()
+    Registry.get(StatsService).initialise()
+    Registry.get(DemoService).initialise()
+    Registry.get(LaunchService).initialise()
+    Registry.get(OptionsService).initialise()
+    Registry.get(WadService).initialise()
