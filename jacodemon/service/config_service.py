@@ -5,18 +5,22 @@ from typing import List
 from jacodemon.model.config import Config, GetConfig
 from jacodemon.model.mod import Mod
 
+from jacodemon.service.registry import Registry
+from jacodemon.service.event_service import Event, EventService
+
 from PySide6.QtCore import QObject, Signal
 
 class ConfigService(QObject):
 
-    mods_updated = Signal()
+    _mods_updated = Signal()
 
     def __init__(self) -> Config:
         # intrinsics
         self.is_ready = False
         self._logger = logging.getLogger(self.__class__.__name__)
 
-        # services
+        # register signals
+        # Registry.get(EventService).register_signal(Event.MODS_UPDATED, self._mods_updated)
 
         # data
         self.config = GetConfig()
@@ -62,7 +66,7 @@ class ConfigService(QObject):
     def SetMods(self, mods: List[Mod]):
         self.config.mods = [mod.to_dict() for mod in mods]
         self.config.Save()
-        self.mods_updated.emit()
+        self._mods_updated.emit()
 
     def SetDsdaPath(self, path):
         self.config.dsda_path = path

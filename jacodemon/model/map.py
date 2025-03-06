@@ -3,12 +3,17 @@ import sys
 import copy
 from typing import List
 
+from PySide6.QtCore import QMetaType
+
 from jacodemon.model.mapset import MapSet
 
 class Map:
 
     # TODO set CompLevel at mod level, not map level. Why would maps in a WAD have different comp levels? Seems unlikely...
     def __init__(self, MapId):
+        super().__init__()
+
+        self._Files = []
 
         self.MapId              = MapId
         self.MapName            = None

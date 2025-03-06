@@ -11,6 +11,8 @@ from PySide6.QtCore import QObject, Signal
 from jacodemon.model.mapset import MapSet
 
 from jacodemon.model.map import Map
+from jacodemon.service.registry import Registry
+from jacodemon.service.event_service import EventService, Event
 from jacodemon.service.wad_service import WadService
 from jacodemon.service.map_set_service import MapSetService
 from jacodemon.service.stats_service import StatsService
@@ -25,11 +27,8 @@ class MapService(QObject):
     There is a lot of overlap between WadService and MapService. 
     MapService handles caching, and may also add Jacodemon flavour.
     """
-    # mapset changes, we must update map select view
-    selected_map_updated = Signal(Map)
-
-    # used for when we add, remove, edit, touch map sets
-    maps_updated = Signal()
+    _selected_map_updated = Signal(Map)
+    _maps_updated = Signal()
 
     def __init__(self, maps_dir) -> None:
         super().__init__()
@@ -44,6 +43,10 @@ class MapService(QObject):
         self.stats_service: StatsService = None
         self.demo_service: DemoService = None
 
+        # register events. all must be registered before service initialisation
+        Registry.get(EventService).register_signal(Event.SELECTED_MAP_UPDATED, self._selected_map_updated)
+        Registry.get(EventService).register_signal(Event.MAPS_UPDATED, self._maps_updated)
+
         # data
         self.maps_dir = maps_dir
         self.last_map = None
@@ -57,12 +60,15 @@ class MapService(QObject):
         
         from jacodemon.service.registry import Registry
         
+        # connect to events
+        event_service: EventService = Registry.get(EventService)
+        event_service.connect(Event.SELECTED_MAPSET_UPDATED, self.LoadMapsFromMapSet)
+
         self.wad_service = Registry.get(WadService)
         self.map_set_service = Registry.get(MapSetService)
         self.stats_service = Registry.get(StatsService)
         self.demo_service = Registry.get(DemoService)
 
-        self.map_set_service.selected_mapset_updated.connect(self.LoadMapsFromMapSet)
         self.last_map = self.LoadLastMap()
 
         self.is_ready = True
@@ -80,8 +86,11 @@ class MapService(QObject):
 
         for map in self.maps:
             map.SetMapSet(mapSet)
+            # TODO: do i really need to add stats to maps?
             self.stats_service.AddStatsToMap(map)
             self.demo_service.AddDemoesToMapStats(map)
+
+        self._maps_updated.emit()
     
     def LoadLastMap(self) -> Optional[Map]:
 
@@ -104,11 +113,19 @@ class MapService(QObject):
             self._logger.warning("Cannot select last map as '{LAST_JSON}' was not found")
             return None
 
-    def SaveLastMap(self, map: Map):
+    def SaveLastMap(self):
         # saves selected map for last
         with open(_LAST_JSON, 'w') as f:
-            pickled = jsonpickle.encode(map, max_depth=1)
+            pickled = jsonpickle.encode(self.selected_map, max_depth=1)
             json.dump(pickled, f)
+
+    def SetSelectedMapByIndex(self, mapIndex: int):
+        if mapIndex is None:
+            self.selected_map = None
+        else:
+            self.selected_map = self.maps[mapIndex]
+
+        self._selected_map_updated.emit(self.selected_map)
 
     def SetMapByMapId(self, mapId: str):
 
@@ -120,4 +137,4 @@ class MapService(QObject):
                     self.selected_map = map
                     break
 
-        self.selected_map_updated.emit(map)
+        self._selected_map_updated.emit()

@@ -1,7 +1,9 @@
 from PySide6.QtCore import QObject, Signal
 
 from jacodemon.service.registry import Registry
+from jacodemon.service.event_service import EventService, Event
 from jacodemon.service.map_set_service import MapSetService
+from jacodemon.service.map_service import MapService
 
 from jacodemon.model.app import AppModel
 from jacodemon.view.mapselect import ViewMapSelect
@@ -21,9 +23,10 @@ class ControllerMapSelect(QObject):
 
         # services
         self.map_set_service: MapSetService = Registry.get(MapSetService)
+        self.map_service: MapService = Registry.get(MapService)
 
         # service event listeners
-        self.map_set_service.selected_mapset_updated.connect(self.on_mapset_updated)
+        Registry.get(EventService).connect(Event.MAPS_UPDATED, self.on_maps_updated)
 
         # i'm sure this was deffo getting GC'd without the assignment
         self._cMapOverview = ControllerMapOverview(self.app_model, self.view.mapOverviewWidget)
@@ -44,17 +47,19 @@ class ControllerMapSelect(QObject):
         self.app_model.SetReplayMode()
         self.accept_signal.emit()
 
-    def on_mapset_updated(self):
+    # TODO can we use a list[Map] type in the signal?
+    def on_maps_updated(self):
 
         # TODO you may wish to reset demo, map, etc etc
-        maps = [map.to_dict() for map in self.app_model.maps]
-        self.view.mapTableWidget.populate(maps, self.app_model.GetSelectedMapIndex())
-        self.view.on_map_set_change(self.app_model.selected_map_set)
+        maps = [map.to_dict() for map in self.map_service.maps]
+        # self.view.mapTableWidget.populate(maps, self.app_model.GetSelectedMapIndex())
+        self.view.mapTableWidget.populate(maps)
+        self.view.on_map_set_change(self.map_set_service.selected_map_set)
 
     def _HandleSelection(self, index):
 
         # TODO don't use index it's crap
-        self.app_model.SetMap(index)
+        self.map_service.SetSelectedMapByIndex(index)
 
 if __name__ == "__main__":
 

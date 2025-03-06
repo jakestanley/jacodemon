@@ -1,18 +1,5 @@
 from typing import Type, Any
 
-from jacodemon.service.config_service import ConfigService
-
-from jacodemon.service.map_set_service import MapSetService
-from jacodemon.service.map_service import MapService
-from jacodemon.service.stats_service import StatsService
-from jacodemon.service.demo_service import DemoService
-from jacodemon.service.launch.launch_service import LaunchService
-from jacodemon.service.launch.dsda_service import DsdaService
-from jacodemon.service.options_service import OptionsService
-from jacodemon.service.obs_service import ObsService
-from jacodemon.service.obs.mock_obs_service import MockObsService
-from jacodemon.service.wad_service import WadService
-
 class Registry:
     _services: dict[Type[Any], Any] = {}
 
@@ -24,11 +11,29 @@ class Registry:
     def get(cls):
         return Registry._services[cls]
     
+    @staticmethod
+    def InitialiseServices():
+        for service in Registry._services.values():
+            if hasattr(service, "initialise"):
+                service.initialise()
+    
 def RegisterServices():
+
+    from jacodemon.service.event_service import EventService
+    from jacodemon.service.config_service import ConfigService
+    from jacodemon.service.map_set_service import MapSetService
+    from jacodemon.service.map_service import MapService
+    from jacodemon.service.stats_service import StatsService
+    from jacodemon.service.demo_service import DemoService
+    from jacodemon.service.launch.launch_service import LaunchService
+    from jacodemon.service.launch.dsda_service import DsdaService
+    from jacodemon.service.options_service import OptionsService
+    from jacodemon.service.wad_service import WadService
 
     config_service = ConfigService()
     options_service = OptionsService()
 
+    Registry.register(EventService, EventService())
     Registry.register(ConfigService, config_service)
     Registry.register(MapService, MapService(config_service.config.maps_dir))
     Registry.register(MapSetService, MapSetService(config_service.config))
@@ -43,7 +48,11 @@ def RegisterObsService() -> bool:
     Creates and registers the OBS service. Returns True if successful, False otherwise.
     """
 
-    from jacodemon.service.obs_service import ObsServiceException
+    from jacodemon.service.obs_service import ObsService, ObsServiceException
+    from jacodemon.service.obs.mock_obs_service import MockObsService
+    from jacodemon.service.config_service import ConfigService
+    from jacodemon.service.options_service import OptionsService
+
     from PyQt6.QtWidgets import QMessageBox
 
     options_service: OptionsService = Registry.get(OptionsService)
@@ -66,14 +75,3 @@ def RegisterObsService() -> bool:
     Registry.register(ObsService, obs_service)
 
     return True
-
-def InitialiseServices():
-
-    Registry.get(ConfigService).initialise()
-    Registry.get(MapService).initialise()
-    Registry.get(MapSetService).initialise()
-    Registry.get(StatsService).initialise()
-    Registry.get(DemoService).initialise()
-    Registry.get(LaunchService).initialise()
-    Registry.get(OptionsService).initialise()
-    Registry.get(WadService).initialise()

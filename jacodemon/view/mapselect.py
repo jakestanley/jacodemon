@@ -1,6 +1,6 @@
-from PySide6.QtCore import Qt, Signal, QFlag
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QStandardItemModel, QStandardItem, QFont
-from PySide6.QtWidgets import QDialog, QWidget, QHBoxLayout, QVBoxLayout, QTableView, QTextEdit
+from PySide6.QtWidgets import QDialog, QWidget, QHBoxLayout, QVBoxLayout, QTableView, QTextEdit, QLineEdit
 
 from PySide6.QtWidgets import QLabel, QGroupBox, QDialogButtonBox
 from PySide6.QtGui import QBrush
@@ -103,6 +103,10 @@ class SetOverviewWidget(QWidget):
         self.wad_text.setReadOnly(True)
 
         self.paths_table = PathsTableWidget(self)
+
+        self.name_field = QLineEdit(self)
+        layout.addWidget(QLabel(f"Name"))
+        layout.addWidget(self.name_field)
         layout.addWidget(QLabel(f"Info"))
         layout.addWidget(self.wad_text)
         layout.addWidget(QLabel(f"Files"))
@@ -190,27 +194,6 @@ class ViewMapSelect(QDialog):
     def _HandleSelection(self, index):
         self.selectedIndex = index
         self.mapOverviewWidget._Update(index)
-
-# def OpenSelectMapDialog() -> str:
-#     """Returns MapId of the selected map or None"""
-
-#     # at this point a map set and its maps MUST have been loaded
-#     table_rows = [map.to_dict() for map in GetMapsSelectController().maps]
-#     dialog = ViewMapSelect(table_rows, GetMapsSelectController().mapSet)
-
-#     if dialog.exec() == QDialog.DialogCode.Rejected:
-#         # clear the selected map set
-#         GetMapsSelectController().mapSet = None
-
-#         return None, None
-
-#     if dialog.selectedIndex is None:
-#         return None, None
-#     else:
-#         map = GetMapsSelectController().maps[dialog.selectedIndex]
-#         if dialog.selectedDemo is not None:
-#             return map, dialog.selectedDemo
-#         return map, None
 
 if __name__ == "__main__":
 

@@ -1,10 +1,10 @@
 import logging
-from typing import List
-
-from jacodemon.service.registry import Registry
-from jacodemon.service.map_set_service import MapSetService
 
 from PySide6.QtCore import QObject, Signal
+
+from jacodemon.service.registry import Registry
+from jacodemon.service.event_service import EventService, Event
+from jacodemon.service.map_set_service import MapSetService
 
 from jacodemon.model.app import AppModel
 from jacodemon.model.map import MapSet
@@ -23,8 +23,8 @@ class ControllerSets(QObject):
 
         self.map_set_service: MapSetService = Registry.get(MapSetService)
 
-        # listen for changes to map sets
-        self.map_set_service.mapsets_updated.connect(self.on_mapsets_updated)
+        # connect to signals
+        Registry.get(EventService).connect(Event.MAPSETS_UPDATED, self.on_mapsets_updated)
 
         # do stuff if handle add is clicked, probably call the model, etc. 
         #   unsure about file dialog/ui in between yet
@@ -35,18 +35,18 @@ class ControllerSets(QObject):
         self.view.mapSetList.removeItemRequested.connect(self.on_remove_mapset)
 
     def on_new_mapset(self):
-        self.app_model.CreateMapSet()
+        self.map_set_service.CreateMapSet()
 
     def on_open_mapset(self, mapSetId: str):
         self._logger.debug(f"Controller hit! Opening {mapSetId}")
-        self.app_model.SetMapSet(mapSetId)
+        self.map_set_service.SetMapSet(mapSetId)
         self.accept_signal.emit()
 
     def on_edit_mapset(self, mapSetId: str):
         self._logger(f"Controller hit! Editing {mapSetId}")
 
     def on_remove_mapset(self, mapSetId: str):
-        self.app_model.RemoveMapSet(mapSetId)
+        self.map_set_service.RemoveMapSetById(mapSetId)
 
     def on_mapsets_updated(self):
         self.view.mapSetList.populate(reversed(self.map_set_service.mapSets))

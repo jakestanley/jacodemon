@@ -8,7 +8,7 @@ from jacodemon.misc.logs import InitialiseLoggingConfig
 
 from jacodemon.manager import UIManager, UIState
 
-from jacodemon.service.registry import RegisterServices, RegisterObsService, InitialiseServices
+from jacodemon.service.registry import Registry, RegisterServices, RegisterObsService
 from jacodemon.model.app import AppModel
 
 from jacodemon.controller.config import ControllerConfig
@@ -74,7 +74,7 @@ def start():
 
     # now we can initialise services which will trigger listeners and should 
     #   update the now instantiated UI elements
-    InitialiseServices()
+    Registry.InitialiseServices()
 
     # finally, let's show the UI and exec the app
     ui_manager.show()

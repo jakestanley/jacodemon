@@ -19,6 +19,8 @@ class AppModel(QObject):
 
     # used for when we switch to prelaunch
     mode_changed = Signal()
+
+    launch_completed = Signal()
     
     def __init__(self):
         super().__init__()
@@ -35,11 +37,11 @@ class AppModel(QObject):
         self.launch_service: LaunchService = Registry.get(LaunchService)
 
     def SetPlayMode(self):
-        self.options.mode = LaunchMode.RECORD_DEMO
+        self.options_service.mode = LaunchMode.RECORD_DEMO
         self.mode_changed.emit()
 
     def SetReplayMode(self):
-        self.options.mode = LaunchMode.REPLAY_DEMO
+        self.options_service.mode = LaunchMode.REPLAY_DEMO
         self.mode_changed.emit()
 
     def Launch(self):
@@ -47,28 +49,28 @@ class AppModel(QObject):
         launch_spec: LaunchSpec = None
 
         # only save last map if we are not replaying a demo
-        if self.options.mode != LaunchMode.REPLAY_DEMO:
-            self.map_service.SaveLastMap(self.selected_map)
+        if self.options_service.mode != LaunchMode.REPLAY_DEMO:
+            self.map_service.SaveLastMap()
 
-        if self.options.mode == LaunchMode.REPLAY_DEMO:
-            launch_spec = self.selected_statistics.GetLaunchSpec(self.selected_map)
+        if self.options_service.mode == LaunchMode.REPLAY_DEMO:
+            launch_spec = self.selected_statistics.GetLaunchSpec(self.map_service.selected_map)
             # TODO verify launch spec
         else:
-            launch_spec = self.launch_service.CreateLaunchSpec(self.config, self.options, self.selected_map)
+            launch_spec = self.launch_service.CreateLaunchSpec(self.config_service.config, self.options_service.options, self.map_service.selected_map)
 
         launch_session = LaunchSession(
             executable=self.config_service.GetExecutableForSourcePort(self.launch_service.GetSourcePortName()),
             cfg_path=self.config_service.GetCfgPathForSourcePort(self.launch_service.GetSourcePortName()),
-            iwad_dir=self.config.iwad_dir,
-            demo_dir=self.config.demo_dir,
-            maps_dir=self.config.maps_dir,
-            mods_dir=self.config.mods_dir,
-            mode=self.options.mode,
-            music=self.options.music)
+            iwad_dir=self.config_service.GetIwadDir(),
+            demo_dir=self.config_service.GetDemoDir(),
+            maps_dir=self.config_service.GetMapsDir(),
+            mods_dir=self.config_service.GetModsDir(),
+            mode=self.options_service.GetMode(),
+            music=self.options_service.options.music)
 
-        self.obs_service.UpdateMapTitle(self.selected_map.GetTitle())
+        self.obs_service.UpdateMapTitle(self.map_service.selected_map.GetTitle())
         self.obs_service.SetDemoName(launch_spec.name)
-        self.obs_service.SetScene(self.config.play_scene)
+        self.obs_service.SetScene(self.config_service.config.play_scene)
         self.obs_service.StartRecording()
 
         stats = self.launch_service.Launch(
@@ -79,7 +81,6 @@ class AppModel(QObject):
             self.stats_service.Save(stats)
 
         self.obs_service.StopRecording()
-        self.obs_service.SetScene(self.config.wait_scene)
-        self.ReloadMaps()
+        self.obs_service.SetScene(self.config_service.config.wait_scene)
 
-        self.selected_mapset_updated.emit()
+        self.launch_completed.emit()

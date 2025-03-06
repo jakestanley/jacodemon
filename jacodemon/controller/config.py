@@ -29,7 +29,7 @@ class ControllerConfig(QObject):
         # create views and controllers for tabs
         self.cSets = ControllerSets(app_model, self.view.selectSetTab)
         self.cGeneral = ControllerGeneral(self.view.generalTab)
-        self.cMods = ControllerMods(app_model, self.view.modsTab)
+        self.cMods = ControllerMods(self.view.modsTab)
         self.cObs = ControllerObs(app_model, self.view.obsTab)
         self.cDsda = ControllerDsda(app_model, self.view.dsdaTab)
 

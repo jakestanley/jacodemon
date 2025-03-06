@@ -2,19 +2,23 @@ from typing import List
 
 from PySide6.QtCore import QObject, Signal
 
+from jacodemon.service.registry import Registry
+from jacodemon.service.config_service import ConfigService
+
 from jacodemon.misc.files import FindDoomFiles
 
-from jacodemon.model.app import AppModel
 from jacodemon.model.mod import Mod
 from jacodemon.view.components.config.mods import ModsTab
 
 class ControllerMods(QObject):
 
-    def __init__(self, app_model: AppModel, view: ModsTab):
+    def __init__(self, view: ModsTab):
         super().__init__()
 
-        self.app_model: AppModel = app_model
         self.view: ModsTab = view
+
+        # services
+        self.config_service: ConfigService = Registry.get(ConfigService)
 
         # these rely on knowledge of the view*
         self.view.btn_add_mods.clicked.connect(self.on_add_pressed)
@@ -40,7 +44,7 @@ class ControllerMods(QObject):
         self.view.revert_button.setEnabled(True)
 
     def on_add_pressed(self):
-        files = FindDoomFiles(self.app_model.GetModsDir())
+        files = FindDoomFiles(self.config_service.GetModsDir())
         for file in files:
             self.mods.append(Mod(file))
 
@@ -65,12 +69,14 @@ class ControllerMods(QObject):
         self.selected_mod = None
 
     def save(self):
-        self.app_model.SetMods(self.mods)
+        self.config_service.SetMods(self.mods)
         self.update()
         
     def update(self):
 
-        self.mods: List[Mod] = self.app_model.GetMods()
+        # TODO: make this respond to events. never trigger manually. same goes 
+        #   for loads of other places
+        self.mods: List[Mod] = self.config_service.GetMods()
         self.view.SetMods(self.mods)
 
         self.view.save_button.setEnabled(False)
@@ -88,10 +94,9 @@ if __name__ == "__main__":
     app = QApplication([])
 
     InitialiseOptions(DummyArgs())
-    app_model = InitialiseAppModel()
     view = ModsTab()
 
-    controller = ControllerMods(app_model, view)
+    controller = ControllerMods(view)
     view.resize(800, 600)
     view.show()
     sys.exit(app.exec())

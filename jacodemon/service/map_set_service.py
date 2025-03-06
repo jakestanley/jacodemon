@@ -8,6 +8,8 @@ from jacodemon.misc.files import FindDoomFiles
 from jacodemon.model.config import JacodemonConfig
 from jacodemon.model.mapset import MapSetPath, MapSet
 
+from jacodemon.service.registry import Registry
+from jacodemon.service.event_service import EventService, Event
 from jacodemon.service.wad_service import WadService
 
 def _LoadMapSet(dict) -> MapSet:
@@ -24,8 +26,8 @@ def _LoadMapSet(dict) -> MapSet:
 # TODO CONSIDER: should this output the mapsets updated signal instead of AppModel?
 class MapSetService(QObject):
 
-    selected_mapset_updated = Signal(MapSet)
-    mapsets_updated = Signal()
+    _selected_mapset_updated = Signal(MapSet)
+    _mapsets_updated = Signal()
 
     def __init__(self, configuration: JacodemonConfig):
         super().__init__()
@@ -37,6 +39,10 @@ class MapSetService(QObject):
         self.configuration = configuration
         self.selected_map_set = None
 
+        # register events. all must be registered before service initialisation
+        Registry.get(EventService).register_signal(Event.SELECTED_MAPSET_UPDATED, self._selected_mapset_updated)
+        Registry.get(EventService).register_signal(Event.MAPSETS_UPDATED, self._mapsets_updated)
+
     def initialise(self):
 
         if self.is_ready:
@@ -44,11 +50,13 @@ class MapSetService(QObject):
 
         from jacodemon.service.registry import Registry
 
+        # connect to signals
+        event_service = Registry.get(EventService)
         self.wad_service = Registry.get(WadService)
 
         self.mapSets = [_LoadMapSet(ms) for ms in self.configuration.sets]
 
-        self.mapsets_updated.emit()
+        self._mapsets_updated.emit()
 
         self.is_ready = True
     
@@ -91,7 +99,7 @@ class MapSetService(QObject):
 
         self.configuration.UpdateMapSets(self.mapSets)
 
-        self.mapsets_updated.emit()
+        self._mapsets_updated.emit()
 
     def RemoveMapSetById(self, mapSetId: str):
 
@@ -109,7 +117,7 @@ class MapSetService(QObject):
 
         # TODO: think more about firing two events one after the other for unintended behaviour
         # self.selected_mapset_updated.emit()
-        self.mapsets_updated.emit()
+        self._mapsets_updated.emit()
 
     def SetMapSet(self, mapSetId: str):
 
@@ -128,4 +136,4 @@ class MapSetService(QObject):
         # TODO fix that map sets are in many places, here, map set service and jacodemon config
         self.TouchMapSet(self.selected_map_set)
 
-        self.selected_mapset_updated.emit()
+        self._selected_mapset_updated.emit(self.selected_map_set)

@@ -1,3 +1,4 @@
+import logging
 import glob
 import json
 
@@ -8,27 +9,42 @@ from jacodemon.misc.files import ParseTimestampFromPath
 from jacodemon.model.map import Map
 from jacodemon.model.launch import LaunchSpec
 from jacodemon.model.stats import Statistics
-import os
-import logging
+
+from jacodemon.service.registry import Registry
+from jacodemon.service.event_service import EventService, Event
 
 class StatsService(QObject):
 
     # when a user selects stats from the list
-    selected_statistics_updated = Signal()
+    _selected_statistics_updated = Signal()
 
     def __init__(self, stats_dir):
         super().__init__()
 
         self._logger = logging.getLogger(self.__class__.__name__)
         self.stats_dir = stats_dir
+        self.statistics = []
+
+        # register signals
+        Registry.get(EventService).register_signal(Event.SELECTED_STATS_UPDATED, self._selected_statistics_updated)
+
+        self._is_ready = False
 
     def initialise(self):
-        pass
 
-    def SetStatistics(self, index):
+        if self._is_ready:
+            return
+        
+        # connect to signals
+        event_service: EventService = Registry.get(EventService)
+        event_service.connect(Event.SELECTED_MAP_UPDATED, self._on_selected_map_updated)
 
-        self.selected_statistics = self.selected_map.Statistics[index]
-        self.selected_statistics_updated.emit()
+        self._is_ready = True
+
+    def _on_selected_map_updated(self, map: Map):
+
+        # TODO: honestly i really don't like how i've coupled maps and statistics. ball ache
+        self.statistics = map.Statistics
 
     # TODO rename this to get statistics for map? idk
     def LoadStatistics(self, stats_path) -> Statistics:
@@ -47,6 +63,15 @@ class StatsService(QObject):
                     stats.timestamp = ParseTimestampFromPath(stats_path)
 
         return stats
+    
+    # TODO: not particularly happy with this, could end up with some weird 
+    #   behaviour
+    def SelectStatisticsByIndex(self, index):
+        if index is None:
+            self._selected_statistics_updated.emit(None)
+        else:
+            self._selected_statistics_updated.emit(self.statistics[index])
+
 
     """
     Badges:
