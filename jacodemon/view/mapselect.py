@@ -5,6 +5,8 @@ from PySide6.QtWidgets import QDialog, QWidget, QHBoxLayout, QVBoxLayout, QTable
 from PySide6.QtWidgets import QLabel, QGroupBox, QDialogButtonBox
 from PySide6.QtGui import QBrush
 
+from jacodemon.model.map import MapSet
+
 from jacodemon.view.components.mapselect.map_overview import MapOverviewWidget
 
 _COLUMN_ORDER = ['MapId','Badge','MapName','Author','ParTime','NextMapId','NextSecretMapId']
@@ -91,9 +93,6 @@ class SetOverviewWidget(QWidget):
         super().__init__(parent)
 
         layout = QVBoxLayout(self)
-        
-        paths = []
-        compLevel = None
 
         self.wad_text = QTextEdit(self)
         monospace_font = QFont("Courier New")  # Use a standard monospace font
@@ -102,20 +101,32 @@ class SetOverviewWidget(QWidget):
         self.wad_text.setFont(monospace_font)
         self.wad_text.setReadOnly(True)
 
+        self.comp_level_text = QLineEdit(self)
+        self.comp_level_text.setReadOnly(True)
+
         self.paths_table = PathsTableWidget(self)
 
         self.name_field = QLineEdit(self)
-        layout.addWidget(QLabel(f"Name"))
-        layout.addWidget(self.name_field)
+
+        hbox_layout = QHBoxLayout(self)
+        hbox_layout.addWidget(QLabel(f"Name"))
+        hbox_layout.addWidget(self.name_field)
+        layout.addLayout(hbox_layout)
+
         layout.addWidget(QLabel(f"Info"))
         layout.addWidget(self.wad_text)
         layout.addWidget(QLabel(f"Files"))
         layout.addWidget(self.paths_table)
-        layout.addWidget(QLabel(f"CompLevel: {compLevel}"))
+
+        hbox_layout = QHBoxLayout(self)
+        hbox_layout.addWidget(QLabel(f"CompLevel"))
+        hbox_layout.addWidget(self.comp_level_text)
+        layout.addLayout(hbox_layout)
+
         layout.addStretch()
         self.setLayout(layout)
 
-    def on_map_set_change(self, mapSet):
+    def on_map_set_change(self, mapSet: MapSet):
 
         if not mapSet:
             return
@@ -126,6 +137,11 @@ class SetOverviewWidget(QWidget):
             self.wad_text.setText(mapSet.text)
         else:
             self.wad_text.setText("")
+
+        if mapSet.compLevel:
+            self.comp_level_text.setText(mapSet.compLevel)
+        else:
+            self.comp_level_text.setText("")
 
         if mapSet:
             self.paths_table.on_map_set_change(mapSet)

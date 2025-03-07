@@ -115,9 +115,12 @@ _please explain how to run tests_
 - Publish tags/ratings/statistics/demoes automatically
 - Multiplayer launching (would require chocolate doom)
 - Populate missing map fields column data from the text file using RAG
+    - Use RAG to analyse CREDITS, .TXT file, etc for authors and other info like pistol start
 
 ### Minor features
 
+- Refresh demos/badges upon launch completion
+- ZMAPINFO proper parser, there is a test lump in JacodemonTest.wad
 - Edit map set:
     - to set comp level manually
     - to override or change IWAD
@@ -129,7 +132,6 @@ _please explain how to run tests_
 
 ### Bugs
 
-- Play button is not disabled if you haven't selected a map yet
 - Last map...
     - is not updated unless you restart the application
     - should probably use launch config for reproduction?
