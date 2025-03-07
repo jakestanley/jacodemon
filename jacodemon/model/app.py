@@ -7,18 +7,12 @@ from jacodemon.model.launch import LaunchMode, LaunchSpec, LaunchSession
 
 from jacodemon.service.config_service import ConfigService
 from jacodemon.service.map_service import MapService
-from jacodemon.service.map_set_service import MapSetService
 from jacodemon.service.stats_service import StatsService
-from jacodemon.service.demo_service import DemoService
 from jacodemon.service.launch.launch_service import LaunchService
 from jacodemon.service.obs_service import ObsService
-from jacodemon.service.wad_service import WadService
 from jacodemon.service.options_service import OptionsService
 
 class AppModel(QObject):
-
-    # used for when we switch to prelaunch
-    mode_changed = Signal()
 
     launch_completed = Signal()
     
@@ -27,13 +21,10 @@ class AppModel(QObject):
         self._logger = logging.getLogger(self.__class__.__name__)
 
         self.config_service: ConfigService = Registry.get(ConfigService)
-        self.map_set_service: MapSetService = Registry.get(MapSetService)
         self.map_service: MapService = Registry.get(MapService)
         self.stats_service: StatsService = Registry.get(StatsService)
-        self.demo_service: DemoService = Registry.get(DemoService)
         self.options_service: OptionsService = Registry.get(OptionsService)
         self.obs_service: ObsService = Registry.get(ObsService)
-        self.wad_service: WadService = Registry.get(WadService)
         self.launch_service: LaunchService = Registry.get(LaunchService)
 
     def Launch(self):

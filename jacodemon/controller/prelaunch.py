@@ -2,6 +2,7 @@ from PySide6.QtCore import QObject, Signal
 
 from jacodemon.service.registry import Registry
 from jacodemon.service.options_service import OptionsService
+from jacodemon.service.event_service import EventService, Event
 
 from jacodemon.model.app import AppModel
 from jacodemon.model.launch import LaunchMode
@@ -21,6 +22,12 @@ class ControllerPreLaunch(QObject):
         self.view.button_box.accepted.connect(self.on_accept)
         self.view.button_box.rejected.connect(self.reject_signal.emit)
 
+        # service event listeners
+        Registry.get(EventService).connect(Event.MODE_CHANGED, self.on_launch_mode_changed)
+
+        # initial mode setting
+        self.on_launch_mode_changed(self.options_service.GetMode())
+
         self.refresh()
 
     def on_accept(self):
@@ -37,11 +44,6 @@ class ControllerPreLaunch(QObject):
 
     def refresh(self):
 
-        # disable buttons that aren't allowed during demo replay
-        self.view.checkbox_record_demo.setEnabled(self.options_service.GetMode() != LaunchMode.REPLAY_DEMO)
-        self.view.checkbox_mods.setEnabled(self.options_service.GetMode() != LaunchMode.REPLAY_DEMO)
-        self.view.checkbox_fast.setEnabled(self.options_service.GetMode() != LaunchMode.REPLAY_DEMO)
-
         # disable buttons OBS conditional buttons
         self.view.checkbox_obs.setEnabled(self.options_service.IsObsAvailable())
         self.view.checkbox_auto_record.setEnabled(self.options_service.IsObsAvailable())
@@ -52,6 +54,12 @@ class ControllerPreLaunch(QObject):
         self.view.checkbox_mods.setChecked(self.options_service.IsModsEnabled())
         self.view.checkbox_music.setChecked(self.options_service.IsMusicEnabled())
         self.view.checkbox_fast.setChecked(self.options_service.IsFastMonstersEnabled())
+
+    def on_launch_mode_changed(self, mode: LaunchMode):
+
+        self.view.checkbox_record_demo.setEnabled(mode != LaunchMode.REPLAY_DEMO)
+        self.view.checkbox_mods.setEnabled(mode != LaunchMode.REPLAY_DEMO)
+        self.view.checkbox_fast.setEnabled(mode != LaunchMode.REPLAY_DEMO)
 
 if __name__ == "__main__":
 

@@ -30,10 +30,12 @@ def RegisterServices():
     from jacodemon.service.options_service import OptionsService
     from jacodemon.service.wad_service import WadService
 
+    # event service must be registered first
+    Registry.register(EventService, EventService())
+    
     config_service = ConfigService()
     options_service = OptionsService()
 
-    Registry.register(EventService, EventService())
     Registry.register(ConfigService, config_service)
     Registry.register(MapService, MapService(config_service.config.maps_dir))
     Registry.register(MapSetService, MapSetService(config_service.config))

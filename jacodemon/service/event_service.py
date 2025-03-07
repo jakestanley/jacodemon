@@ -19,6 +19,9 @@ class Event(Enum):
     # StatsService events
     SELECTED_STATS_UPDATED = auto()
 
+    # OptionsService events
+    MODE_CHANGED = auto()
+
 class EventService(QObject):
 
     def __init__(self):
