@@ -129,7 +129,6 @@ _please explain how to run tests_
 
 ### Bugs
 
-- If you load a map set, then go back and create one, it doesn't update the map select view until you restart
 - Play button is not disabled if you haven't selected a map yet
 - Last map...
     - is not updated unless you restart the application

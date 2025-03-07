@@ -119,6 +119,8 @@ class SetOverviewWidget(QWidget):
 
         if not mapSet:
             return
+        
+        self.name_field.setText(mapSet.name)
 
         if mapSet.text:
             self.wad_text.setText(mapSet.text)
