@@ -77,6 +77,6 @@ if __name__ == "__main__":
     InitialiseOptions(DummyArgs())
     view = ViewConfig()
     
-    controller = ControllerConfig(app_model, view)
+    controller = ControllerConfig(view)
     view.show()
     sys.exit(app.exec())

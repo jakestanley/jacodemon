@@ -66,16 +66,14 @@ if __name__ == "__main__":
     import sys
     from PySide6.QtWidgets import QApplication
 
-    from jacodemon.arguments import DummyArgs
+    from jacodemon.misc.arguments import DummyArgs
     from jacodemon.model.options import InitialiseOptions
-    from jacodemon.model.app import InitialiseAppModel
 
     app = QApplication([])
 
     InitialiseOptions(DummyArgs())
-    app_model = InitialiseAppModel()
     view = ViewMapSelect()
     
-    controller = ControllerMapSelect(app_model, view)
+    controller = ControllerMapSelect(view)
     view.show()
     sys.exit(app.exec())

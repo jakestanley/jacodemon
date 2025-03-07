@@ -9,9 +9,9 @@ from jacodemon.misc.io import IO
 import obsws_python as obs
 from jacodemon.model.options import Options, GetOptions
 from jacodemon.model.config import JacodemonConfig
-from jacodemon.notifications import Notifications, GetNotifications
+from jacodemon.misc.notifications import Notifications, GetNotifications
 from jacodemon.misc.io import IO, GetIo
-from jacodemon.exceptions import ObsServiceException
+from jacodemon.misc.exceptions import ObsServiceException
 
 import jacodemon.service.registry as r
 from jacodemon.service.options_service import OptionsService

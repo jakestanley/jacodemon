@@ -72,9 +72,8 @@ if __name__ == "__main__":
     app = QApplication([])
 
     InitialiseOptions(DummyArgs())
-    app_model = InitialiseAppModel()
     view = ViewPreLaunch()
 
-    controller = ControllerPreLaunch(app_model, view)
+    controller = ControllerPreLaunch(view)
     view.show()
     sys.exit(app.exec())

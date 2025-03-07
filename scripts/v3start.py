@@ -2,11 +2,11 @@ import sys
 
 from PySide6.QtWidgets import QApplication
 
-from jacodemon.arguments import GetArgs
+from jacodemon.misc.arguments import GetArgs
 from jacodemon.model.options import InitialiseOptions
 from jacodemon.misc.logs import InitialiseLoggingConfig
 
-from jacodemon.manager import UIManager, UIState
+from jacodemon.misc.manager import UIManager, UIState
 
 from jacodemon.service.registry import Registry, RegisterServices, RegisterObsService
 from jacodemon.service.launch_service import LaunchService
