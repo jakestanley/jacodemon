@@ -4,7 +4,6 @@ from jacodemon.service.registry import Registry
 from jacodemon.service.options_service import OptionsService
 from jacodemon.service.event_service import EventService, Event
 
-from jacodemon.model.app import AppModel
 from jacodemon.model.launch import LaunchMode
 from jacodemon.view.prelaunch import ViewPreLaunch
 
@@ -13,7 +12,7 @@ class ControllerPreLaunch(QObject):
     accept_signal = Signal()
     reject_signal = Signal()
 
-    def __init__(self, app_model: AppModel, view_pre_launch: ViewPreLaunch):
+    def __init__(self, view_pre_launch: ViewPreLaunch):
         super().__init__()
         self.options_service: OptionsService = Registry.get(OptionsService)
 

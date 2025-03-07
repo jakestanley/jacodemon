@@ -57,9 +57,7 @@ class MapService(QObject):
 
         if self.is_ready:
             return
-        
-        from jacodemon.service.registry import Registry
-        
+
         # connect to events
         event_service: EventService = Registry.get(EventService)
         event_service.connect(Event.SELECTED_MAPSET_UPDATED, self.LoadMapsFromMapSet)

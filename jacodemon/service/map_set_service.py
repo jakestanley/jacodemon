@@ -48,10 +48,10 @@ class MapSetService(QObject):
         if self.is_ready:
             return
 
-        from jacodemon.service.registry import Registry
-
         # connect to signals
         event_service = Registry.get(EventService)
+
+        # set services
         self.wad_service = Registry.get(WadService)
 
         self.mapSets = [_LoadMapSet(ms) for ms in self.configuration.sets]

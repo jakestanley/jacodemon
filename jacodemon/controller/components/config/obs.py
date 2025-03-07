@@ -1,12 +1,10 @@
-from jacodemon.model.app import AppModel
 from jacodemon.service.registry import Registry
 from jacodemon.service.config_service import ConfigService
 
 from jacodemon.view.components.config.obs import ObsTab
 
 class ControllerObs:
-    def __init__(self, app_model: AppModel, view: ObsTab):
-        self.app_model = app_model
+    def __init__(self, view: ObsTab):
         self.view = view
 
         self.config_service: ConfigService = Registry.get(ConfigService)

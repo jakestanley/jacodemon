@@ -20,7 +20,7 @@ class ConfigService(QObject):
         self._logger = logging.getLogger(self.__class__.__name__)
 
         # register signals
-        # Registry.get(EventService).register_signal(Event.MODS_UPDATED, self._mods_updated)
+        Registry.get(EventService).register_signal(Event.MODS_UPDATED, self._mods_updated)
 
         # data
         self.config = GetConfig()

@@ -6,7 +6,6 @@ from jacodemon.service.registry import Registry
 from jacodemon.service.event_service import EventService, Event
 from jacodemon.service.map_set_service import MapSetService
 
-from jacodemon.model.app import AppModel
 from jacodemon.model.map import MapSet
 
 from jacodemon.view.components.config.sets import SetsTab
@@ -15,10 +14,9 @@ class ControllerSets(QObject):
 
     accept_signal = Signal()
 
-    def __init__(self, app_model: AppModel, view: SetsTab):
+    def __init__(self, view: SetsTab):
         super().__init__()
         self._logger = logging.getLogger(self.__class__.__name__)
-        self.app_model: AppModel = app_model
         self.view: SetsTab = view
 
         self.map_set_service: MapSetService = Registry.get(MapSetService)

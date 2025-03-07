@@ -6,7 +6,6 @@ from jacodemon.service.options_service import OptionsService
 from jacodemon.service.map_set_service import MapSetService
 from jacodemon.service.map_service import MapService
 
-from jacodemon.model.app import AppModel
 from jacodemon.view.mapselect import ViewMapSelect
 
 from jacodemon.controller.components.mapselect.map_overview import ControllerMapOverview
@@ -17,9 +16,8 @@ class ControllerMapSelect(QObject):
     reject_signal = Signal()
 
     # TODO map select/demo select update, etc
-    def __init__(self, app_model: AppModel, view_map_select: ViewMapSelect):
+    def __init__(self, view_map_select: ViewMapSelect):
         super().__init__()
-        self.app_model = app_model
         self.view = view_map_select
 
         # services
@@ -31,7 +29,7 @@ class ControllerMapSelect(QObject):
         Registry.get(EventService).connect(Event.MAPS_UPDATED, self.on_maps_updated)
 
         # i'm sure this was deffo getting GC'd without the assignment
-        self._cMapOverview = ControllerMapOverview(self.app_model, self.view.mapOverviewWidget)
+        self._cMapOverview = ControllerMapOverview(self.view.mapOverviewWidget)
 
         self.view.mapTableWidget.row_selected.connect(self._HandleSelection)
 

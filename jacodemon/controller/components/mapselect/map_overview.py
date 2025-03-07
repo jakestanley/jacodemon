@@ -4,7 +4,6 @@ from jacodemon.service.registry import Registry
 from jacodemon.service.event_service import EventService, Event
 from jacodemon.service.stats_service import StatsService
 
-from jacodemon.model.app import AppModel
 from jacodemon.model.map import Map
 from jacodemon.model.stats import Statistics
 
@@ -17,9 +16,8 @@ class ControllerMapOverview(QObject):
     play_signal = Signal()
     play_demo_signal = Signal()
 
-    def __init__(self, app_model: AppModel, view: MapOverviewWidget):
+    def __init__(self, view: MapOverviewWidget):
         super().__init__()
-        self.app_model = app_model
         self.view = view
 
         # services

@@ -25,8 +25,8 @@ def RegisterServices():
     from jacodemon.service.map_service import MapService
     from jacodemon.service.stats_service import StatsService
     from jacodemon.service.demo_service import DemoService
-    from jacodemon.service.launch.launch_service import LaunchService
-    from jacodemon.service.launch.dsda_service import DsdaService
+    from jacodemon.service.launch_service import LaunchService
+    from jacodemon.service.doom_service import DoomService
     from jacodemon.service.options_service import OptionsService
     from jacodemon.service.wad_service import WadService
 
@@ -41,7 +41,8 @@ def RegisterServices():
     Registry.register(MapSetService, MapSetService(config_service.config))
     Registry.register(StatsService, StatsService(config_service.config.stats_dir))
     Registry.register(DemoService, DemoService(config_service.config.demo_dir))
-    Registry.register(LaunchService, DsdaService())
+    Registry.register(LaunchService, LaunchService())
+    Registry.register(DoomService, DoomService())
     Registry.register(OptionsService, options_service)
     Registry.register(WadService, WadService(config_service.config.maps_dir))
 

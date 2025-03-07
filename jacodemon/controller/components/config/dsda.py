@@ -3,12 +3,10 @@ from jacodemon.service.config_service import ConfigService
 
 from jacodemon.misc.files import OpenSingleFileDialog
 
-from jacodemon.model.app import AppModel
 from jacodemon.view.components.config.dsda import DsdaTab
 
 class ControllerDsda:
-    def __init__(self, app_model: AppModel, view: DsdaTab):
-        self.app_model = app_model
+    def __init__(self, view: DsdaTab):
         self.config_service: ConfigService = Registry.get(ConfigService)
         self.view = view
 

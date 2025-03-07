@@ -22,6 +22,9 @@ class Event(Enum):
     # OptionsService events
     MODE_CHANGED = auto()
 
+    # LaunchService events
+    LAUNCH_COMPLETED = auto()
+
 class EventService(QObject):
 
     def __init__(self):
