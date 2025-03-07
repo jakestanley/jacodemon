@@ -95,6 +95,8 @@ class WadService:
     
     # TODO: user added data in MapSet to be added separately
     def GetDataFromWads(self, wads: List[str]) -> WadsData:
+
+        # TODO cache me, possibly keyed on MapSetId
         data = WadsData()
 
         for file in wads:

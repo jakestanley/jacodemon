@@ -9,9 +9,13 @@ from jacodemon.misc.io import IO
 import obsws_python as obs
 from jacodemon.model.options import Options, GetOptions
 from jacodemon.model.config import JacodemonConfig
-from jacodemon.notifications import Notifications, GetNotifications
+from jacodemon.misc.notifications import Notifications, GetNotifications
 from jacodemon.misc.io import IO, GetIo
-from jacodemon.exceptions import ObsServiceException
+from jacodemon.misc.exceptions import ObsServiceException
+
+import jacodemon.service.registry as r
+from jacodemon.service.options_service import OptionsService
+from jacodemon.service.config_service import ConfigService
 
 from PySide6.QtWidgets import QMessageBox
 
@@ -150,24 +154,3 @@ def PromptUserContinueExit():
         return True
     elif message_box.clickedButton() == exit_button:
         return False
-
-def GetObsController() -> ObsService:
-
-    options: Options = GetOptions()
-    notifications: Notifications = GetNotifications()
-    io: IO = GetIo()
-
-    if options.obs:
-        try:
-            obsController = ObsService(notifications, io)
-            obsController.Setup()
-        except ObsServiceException:
-            # TODO reuse this
-            if PromptUserContinueExit():
-                obsController = MockObsService(notifications)
-            else:
-                sys.exit(0)
-    else:
-        obsController = MockObsService(notifications)
-
-    return obsController

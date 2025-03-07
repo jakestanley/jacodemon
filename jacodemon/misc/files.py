@@ -83,9 +83,11 @@ def FindAndVerify(filepaths: list[tuple[str, str]], additionalSearchDirectories:
             else:
                 raise FileNotFoundError(f"File not found: {filepath}")
 
-        if hash:
+        if hash and hash != "nohash":
             if hash != GetFileHash(filepath):
                 raise ValueError(f"File has been modified: {filepath}")
+        else:
+            print(f"Skipping hash verification for {filepath} as no hash was present")
 
         verified.append((filepath, hash))
 

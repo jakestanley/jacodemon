@@ -1,11 +1,13 @@
+from jacodemon.service.registry import Registry
+from jacodemon.service.config_service import ConfigService
+
 from jacodemon.misc.files import OpenSingleFileDialog
 
-from jacodemon.model.app import AppModel
 from jacodemon.view.components.config.dsda import DsdaTab
 
 class ControllerDsda:
-    def __init__(self, app_model: AppModel, view: DsdaTab):
-        self.app_model = app_model
+    def __init__(self, view: DsdaTab):
+        self.config_service: ConfigService = Registry.get(ConfigService)
         self.view = view
 
         self.view.dsda_path_picker.clicked.connect(lambda: OpenSingleFileDialog(self.view, "All Files (*);;Exe Files (*.exe)", self.view.dsda_path))
@@ -26,15 +28,15 @@ class ControllerDsda:
         self.view.revert_button.setEnabled(True)
 
     def save(self):
-        self.app_model.SetDsdaPath(self.view.dsda_path.text())
-        self.app_model.SetDsdaCfgPath(self.view.dsda_cfg_path.text())
-        self.app_model.SetDsdaHudLump(self.view.dsda_hud_path.text())
+        self.config_service.SetDsdaPath(self.view.dsda_path.text())
+        self.config_service.SetDsdaCfgPath(self.view.dsda_cfg_path.text())
+        self.config_service.SetDsdaHudLump(self.view.dsda_hud_path.text())
         self.update()
 
     def update(self):
-        self.view.dsda_path.setText(self.app_model.GetDsdaPath())
-        self.view.dsda_cfg_path.setText(self.app_model.GetDsdaCfgPath())
-        self.view.dsda_hud_path.setText(self.app_model.GetDsdaHudLump())
+        self.view.dsda_path.setText(self.config_service.GetDsdaPath())
+        self.view.dsda_cfg_path.setText(self.config_service.GetDsdaCfgPath())
+        self.view.dsda_hud_path.setText(self.config_service.GetDsdaHudLump())
 
         self.view.save_button.setEnabled(False)
         self.view.revert_button.setEnabled(False)

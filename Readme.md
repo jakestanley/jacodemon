@@ -114,6 +114,7 @@ _please explain how to run tests_
 - Tag/rate maps. Tags like "awesome-music", "challenging", etc. Memento Mori's "Galaxy" is great!
 - Publish tags/ratings/statistics/demoes automatically
 - Multiplayer launching (would require chocolate doom)
+- Populate missing map fields column data from the text file using RAG
 
 ### Minor features
 
@@ -128,6 +129,7 @@ _please explain how to run tests_
 
 ### Bugs
 
+- If you load a map set, then go back and create one, it doesn't update the map select view until you restart
 - Play button is not disabled if you haven't selected a map yet
 - Last map...
     - is not updated unless you restart the application

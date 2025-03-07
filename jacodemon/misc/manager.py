@@ -12,6 +12,7 @@ class UIManager(QStackedWidget):
     def __init__(self):
         super().__init__()
         self.views = {}
+        self.controllers = []
 
     def register_view(self, state, view: QWidget):
         self.views[state] = view

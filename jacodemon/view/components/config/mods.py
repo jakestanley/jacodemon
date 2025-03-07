@@ -6,7 +6,6 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
     QLabel, QLineEdit, QListWidget, QListWidgetItem, QCheckBox, QFileDialog
 
 from jacodemon.model.mod import Mod
-from jacodemon.model.app import AppModel
 
 from jacodemon.model.config import JacodemonConfig, GetConfig
 from jacodemon.misc.files import FindDoomFiles

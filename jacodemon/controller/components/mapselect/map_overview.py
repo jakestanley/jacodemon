@@ -1,6 +1,11 @@
 from PySide6.QtCore import QObject, Signal
 
-from jacodemon.model.app import AppModel
+from jacodemon.service.registry import Registry
+from jacodemon.service.event_service import EventService, Event
+from jacodemon.service.stats_service import StatsService
+
+from jacodemon.model.map import Map
+from jacodemon.model.stats import Statistics
 
 from jacodemon.view.components.mapselect.map_overview import MapOverviewWidget
 
@@ -11,33 +16,40 @@ class ControllerMapOverview(QObject):
     play_signal = Signal()
     play_demo_signal = Signal()
 
-    def __init__(self, app_model: AppModel, view: MapOverviewWidget):
+    def __init__(self, view: MapOverviewWidget):
         super().__init__()
-        self.app_model = app_model
         self.view = view
+
+        # services
+        self.stats_service: StatsService = Registry.get(StatsService)
+
+        # service event listeners
+        event_service: EventService = Registry.get(EventService)
+        event_service.connect(Event.SELECTED_MAP_UPDATED, self.on_map_updated)
+        event_service.connect(Event.SELECTED_STATS_UPDATED, self.on_statistics_updated)
 
         # i'm sure this was deffo getting GC'd without the assignment.
         #   perhaps these nested controller declarations might get a little unwieldy? we'll see
-        self._cDemoTable = ControllerStatisticsTable(self.app_model, self.view.demo_table)
+        self._cDemoTable = ControllerStatisticsTable(self.view.demo_table)
 
         self.view.play_button.setEnabled(False)
         self.view.play_demo_button.setEnabled(False)
 
+        # ui event listeners
         self.view.play_button.clicked.connect(self._HandlePlay)
         self.view.play_demo_button.clicked.connect(self._HandlePlayDemo)
 
-        self.app_model.selected_map_updated.connect(self.on_map_updated)
-        self.app_model.selected_statistics_updated.connect(self.on_statistics_updated)
 
-    def on_map_updated(self):
+
+    def on_map_updated(self, map: Map):
 
         self.view.play_demo_button.setEnabled(False)
-        if self.app_model.selected_map is not None:
+        if map is not None:
             self.view.play_button.setEnabled(True)
 
-    def on_statistics_updated(self):
+    def on_statistics_updated(self, stats: Statistics):
 
-        if self.app_model.selected_statistics.demo:
+        if stats:
             self.view.play_demo_button.setEnabled(True)
         else:
             self.view.play_demo_button.setEnabled(False)
