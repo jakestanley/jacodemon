@@ -29,6 +29,12 @@ class OptionsService:
     
     def IsFastMonstersEnabled(self) -> bool:
         return self.options.fast == True
-    
-    def GetMode(self) -> int:
+
+    def GetMode(self) -> LaunchMode:
         return self.options.mode
+    
+    def SetDemoMode(self):
+        self.options.mode = LaunchMode.REPLAY_DEMO
+
+    def SetPlayMode(self):
+        self.options.mode = LaunchMode.RECORD_DEMO

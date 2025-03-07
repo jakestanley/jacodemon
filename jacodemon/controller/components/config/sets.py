@@ -43,7 +43,7 @@ class ControllerSets(QObject):
         self.accept_signal.emit()
 
     def on_edit_mapset(self, mapSetId: str):
-        self._logger(f"Controller hit! Editing {mapSetId}")
+        self._logger.debug(f"Controller hit! Editing {mapSetId}")
 
     def on_remove_mapset(self, mapSetId: str):
         self.map_set_service.RemoveMapSetById(mapSetId)

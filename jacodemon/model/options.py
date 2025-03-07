@@ -2,11 +2,6 @@ from jacodemon.model.launch import LaunchMode
 
 _SINGLETON = None
 
-MODE_NORMAL: int = 1
-MODE_RANDOM: int = 2
-MODE_LAST: int = 3
-MODE_REPLAY: int = 4
-
 class Options:
     def __init__(self):
         self.obs = None
@@ -36,14 +31,15 @@ def _ArgsToOptions(args) -> Options:
     if hasattr(args, 'fast'):
         options.fast       = args.fast
 
+    # these two are currently disabled while i work out other stuff
     if hasattr(args, 'last') and args.last:
-        options.mode = MODE_LAST
+        options.mode = None
     elif hasattr(args, 'random') and args.random:
-        options.mode = MODE_RANDOM
+        options.mode = None
     elif hasattr(args, 'replay') and args.replay:
-        options.mode = MODE_REPLAY
+        options.mode = LaunchMode.REPLAY_DEMO
     else:
-        options.mode = MODE_NORMAL
+        options.mode = LaunchMode.RECORD_DEMO
 
     return options
 

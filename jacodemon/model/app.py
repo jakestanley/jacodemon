@@ -36,24 +36,16 @@ class AppModel(QObject):
         self.wad_service: WadService = Registry.get(WadService)
         self.launch_service: LaunchService = Registry.get(LaunchService)
 
-    def SetPlayMode(self):
-        self.options_service.mode = LaunchMode.RECORD_DEMO
-        self.mode_changed.emit()
-
-    def SetReplayMode(self):
-        self.options_service.mode = LaunchMode.REPLAY_DEMO
-        self.mode_changed.emit()
-
     def Launch(self):
 
         launch_spec: LaunchSpec = None
 
         # only save last map if we are not replaying a demo
-        if self.options_service.mode != LaunchMode.REPLAY_DEMO:
+        if self.options_service.GetMode() != LaunchMode.REPLAY_DEMO:
             self.map_service.SaveLastMap()
 
-        if self.options_service.mode == LaunchMode.REPLAY_DEMO:
-            launch_spec = self.selected_statistics.GetLaunchSpec(self.map_service.selected_map)
+        if self.options_service.GetMode() == LaunchMode.REPLAY_DEMO:
+            launch_spec = self.stats_service.selected_statistics.GetLaunchSpec(self.map_service.selected_map)
             # TODO verify launch spec
         else:
             launch_spec = self.launch_service.CreateLaunchSpec(self.config_service.config, self.options_service.options, self.map_service.selected_map)

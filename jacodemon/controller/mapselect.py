@@ -2,6 +2,7 @@ from PySide6.QtCore import QObject, Signal
 
 from jacodemon.service.registry import Registry
 from jacodemon.service.event_service import EventService, Event
+from jacodemon.service.options_service import OptionsService
 from jacodemon.service.map_set_service import MapSetService
 from jacodemon.service.map_service import MapService
 
@@ -22,6 +23,7 @@ class ControllerMapSelect(QObject):
         self.view = view_map_select
 
         # services
+        self.options_service: OptionsService = Registry.get(OptionsService)
         self.map_set_service: MapSetService = Registry.get(MapSetService)
         self.map_service: MapService = Registry.get(MapService)
 
@@ -40,11 +42,11 @@ class ControllerMapSelect(QObject):
         self.view.button_box.rejected.connect(self.reject_signal.emit)
 
     def play(self):
-        self.app_model.SetPlayMode()
+        self.options_service.SetPlayMode()
         self.accept_signal.emit()
 
     def play_demo(self):
-        self.app_model.SetReplayMode()
+        self.options_service.SetDemoMode()
         self.accept_signal.emit()
 
     # TODO can we use a list[Map] type in the signal?

@@ -16,7 +16,7 @@ from jacodemon.service.event_service import EventService, Event
 class StatsService(QObject):
 
     # when a user selects stats from the list
-    _selected_statistics_updated = Signal()
+    _selected_statistics_updated = Signal(Statistics)
 
     def __init__(self, stats_dir):
         super().__init__()
@@ -24,6 +24,7 @@ class StatsService(QObject):
         self._logger = logging.getLogger(self.__class__.__name__)
         self.stats_dir = stats_dir
         self.statistics = []
+        self.selected_statistics = None
 
         # register signals
         Registry.get(EventService).register_signal(Event.SELECTED_STATS_UPDATED, self._selected_statistics_updated)
@@ -68,9 +69,11 @@ class StatsService(QObject):
     #   behaviour
     def SelectStatisticsByIndex(self, index):
         if index is None:
+            self.selected_statistics = None
             self._selected_statistics_updated.emit(None)
         else:
-            self._selected_statistics_updated.emit(self.statistics[index])
+            self.selected_statistics = self.statistics[index]
+            self._selected_statistics_updated.emit(self.selected_statistics)
 
 
     """

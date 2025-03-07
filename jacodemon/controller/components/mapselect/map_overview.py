@@ -6,6 +6,7 @@ from jacodemon.service.stats_service import StatsService
 
 from jacodemon.model.app import AppModel
 from jacodemon.model.map import Map
+from jacodemon.model.stats import Statistics
 
 from jacodemon.view.components.mapselect.map_overview import MapOverviewWidget
 
@@ -48,9 +49,9 @@ class ControllerMapOverview(QObject):
         if map is not None:
             self.view.play_button.setEnabled(True)
 
-    def on_statistics_updated(self):
+    def on_statistics_updated(self, stats: Statistics):
 
-        if self.app_model.selected_statistics.demo:
+        if stats:
             self.view.play_demo_button.setEnabled(True)
         else:
             self.view.play_demo_button.setEnabled(False)
