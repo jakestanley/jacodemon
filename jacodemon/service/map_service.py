@@ -4,13 +4,12 @@ import jsonpickle
 import logging
 
 from typing import Optional
-from typing import List
 
 from PySide6.QtCore import QObject, Signal
 
 from jacodemon.model.mapset import MapSet
-
 from jacodemon.model.map import Map
+
 from jacodemon.service.registry import Registry
 from jacodemon.service.event_service import EventService, Event
 from jacodemon.service.wad_service import WadService

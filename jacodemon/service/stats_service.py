@@ -7,7 +7,6 @@ from PySide6.QtCore import QObject, Signal
 from jacodemon.misc.files import ParseTimestampFromPath
 
 from jacodemon.model.map import Map
-from jacodemon.model.launch import LaunchSpec
 from jacodemon.model.stats import Statistics
 
 from jacodemon.service.registry import Registry

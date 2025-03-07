@@ -1,7 +1,7 @@
+import logging
 from enum import Enum, auto
 
 from PySide6.QtCore import QObject, Signal
-import logging
 
 class Event(Enum):
 

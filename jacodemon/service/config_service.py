@@ -25,12 +25,6 @@ class ConfigService(QObject):
         # data
         self.config = GetConfig()
 
-    def initialise(self):
-        if self.is_ready:
-            return
-
-        self.is_ready = True
-
     def GetExecutableForSourcePort(self, source_port_name: str) -> str:
         if source_port_name == "dsdadoom":
             return self.config.dsda_path
