@@ -2,10 +2,12 @@ from typing import Type, Any
 
 class Registry:
     _services: dict[Type[Any], Any] = {}
+    _services_ordered = []
 
     @staticmethod
     def register(cls, instance):
         Registry._services[cls] = instance
+        Registry._services_ordered.append(instance)
 
     @staticmethod
     def get(cls):
@@ -13,7 +15,7 @@ class Registry:
     
     @staticmethod
     def InitialiseServices():
-        for service in Registry._services.values():
+        for service in Registry._services_ordered:
             if hasattr(service, "initialise"):
                 service.initialise()
     

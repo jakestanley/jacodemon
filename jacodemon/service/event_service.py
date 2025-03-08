@@ -8,6 +8,7 @@ class Event(Enum):
     # MapService events
     SELECTED_MAP_UPDATED = auto()
     MAPS_UPDATED = auto()
+    LAST_MAP_UPDATED = auto()
 
     # MapSetService events
     SELECTED_MAPSET_UPDATED = auto()

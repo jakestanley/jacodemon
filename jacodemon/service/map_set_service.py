@@ -68,7 +68,7 @@ class MapSetService(QObject):
         self.configuration.UpdateMapSets(self.mapSets)
     
     def GetMapSetById(self, mapSetId: str) -> MapSet:
-        return next((ms for ms in self.mapSets if ms.id.lower() == self.last_map.MapSetId), None)
+        return next((ms for ms in self.mapSets if ms.id.lower() == mapSetId), None)
 
     def CreateMapSet(self):
 
