@@ -76,8 +76,13 @@ class ObsService:
         try:
             self.io.RenameFile(path, newpath)
             self._logger.debug(f"Moved {path} to {newpath}\n")
+        except FileExistsError as e:
+            self._logger.error("Recording already exists at {newpath} ")
+            return None
         except Exception as e:
-            self._logger.error("Failed to move recording " + e)
+            self._logger.error("Failed to move recording ")
+            self._logger.debug(e)
+            return None
 
         return newpath
 
@@ -102,7 +107,8 @@ class ObsService:
             path = self.SaveReplayBuffer()
             try:
                 newpath = self.MoveRecording(path, replay_name)
-                self.notifications.notify("Replay saved", f"Saved to '{newpath}'")
+                if newpath:
+                    self.notifications.notify("Replay saved", f"Saved to '{newpath}'")
             except Exception:
                 self._logger.error("Could not save replay")
         else:
