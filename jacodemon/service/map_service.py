@@ -63,6 +63,7 @@ class MapService(QObject):
         event_service: EventService = Registry.get(EventService)
         event_service.connect(Event.SELECTED_MAPSET_UPDATED, self.LoadMapsFromMapSet)
         event_service.connect(Event.MAPSETS_UPDATED, self._LoadLastMap)
+        event_service.connect(Event.LAUNCH_COMPLETED, lambda: self.LoadMapsFromMapSet(None))
 
         self.wad_service = Registry.get(WadService)
         self.map_set_service = Registry.get(MapSetService)
@@ -76,12 +77,16 @@ class MapService(QObject):
         self.selected_map = None
 
         if mapSet is None:
-            self.maps = []
+            # try and get the existing map set, this may have been triggered 
+            #   by a launch completion event refresh
+            mapSet = self.map_set_service.selected_map_set
 
-        # read files in the map set and get map entries
+        # it's inefficient to load maps again here if we're refreshing
         files = [path.path for path in mapSet.paths if path.enabled]
         self.maps = self.wad_service.GetMapsFromWads(files)
 
+        # regardless of how we got here, iterate over maps to add stats, 
+        #   demoes and badges
         for map in self.maps:
             map.SetMapSet(mapSet)
             # TODO: do i really need to add stats to maps?

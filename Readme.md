@@ -121,7 +121,6 @@ _please explain how to run tests_
 
 ### Minor features
 
-- Refresh demos/badges/maps/stats upon launch completion
 - ZMAPINFO proper parser, there is a test lump in JacodemonTest.wad
 - Edit map set:
     - to set comp level manually
