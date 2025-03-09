@@ -8,7 +8,7 @@ from jacodemon.misc.logs import InitialiseLoggingConfig
 
 from jacodemon.misc.manager import UIManager, UIState
 
-from jacodemon.service.registry import Registry, RegisterServices, RegisterObsService
+from jacodemon.service.registry import Registry, RegisterServices, RegisterObsService, RegisterNotificationService
 from jacodemon.service.launch_service import LaunchService
 
 from jacodemon.controller.config import ControllerConfig
@@ -62,6 +62,7 @@ def start():
     #   as that will call listeners, and we want to rely on those for the 
     #   listeners are connected on the ui
     RegisterServices()
+    RegisterNotificationService()
     if RegisterObsService() == False:
         sys.exit(1)
     

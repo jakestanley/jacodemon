@@ -80,3 +80,21 @@ def RegisterObsService() -> bool:
     Registry.register(ObsService, obs_service)
 
     return True
+
+def RegisterNotificationService():
+
+    import platform
+
+    system = platform.system()
+
+    notification_service = None
+
+    from jacodemon.service.notification_service import NotificationService
+    if system == "Darwin":
+        from jacodemon.platform.macos.notifications import MacNotificationService
+        notification_service = MacNotificationService()
+    else:
+        from jacodemon.platform.windows.notifications import WinNotificationService
+        notification_service = WinNotificationService()
+
+    Registry.register(NotificationService, notification_service)

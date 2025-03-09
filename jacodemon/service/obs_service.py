@@ -9,36 +9,51 @@ from jacodemon.misc.io import IO
 import obsws_python as obs
 from jacodemon.model.options import Options, GetOptions
 from jacodemon.model.config import JacodemonConfig
-from jacodemon.misc.notifications import Notifications, GetNotifications
+from jacodemon.service.event_service import EventService
+from jacodemon.service.notification_service import NotificationService
 from jacodemon.misc.io import IO, GetIo
 from jacodemon.misc.exceptions import ObsServiceException
 
-import jacodemon.service.registry as r
+from jacodemon.service.registry import Registry
 from jacodemon.service.options_service import OptionsService
 from jacodemon.service.config_service import ConfigService
 
 from PySide6.QtWidgets import QMessageBox
 
 class ObsService:
-    # TODO: v3 -> notifications re-write
-    # def __init__(self,notifications: Notifications, io: IO):
+
     def __init__(self, config: JacodemonConfig, fake=False):
         self.config: JacodemonConfig = config
-        # self.notifications = notifications
+
+        self.notification_service: NotificationService = None
         self.io = GetIo()
         self._logger = logging.getLogger(self.__class__.__name__)
-        if fake:
+        self._is_ready = False
+
+        if not fake:
+            try:
+                self.obs_client = obs.ReqClient(host='localhost', port=4455, password='')
+                # if not self.obs_client.get_replay_buffer_status().output_active:
+                    # self.notification_service.notify("OBS replay buffer is not active")
+            except ConnectionRefusedError as cause:
+                self._logger.error("Connection to OBS refused. Is it running? Is the Websocket API enabled?")
+                raise ObsServiceException("Connection to OBS refused. Is it running? Is the Websocket API enabled? If it is desired to run without OBS, please use the --no-obs flag")
+            # catch all other exceptions
+            except Exception as cause:
+                raise ObsServiceException(cause)
+        
+    def initialise(self):
+
+        if self._is_ready:
             return
-        try:
-            self.obs_client = obs.ReqClient(host='localhost', port=4455, password='')
-            # if not self.obs_client.get_replay_buffer_status().output_active:
-                # self.notifications.notify("OBS replay buffer is not active")
-        except ConnectionRefusedError as cause:
-            self._logger.error("Connection to OBS refused. Is it running? Is the Websocket API enabled?")
-            raise ObsServiceException("Connection to OBS refused. Is it running? Is the Websocket API enabled? If it is desired to run without OBS, please use the --no-obs flag")
-        # catch all other exceptions
-        except Exception as cause:
-            raise ObsServiceException(cause)
+
+        # connect to events. we may want to notify on them
+        event_service: EventService = Registry.get(EventService)
+
+        # get services
+        self.notification_service = Registry.get(NotificationService)
+
+        self._is_ready = True
 
     def _GetReplayName(self):
         """
@@ -62,7 +77,7 @@ class ObsService:
         if self.IsRecording():
             path = self.obs_client.stop_record().output_path
             self.io.RemoveFile(path)
-            self.notifications.notify("Cancelled recording", f"Deleted '{path}'")
+            self.notification_service.notify("Cancelled recording", f"Deleted '{path}'")
 
     def MoveRecording(self, path, new_name):
 
@@ -108,11 +123,11 @@ class ObsService:
             try:
                 newpath = self.MoveRecording(path, replay_name)
                 if newpath:
-                    self.notifications.notify("Replay saved", f"Saved to '{newpath}'")
+                    self.notification_service.notify("Replay saved", f"Saved to '{newpath}'")
             except Exception:
                 self._logger.error("Could not save replay")
         else:
-            self.notifications.notify("Replay buffer disabled", f"Not saving replay: '{replay_name}'")     
+            self.notification_service.notify("Replay buffer disabled", f"Not saving replay: '{replay_name}'")     
 
     def StopRecording(self):
         if self.IsRecording():
@@ -125,7 +140,7 @@ class ObsService:
             # TODO consider this in Qt instead - post launch
             newpath = self.MoveRecording(path, self._demo_name)
             try:
-                self.notifications.notify("Recording stopped", f"Saved to '{newpath}'")
+                self.notification_service.notify("Recording stopped", f"Saved to '{newpath}'")
             except AttributeError as e:
                 self._logger.error(f"Could not notify of recording stop: {e}")
 
