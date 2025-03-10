@@ -10,3 +10,5 @@ tmp/
 .idea/
 tests/data/thirdparty
 __pycache__
+*.dbs
+*.bak

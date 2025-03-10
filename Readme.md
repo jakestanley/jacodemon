@@ -90,6 +90,7 @@ _please explain how to run tests_
 
 ### Major features
 
+- Simplify stats, achievements, tags, mapset files. Consolidate? idk So much is dumped into demo dir right now...
 - More achievements/badges
 - Verify and locate missing WADs on file system when playing old launch configs that refer to files that have now moved (partially implemented)
 - Enemies count in map picker (optional)
@@ -102,6 +103,7 @@ _please explain how to run tests_
 - Migrate your config/stats/demos/cheevos, etc for backup
 - Backup and move config and stats
 - DSDA config viewer/editor
+    - override dsda config properties, or even replace it with one modified my the user in jacodemon
 - Auto setup OBS scenes with "sensible defaults"
 - Support more ports out of the box
 - Big code cleanup
@@ -115,9 +117,11 @@ _please explain how to run tests_
 - Publish tags/ratings/statistics/demoes automatically
 - Multiplayer launching (would require chocolate doom)
 - Populate missing map fields column data from the text file using RAG
+    - Use RAG to analyse CREDITS, .TXT file, etc for authors and other info like pistol start
 
 ### Minor features
 
+- ZMAPINFO proper parser, there is a test lump in JacodemonTest.wad
 - Edit map set:
     - to set comp level manually
     - to override or change IWAD
@@ -129,11 +133,6 @@ _please explain how to run tests_
 
 ### Bugs
 
-- If you load a map set, then go back and create one, it doesn't update the map select view until you restart
-- Play button is not disabled if you haven't selected a map yet
-- Last map...
-    - is not updated unless you restart the application
-    - should probably use launch config for reproduction?
 - If you quit during saving the replay buffer, then the replay buffer does not get renamed
 
 ### Out of scope features

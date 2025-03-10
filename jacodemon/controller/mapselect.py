@@ -26,7 +26,9 @@ class ControllerMapSelect(QObject):
         self.map_service: MapService = Registry.get(MapService)
 
         # service event listeners
-        Registry.get(EventService).connect(Event.MAPS_UPDATED, self.on_maps_updated)
+        event_service: EventService = Registry.get(EventService)
+        event_service.connect(Event.MAPS_UPDATED, self.on_maps_updated)
+        event_service.connect(Event.SELECTED_MAPSET_UPDATED, self.on_mapset_updated)
 
         # i'm sure this was deffo getting GC'd without the assignment
         self._cMapOverview = ControllerMapOverview(self.view.mapOverviewWidget)
@@ -54,7 +56,9 @@ class ControllerMapSelect(QObject):
         maps = [map.to_dict() for map in self.map_service.maps]
         # self.view.mapTableWidget.populate(maps, self.app_model.GetSelectedMapIndex())
         self.view.mapTableWidget.populate(maps)
-        self.view.on_map_set_change(self.map_set_service.selected_map_set)
+
+    def on_mapset_updated(self, mapSet):
+        self.view.on_map_set_change(mapSet)
 
     def _HandleSelection(self, index):
 

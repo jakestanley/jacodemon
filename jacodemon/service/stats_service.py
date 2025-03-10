@@ -82,6 +82,10 @@ class StatsService(QObject):
     - gold: above + all secrets and items
     """
     def AddStatsToMap(self, map: Map):
+
+        map.Statistics = []
+        map.Badge = 0
+
         prefix = map.GetPrefix()
         stats_files = glob.glob(self.stats_dir + f"/{prefix}*-STATS.json")
 

@@ -25,7 +25,7 @@ class MapSetPath:
 class MapSet:
 
     def __init__(self, paths: List[MapSetPath], name = None, id=None, iwad=None, compLevel=None) -> None:
-        self.id = uuid.uuid4() if id is None else id
+        self.id = str(uuid.uuid4()) if id is None else id
         self.name = name
         self.paths: List[MapSetPath] = paths
         self.iwad = iwad

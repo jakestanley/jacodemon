@@ -1,8 +1,8 @@
 import logging
-from jacodemon.notifications import Notifications
+from jacodemon.service.notification_service import NotificationService
 from win11toast import notify
 
-class WinNotifications(Notifications):
+class WinNotificationService(NotificationService):
     def __init__(self):
         super().__init__()
         self._logger = logging.getLogger(self.__class__.__name__)

@@ -1,4 +1,5 @@
 import os
+import logging
 
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QInputDialog
@@ -31,6 +32,7 @@ class MapSetService(QObject):
 
     def __init__(self, configuration: JacodemonConfig):
         super().__init__()
+        self._logger = logging.getLogger(self.__class__.__name__)
 
         self.is_ready = False
         self.maps_dir = configuration.maps_dir
@@ -66,7 +68,7 @@ class MapSetService(QObject):
         self.configuration.UpdateMapSets(self.mapSets)
     
     def GetMapSetById(self, mapSetId: str) -> MapSet:
-        return next((ms for ms in self.mapSets if ms.id.lower() == self.last_map.MapSetId), None)
+        return next((ms for ms in self.mapSets if ms.id.lower() == mapSetId), None)
 
     def CreateMapSet(self):
 
@@ -124,16 +126,20 @@ class MapSetService(QObject):
         # don't do anything if mapset hasn't changed
         if self.selected_map_set is not None and self.selected_map_set.id == mapSetId:
             return
+        
+        found_mapset = None
 
         for mapSet in self.mapSets:
             if mapSet.id == mapSetId:
-                self.selected_map_set = mapSet
-                wads_data = self.wad_service.GetDataFromWads([p.path for p in self.selected_map_set.paths])
-                self.selected_map_set.text = wads_data.text
+                found_mapset = mapSet
+                wads_data = self.wad_service.GetDataFromWads([p.path for p in mapSet.paths])
+                found_mapset.text = wads_data.text
                 # TODO more with wads_data
                 break
 
-        # TODO fix that map sets are in many places, here, map set service and jacodemon config
-        self.TouchMapSet(self.selected_map_set)
+        if found_mapset is None:
+            self._logger.error(f"Could not find mapSet with ID {mapSetId} in self.mapSets")
 
+        self.selected_map_set = found_mapset
+        self.TouchMapSet(self.selected_map_set)
         self._selected_mapset_updated.emit(self.selected_map_set)

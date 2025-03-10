@@ -1,4 +1,4 @@
-from jacodemon.notifications import Notifications
+from jacodemon.service.notification_service import NotificationService
 import subprocess
 import logging
 
@@ -8,7 +8,7 @@ on run argv
 end run
 '''
 
-class MacNotifications(Notifications):
+class MacNotificationService(NotificationService):
     def __init__(self):
         super().__init__()
         self._logger = logging.getLogger(self.__class__.__name__)
@@ -18,5 +18,5 @@ class MacNotifications(Notifications):
         self.logNotification(title, body)
 
 if __name__ == "__main__":
-    notifications = MacNotifications()
+    notifications = MacNotificationService()
     notifications.notify("Recording saved", "/Users/jake/Movies/balls.mkv")
