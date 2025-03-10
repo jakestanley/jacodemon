@@ -227,4 +227,4 @@ class DoomService:
             raw_level_stats.close()
             os.rename(_LEVELSTAT_TXT, archived_levelstat_txt)
         else:
-            self._logger.info("No levelstat.txt found. I assume you didn't finish the level or aren't using dsda-doom")
+            self._logger.debug("No levelstat.txt found. I assume you didn't finish the level or aren't using dsda-doom")

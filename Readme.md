@@ -121,6 +121,8 @@ _please explain how to run tests_
 
 ### Minor features
 
+- Mapset overrides
+- If you didn't complete the last map, go back to pre-launch instead of map select
 - ZMAPINFO proper parser, there is a test lump in JacodemonTest.wad
 - Edit map set:
     - to set comp level manually
@@ -133,6 +135,7 @@ _please explain how to run tests_
 
 ### Bugs
 
+- If there is no demo available for a timestamp, you can still click "play demo" but the app will error
 - If you quit during saving the replay buffer, then the replay buffer does not get renamed
 
 ### Out of scope features
