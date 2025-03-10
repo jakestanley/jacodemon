@@ -69,7 +69,7 @@ def RegisterObsService() -> bool:
             obs_service = ObsService(config_service.config)
         except ObsServiceException as e:
             msg_box = QMessageBox()
-            msg_box.setIcon(QMessageBox.Critical)
+            
             msg_box.setText(e.cause)
             msg_box.setWindowTitle("Error")
             msg_box.exec()
