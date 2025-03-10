@@ -119,6 +119,7 @@ def start():
             print(f"Error parsing Ollama response for chunk {idx}: {e}\n\t{response.get("message")}")
             # print(response["message"]["content"])
 
+    # TODO: feed the array back in to the LLM to normalise it: "I have this JSON array of objects that must be reformatted so that map or mission ID always uses the key "mapId" and contains only an integer:""
     extended = []
     for maps_datum in maps_data:
         extended.extend(maps_datum)
