@@ -68,6 +68,7 @@ def start():
     
     # create the ui manager and initialise views and controllers
     ui_manager = UIManager()
+    ui_manager.setWindowTitle("Jacodemon")
     CreateViewsControllers(ui_manager)
 
     # now we can initialise services which will trigger listeners and should 
