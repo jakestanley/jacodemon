@@ -108,7 +108,7 @@ class SetOverviewWidget(QWidget):
 
         self.name_field = QLineEdit(self)
 
-        hbox_layout = QHBoxLayout(self)
+        hbox_layout = QHBoxLayout()
         hbox_layout.addWidget(QLabel(f"Name"))
         hbox_layout.addWidget(self.name_field)
         layout.addLayout(hbox_layout)
@@ -118,13 +118,12 @@ class SetOverviewWidget(QWidget):
         layout.addWidget(QLabel(f"Files"))
         layout.addWidget(self.paths_table)
 
-        hbox_layout = QHBoxLayout(self)
-        hbox_layout.addWidget(QLabel(f"CompLevel"))
-        hbox_layout.addWidget(self.comp_level_text)
-        layout.addLayout(hbox_layout)
+        hbox_layout2 = QHBoxLayout()
+        hbox_layout2.addWidget(QLabel(f"CompLevel"))
+        hbox_layout2.addWidget(self.comp_level_text)
+        layout.addLayout(hbox_layout2)
 
         layout.addStretch()
-        self.setLayout(layout)
 
     def on_map_set_change(self, mapSet: MapSet):
 
