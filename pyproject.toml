@@ -23,8 +23,7 @@ parameterized = "^0.9.0"
 pytest = "^8.2.2"
 
 [tool.poetry.scripts]
-jacodemon = "scripts.start:main"
-v3 = "scripts.v3start:start"
+jacodemon = "scripts.v3start:start"
 
 [build-system]
 requires = ["poetry-core"]

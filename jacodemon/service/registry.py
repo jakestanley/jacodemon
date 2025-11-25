@@ -56,7 +56,7 @@ def RegisterObsService() -> bool:
     from jacodemon.service.config_service import ConfigService
     from jacodemon.service.options_service import OptionsService
 
-    from PyQt6.QtWidgets import QMessageBox
+    from PySide6.QtWidgets import QMessageBox
 
     options_service: OptionsService = Registry.get(OptionsService)
     config_service: ConfigService = Registry.get(ConfigService)
